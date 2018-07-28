@@ -327,6 +327,7 @@ def RecapchaBypass():
 
     sUrl2 = urllib.quote_plus(sUrl)
     xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url='+sUrl2+'&mode=showSite&stopPlayback=yes")')
+    VSlog(sUrl)
     showSearch()
 
 def showSearch(): #fonction de recherche
