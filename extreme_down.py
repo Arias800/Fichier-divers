@@ -3,20 +3,19 @@
 # Votre nom ou pseudo
 #
 #
-from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
+from resources.lib.comaddon import progress, VSlog
 
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
 import xbmc
 import urllib
+import xbmcgui
 
 #Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
 
@@ -95,11 +94,6 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     #Ajoute lien dossier (identifant, function a attendre, nom, icone, parametre de sortie)
     #Puisque nous ne voulons pas atteindre une url on peut mettre ce qu'on veut dans le parametre siteUrl
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], '4K', 'films_news.png', oOutputParameterHandler)
-    #ici la function showMovies a besoin d'une url ici le racourci MOVIE_NEWS
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD1080[0])
@@ -212,7 +206,6 @@ def showMovies(sSearch = ''):
     #le plus simple et de faire un  cConfig().log(str(aResult))
     #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
     #et modifier sPattern si besoin
-    cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     #affiche une information si aucun resulat
     if (aResult[0] == False):
@@ -220,12 +213,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        #dialog barre de progression
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog update
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
@@ -238,7 +230,7 @@ def showMovies(sSearch = ''):
             sHoster = str(aEntry[0])
             sDesc = ''
 
-            sTitle = sTitle.replace('En streaming', '')
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
             #Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
@@ -262,7 +254,7 @@ def showMovies(sSearch = ''):
             #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
 
-        cConfig().finishDialog(dialog) #fin du dialog
+        progress_.VSclose(progress_) #fin du dialog
 
         sNextPage = __checkForNextPage(sHtmlContent) #cherche la page suivante
         if (sNextPage != False):
@@ -305,11 +297,11 @@ def showHosters(): #recherche et affiche les hotes
     if (aResult[0] == True):
         total = len(aResult[1])
 
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = str(aEntry[0]) + str(aEntry[2])
@@ -322,7 +314,7 @@ def showHosters(): #recherche et affiche les hotes
 
             oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -335,73 +327,21 @@ def RecapchaBypass():
 
     sUrl2 = urllib.quote_plus(sUrl)
     xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url='+sUrl2+'&mode=showSite&stopPlayback=yes")')
+    showSearch()
+
+def showSearch(): #fonction de recherche
+    oGui = cGui()
+
+    sThumb = ''
+    sSearchText = oGui.showKeyBoard() #appelle le clavier xbmc
+    if (sSearchText != False):
+        sUrl = sSearchText #modifie l'url de recherche
+
+        sHosterUrl = str(sUrl)
+        oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
+        if (oHoster != False):
+            oHoster.setDisplayName("Uptobox") #nom affiche
+            oHoster.setFileName("Uptobox") #idem
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory() #fin
-
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
-def ShowSerieSaisonEpisodes():
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '?????????????????????'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-
-        dialog = cConfig().createDialog(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            sTitle = sMovieTitle + str(aEntry[1])
-            sUrl2 = str(aEntry[2])
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-
-def seriesHosters(): #cherche les episodes de series
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<dd><a href="([^<]+)" class="zoombox.+?" title="(.+?)"><button class="btn">.+?</button></a></dd>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = str(aEntry[0])
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(aEntry[1])
-                oHoster.setFileName(aEntry[1])
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
-#Voila c'est un peux brouillon mais ça devrait aider un peu, n'hesitez pas a poser vos questions et meme a partager vos sources.
