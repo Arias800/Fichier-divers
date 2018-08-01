@@ -63,12 +63,12 @@ SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies') #series_hd.png
 SERIE_GENRES = (True, 'showGenres') #séries genres
 SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
 SERIE_VOSTFRS = (URL_MAIN + 'series-hd/1080p-series-vostfr/', 'showMovies') #séries Vostfr
-SERIE_720VO = (URL_MAIN + 'series-hd/720p-series-vostfr/', 'showMovies')
-SERIE_720VF = (URL_MAIN + 'series-hd/720p-series-vf/', 'showMovies')
-SERIE_4K = (URL_MAIN + 'series-hd/hd-h265-hevc/', 'showMovies')
+SERIE_720VO = (URL_MAIN + 'series-hd/hd-series-vostfr', 'showMovies')
+SERIE_720VF = (URL_MAIN + 'series-hd/hd-series-vf', 'showMovies')
+SERIE_4K = (URL_MAIN + 'series-hd/hd-x265-hevc/', 'showMovies')
 SERIE_MULTI = (URL_MAIN + 'series-hd/hd-series-multi/', 'showMovies')
-SERIE_SDVF = (URL_MAIN + 'series/vostfr/', 'showMovies')
-SERIE_SDVO = (URL_MAIN + 'series/vf/', 'showMovies')
+SERIE_SDVO = (URL_MAIN + 'series/vostfr/', 'showMovies')
+SERIE_SDVF = (URL_MAIN + 'series/vf/', 'showMovies')
 
 
 ANIM_ANIMS = ('http://', 'load') #animés (load source)
@@ -352,7 +352,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a class="top-last thumbnails" href="(.+?)"><img class="img-post" src="(.+?)" style="" alt="(.+?)"'
+    sPattern = '<a class="top-last thumbnails" href="(.+?)"><img class="img-post" src="(.+?)" style="" alt="(.+?) - (.+?)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -380,24 +380,13 @@ def showMovies(sSearch = ''):
             sThumb = str(aEntry[1])
             sDesc = ''
 
-            #traite les qualités
-            liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
-            for i in liste:
-                if i in sUrl2:
-                    sTitle = ('%s [%s]') % (sTitle, i.upper())
-
             #Si recherche et trop de resultat, on nettoye
             #31/12/17 Ne fonctionne plus ?
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
-            #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
-            #Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
-            #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
-
-        #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
-            #sUrl2 = URL_MAIN + sUrl2
+            sDisplayTitle = ('%s [%s]') % (sTitle, str(aEntry[3]))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
@@ -405,9 +394,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb) #sortie du poster
 
             if 'mangas' in sUrl:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
 
             #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
@@ -447,7 +436,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
 
     return False
 
-def showSeriesLinks():
+def showLinks():
     #VSlog('mode serie')
     oGui = cGui()
     oParser = cParser()
@@ -475,7 +464,7 @@ def showSeriesLinks():
 
     sQual = ''
     if (aResult[1]):
-        sQual = aResult[1][0]
+        sQual = aResult[1][0][1]
 
     sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
 
@@ -487,7 +476,7 @@ def showSeriesLinks():
 
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a class="btn-other" href="(.+?)">(.+?)</a>'
+    sPattern1 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
 
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
     #print aResult1
@@ -501,19 +490,20 @@ def showSeriesLinks():
                 break
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + aEntry[1]
+            sQual = aEntry[1]
+            sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     #on regarde si dispo d'autres saisons
     sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a class="btn-other" href="(.+?)">(.+?)</a>'
+    sPattern2 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
 
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
     #print aResult2
@@ -524,13 +514,13 @@ def showSeriesLinks():
         for aEntry in aResult2[1]:
 
             sUrl = str(aEntry[0])
-            sTitle = '[COLOR skyblue]'+ aEntry[1] + '[/COLOR]'
+            sTitle = sMovieTitle + '[COLOR skyblue]'+ aEntry[1] + '[/COLOR]'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
