@@ -78,24 +78,15 @@ ANIM_VFS = (URL_MAIN + 'mangas/series-vf/', 'showMovies') #animés VF
 ANIM_MULTI = (URL_MAIN + 'mangas/series-multi/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies') #Documentaire
-DOC_DOCS = ('http://', 'load') #Documentaire Load
-DOC_GENRES = (True, 'showGenres') # Documentaires Genres
-
-SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
-
-NETS_NETS = ('http://' , 'load') #video du net load
-NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies') #video du net (derniers ajouts = trie par date)
-NETS_VIEWS =  (URL_MAIN + 'url', 'showMovies') #videos (les plus vus = populaire)
-NETS_GENRES = (True, 'showGenres') #video du net (genre)
-
-REPLAYTV_REPLAYTV = ('http://', 'load') #Replay load
-REPLAYTV_NEWS = (URL_MAIN, 'showMovies') #Replay trie par date
-REPLAYTV_GENRES = (True, 'showGenres') #Replay Genre
+SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies') #video du net (derniers ajouts = trie par date)
+REPLAYTV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies') #Replay trie par date
 
 def load():
     oGui = cGui()
 
     oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher[/COLOR]")
+
+    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source fonctionne differement merci d'allez voir le wiki de vstream pour plus d'infomarion[/COLOR]")
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -111,7 +102,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Anime', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Anime', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autre', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -238,6 +233,23 @@ def showMenuMangas():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MULTI[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MULTI[1], "Anime multilangue (Derniers ajouts)", 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuAutre():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], "Documentaire (Derniers ajouts", 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], "Replay Tv (Derniers ajouts)", 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPECTACLE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPECTACLE_NEWS[1], "Spectacle et theatre (Derniers ajouts)", 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -449,28 +461,27 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     #Mise àjour du titre
-    sPattern = '<title>(.+?) - (.+?)</title>'
+    sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+VOSTFR|VF)*.+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
-        sMovieTitle = aResult[1][0][0]
+        sMovieTitle = aResult[1][0][1]
 
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
 
-    #on recherche d'abord la qualité courante
-    sPattern = '<title>(.+?) - (.+?)</title>'
+    sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+VOSTFR|VF).+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
     sQual = ''
     if (aResult[1]):
-        sQual = aResult[1][0][1]
+        sQual = aResult[1][0][2]
 
     sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+    oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -495,7 +506,7 @@ def showLinks():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -518,7 +529,7 @@ def showLinks():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
@@ -535,7 +546,7 @@ def showHosters(): #recherche et affiche les hotes
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if 'series' in sUrl:
+    if 'saison' in sUrl:
         sPattern = '<div class="prez_7">([^"]+)</div>\s*<div style="padding.+?">|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
         sPattern = '<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
@@ -553,8 +564,8 @@ def showHosters(): #recherche et affiche les hotes
             if progress_.iscanceled():
                 break
 
-            if 'series' in sUrl:
-                if ('Episode' in aEntry[0]):
+            if 'saison' in sUrl:
+                if (aEntry[0]):
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
                 sTitle = str(aEntry[2]) + str(aEntry[1])
