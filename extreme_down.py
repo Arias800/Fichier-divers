@@ -15,7 +15,6 @@ import xbmc
 import urllib
 import xbmcgui, xbmcvfs
 
-
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
 headers = { 'User-Agent' : UA }
 
@@ -25,21 +24,18 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 
 URL_MAIN = 'https://ww1.extreme-d0wn.com/'
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN  + 'index.php?', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-# menu films existant dans l'acceuil (Home)
-MOVIE_NEWS = (URL_MAIN, 'showMovies') #films (derniers ajouts = trie par date)
-MOVIE_MOVIE = ('http://', 'showMenuFilms') #films (load source)
-MOVIE_HD1080 = (URL_MAIN + 'films-hd/bluray-1080p', 'showMovies') #films HD
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = ('http://', 'showMenuFilms')
+MOVIE_HD1080 = (URL_MAIN + 'films-hd/bluray-1080p', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
-#menu supplementaire non gerer par l'acceuil
-MOVIE_VOSTFR = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies') #films VOSTFR
+
+MOVIE_VOSTFR = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies')
 MOVIE_4K = (URL_MAIN + 'films-hd/ultrahd-4k', 'showMovies')
 MOVIE_720 = (URL_MAIN + 'films-hd/bluray-720p', 'showMovies')
 MOVIE_1080X265 = (URL_MAIN + 'films-hd/films-1080p-x265', 'showMovies')
@@ -55,12 +51,11 @@ MOVIE_BDRIP = (URL_MAIN + 'films-sd/dvdrip', 'showMovies')
 MOVIE_OLDDVD = (URL_MAIN + 'films-sd/ancien-dvdrip', 'showMovies')
 MOVIE_FILMO = (URL_MAIN + 'films-sd/filmographie', 'showMovies')
 
-# menu serie existant dans l'acceuil (Home)
-SERIE_SERIES = ('http://', 'showMenuSeries') #séries (load source)
-SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies') #series_hd.png | séries HD
-SERIE_GENRES = (True, 'showGenres') #séries genres
-SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
-SERIE_VOSTFRS = (URL_MAIN + 'series-hd/1080p-series-vostfr/', 'showMovies') #séries Vostfr
+SERIE_SERIES = ('http://', 'showMenuSeries')
+SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies')
+SERIE_GENRES = (True, 'showGenres')
+SERIE_ANNEES = (True, 'showSerieYears')
+SERIE_VOSTFRS = (URL_MAIN + 'series-hd/1080p-series-vostfr/', 'showMovies')
 SERIE_720VO = (URL_MAIN + 'series-hd/hd-series-vostfr', 'showMovies')
 SERIE_720VF = (URL_MAIN + 'series-hd/hd-series-vf', 'showMovies')
 SERIE_4K = (URL_MAIN + 'series-hd/hd-x265-hevc/', 'showMovies')
@@ -68,8 +63,7 @@ SERIE_MULTI = (URL_MAIN + 'series-hd/hd-series-multi/', 'showMovies')
 SERIE_SDVO = (URL_MAIN + 'series/vostfr/', 'showMovies')
 SERIE_SDVF = (URL_MAIN + 'series/vf/', 'showMovies')
 
-
-ANIM_ANIMS = ('http://', 'showMenuMangas') #animés (load source)
+ANIM_ANIMS = ('http://', 'showMenuMangas')
 ANIM_FILM = (URL_MAIN + 'mangas/manga-films/', 'showMovies')
 ANIM_VOSTFRS =  (URL_MAIN + 'mangas/series-vostfr/', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'mangas/series-vf/', 'showMovies')
@@ -300,7 +294,6 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-
 def showMovieYears():
     oGui = cGui()
 
@@ -312,7 +305,6 @@ def showMovieYears():
 
     oGui.setEndOfDirectory()
 
-
 def showSerieYears():
     oGui = cGui()
 
@@ -323,7 +315,6 @@ def showSerieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -437,7 +428,6 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showLinks():
-    #VSlog('mode serie')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -448,7 +438,6 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Mise àjour du titre
     sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+)(VOSTFR|VF)*.+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #VSlog(aResult)
@@ -473,7 +462,6 @@ def showLinks():
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-    #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
     sPattern1 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
 
@@ -500,7 +488,6 @@ def showLinks():
 
         progress_.VSclose(progress_)
 
-    #on regarde si dispo d'autres saisons
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
 
