@@ -20,10 +20,10 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/
 headers = { 'User-Agent' : UA }
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = 'Extreme-Download'
+SITE_NAME = 'Extreme-Download (beta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-d0wn.com/'
+URL_MAIN = 'https://ww1.extreme-d0wn.com/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -449,23 +449,23 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     #Mise àjour du titre
-    sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+VOSTFR|VF)*.+?</title>'
+    sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+)(VOSTFR|VF)*.+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-    if (aResult[0]):
+    #VSlog(aResult)
+    if (aResult[1]):
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles :[/COLOR]')
 
-    sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+VOSTFR|VF).+?</title>'
+    sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    #VSlog(aResult)
 
     sQual = ''
-    if (aResult[1]):
-        sQual = aResult[1][0][2]
+    if (aResult[0]):
+        sQual = aResult[1][0][0].replace('"','')
 
-    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
+    sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -556,10 +556,10 @@ def showHosters():
                 if aEntry[0]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-                sTitle = aEntry[2] + aEntry[1]
+                sTitle = aEntry[2] + ' ' + aEntry[1].replace('agrave;','a')
                 sUrl2 = aEntry[1]
             else:
-                sTitle = aEntry[1] + aEntry[0]
+                sTitle = aEntry[1] + ' ' + aEntry[0]
                 sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -573,7 +573,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def RecapchaBypass():
+def RecapchaBypass():#Ouverture de Chrome Launcher si il est intallez
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -588,7 +588,7 @@ def RecapchaBypass():
 
     getHoster()
 
-def getHoster():
+def getHoster():#Ouvrir le clavier + requete
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
