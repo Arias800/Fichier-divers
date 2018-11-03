@@ -294,12 +294,25 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
 
             if 'iptvgratuit' and 'world-iptv-links' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showWorldIptvGratuit', sTitle, '', oOutputParameterHandler)
-            elif 'firstonetv' in sUrl:
-                oGui.addMovie(SITE_IDENTIFIER, 'play__', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif not 'firstonetv' or not 'myfree-tivi' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, '', oOutputParameterHandler)
+            elif 'firstonetv' in sUrl or 'myfree-tivi' in sUrl:
+                oGuiElement = cGuiElement()
+                oGuiElement.setSiteName(SITE_IDENTIFIER)
+                oGuiElement.setFunction('play__')
+                oGuiElement.setTitle(sTitle)
+                oGuiElement.setFileName(sTitle)
+                oGuiElement.setIcon(sThumb)
+                oGuiElement.setMeta(0)
+                oGuiElement.setThumbnail(sThumb)
+                oGuiElement.setDirectTvFanart()
+                oGuiElement.setCat(6)
+
+                oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+                oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+                oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+                oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'play__', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
