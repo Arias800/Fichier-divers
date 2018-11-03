@@ -201,6 +201,7 @@
         <setting id="path_ffmpeg" type="text" label="Chemin ffmpeg" default=""/>
         <setting id="path_enregistrement" type="text" label="Chemin enregistrement" default=""/>
         <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
+        <setting id="enregistrement_activer" type="bool" label="Activer l'enregistrement" default="false"/>
     </category>
 
     <category label="30127">
