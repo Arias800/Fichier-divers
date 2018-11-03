@@ -2,8 +2,11 @@ import time, os
 from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 from datetime import datetime
 
-if __name__ == '__main__':
+def service():
     ADDON = addon()
+    enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
+    if enregistrementIsActif == 'false':
+        return
     Debutpath  = os.path.dirname(os.path.realpath(__file__)).replace('\\','/').replace('addons','userdata').replace('plugin.video.vstream','addon_data')
     path = Debutpath + '/plugin.video.vstream/Enregistrement/'
     ADDON.setSetting('path_enregistrement_programmation', path)
@@ -21,3 +24,6 @@ if __name__ == '__main__':
             VSlog(heure)
             xbmc.executebuiltin("System.Exec("+(heure)+")")
             EnregistrementEnCours = True
+
+if __name__ == '__main__':
+    service()
