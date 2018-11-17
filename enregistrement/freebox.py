@@ -247,7 +247,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     elif 'myfree-tivi' in sUrl:
         sPattern = "thumb'.+?'(.+?)'.+?title.+?'(.+?)'.+?url'.+?'(.+?)'"
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<strong>2. Cliquez sur le lien pour télécharger la liste des chaînes .+?</strong></p><h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank"'
+        sPattern = '<h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank" rel="noopener"><button>.+?</button></a></h4>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
@@ -465,10 +465,8 @@ def parseWebM3U():#Traite les m3u
         #    f.write('\n'+'#EXTINF:-1, '+sTitle)
         #    f.write('\n'+sUrl2)
 
-        #testtt
-
-        #if '.ts' in sUrl2:
-        #    sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
+        if not '.m3u8' in sUrl2:
+            sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -568,6 +566,9 @@ def enregistrement():#Code qui gerent l'epg
     oInputParameterHandler = cInputParameterHandler()
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    if 'plugin' in sUrl:
+        url = re.findall('url=(.+?)&amp',''.join(sUrl))
+        sUrl = urllib2.unquote(url[0])
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
 
 def showAZ():
