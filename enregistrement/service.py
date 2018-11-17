@@ -1,4 +1,4 @@
-import time, os
+import time, os, xbmcvfs
 from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 from datetime import datetime
 
@@ -7,10 +7,14 @@ def service():
     enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
     if enregistrementIsActif == 'false':
         return
-    Debutpath  = os.path.dirname(os.path.realpath(__file__)).replace('\\','/').replace('addons','userdata').replace('plugin.video.vstream','addon_data')
-    path = Debutpath + '/plugin.video.vstream/Enregistrement/'
+
+    PathProgrammation = "special://userdata/addon_data/plugin.video.vstream/Enregistrement"
+    path = "".join([PathProgrammation])
+    if not xbmcvfs.exists(path):
+        xbmcvfs.mkdir(path)
+
+    ListeEnregistrement = xbmcvfs.listdir(path)
     ADDON.setSetting('path_enregistrement_programmation', path)
-    ListeEnregistrement = os.listdir(path)
     EnregistrementEnCours = False
     monitor = xbmc.Monitor()
 
@@ -18,10 +22,10 @@ def service():
         if monitor.waitForAbort(1):
             break
 
-        heure = datetime.now().strftime('%H-%M') + '.py'
+        heure = datetime.now().strftime('%d-%H-%M') + '.py'
         if heure in str(ListeEnregistrement):
-            heure = path + heure
-            VSlog(heure)
+            heure = path + '/' + heure
+            heure = xbmc.translatePath(heure)
             xbmc.executebuiltin("System.Exec("+(heure)+")")
             EnregistrementEnCours = True
 
