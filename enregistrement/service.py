@@ -4,6 +4,7 @@ from datetime import datetime
 
 def service():
     ADDON = addon()
+    intervalle = ADDON.getSetting('heure_verification')
     enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
     if enregistrementIsActif == 'false':
         return
@@ -19,15 +20,15 @@ def service():
     monitor = xbmc.Monitor()
 
     while not monitor.abortRequested() and not EnregistrementEnCours == True:
-        if monitor.waitForAbort(1):
+        if monitor.waitForAbort(int(intervalle)):
             break
 
         heure = datetime.now().strftime('%d-%H-%M') + '.py'
         if heure in str(ListeEnregistrement):
             heure = path + '/' + heure
             heure = xbmc.translatePath(heure)
-            xbmc.executebuiltin("System.Exec("+(heure)+")")
             EnregistrementEnCours = True
+            xbmc.executebuiltin("System.Exec("+(heure)+")")
 
 if __name__ == '__main__':
     service()
