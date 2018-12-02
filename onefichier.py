@@ -93,6 +93,7 @@ class cHoster(iHoster):
         #La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
         #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
         sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+        VSlog(sHtmlContent)
         if(sHtmlContent):
             #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
