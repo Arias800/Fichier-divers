@@ -94,6 +94,17 @@ class cHoster(iHoster):
         #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
         sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
         VSlog(sHtmlContent)
+
+        sPattern = 'accès à ce fichier est protégé par un mot de passe'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                data = {
+                    'pass':'annuaire-telechargement.com'
+                    }
+                url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+                sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+                VSlog(sHtmlContent)
+
         if(sHtmlContent):
             #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
@@ -103,17 +114,9 @@ class cHoster(iHoster):
             #L'option est activée : pour récupérer le lien direct il faut POSTer le formulaire demandant le download
             else:
                 cookie = self.oPremiumHandler.AddCookies().replace('Cookie=', '', 1)
-                sPattern = 'accès à ce fichier est protégé par un mot de passe'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    data = {
-                        'submit': 'download',
-                        'pass':'annuaire-telechargement.com'
-                    }
-                else:
-                    data = {
-                        'submit': 'download'
-                    }
+                data = {
+                    'submit': 'download'
+                }
                 #Seul le Cookie est nécessaire, néanmoins autant rendre les headers cohérents
                 headers = {
                     'User-Agent': UA,
@@ -134,6 +137,7 @@ class cHoster(iHoster):
                 #Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
                 #on peut ainsi récupérer le lien direct
                 url = response.geturl()
+                VSlog(url)
                 response.close()
         else:
             return False, False
@@ -154,7 +158,7 @@ class cHoster(iHoster):
 
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
 
-        #VSlog( api_call )
+        VSlog( api_call )
 
         if (api_call):
             return True, api_call
