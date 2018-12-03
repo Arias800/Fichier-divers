@@ -107,7 +107,8 @@ class cHoster(iHoster):
                 if (aResult[0] == True):
                     data = {
                         'submit': 'download',
-                        'pass':'annuaire-telechargement.com'
+                        'pass':'annuaire-telechargement.com',
+                        'did': '0'
                     }
                 else:
                     data = {
