@@ -97,13 +97,13 @@ class cHoster(iHoster):
 
         sPattern = 'accès à ce fichier est protégé par un mot de passe'
         aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                data = {
+        if (aResult[0] == True):
+            data = {
                     'pass':'annuaire-telechargement.com'
                     }
-                url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
-                sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
-                VSlog(sHtmlContent)
+            url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+            sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+            VSlog(sHtmlContent)
 
         if(sHtmlContent):
             #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
