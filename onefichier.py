@@ -8,7 +8,7 @@ from resources.lib.comaddon import dialog, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib, urllib2
-import re
+import re, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -93,6 +93,7 @@ class cHoster(iHoster):
         #La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
         #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
         sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+        VSlog(sHtmlContent)
         if(sHtmlContent):
             #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
@@ -104,11 +105,12 @@ class cHoster(iHoster):
                 cookie = self.oPremiumHandler.AddCookies().replace('Cookie=', '', 1)
                 sPattern = 'accès à ce fichier est protégé par un mot de passe'
                 aResult = oParser.parse(sHtmlContent, sPattern)
+                adcode = random.uniform(000.000000000, 999.999999999)
                 if (aResult[0] == True):
                     data = {
-                        'submit': 'download',
                         'pass':'annuaire-telechargement.com',
-                        'did': '0'
+                        'did': '0',
+                        'adzone' : adcode
                     }
                 else:
                     data = {
@@ -122,7 +124,7 @@ class cHoster(iHoster):
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                     'Cookie': cookie,
-                    'Content-Length': '15',
+                    'Content-Length': str(len(urllib.urlencode(data))),
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
                 request = urllib2.Request(url, urllib.urlencode(data), headers)
@@ -134,6 +136,8 @@ class cHoster(iHoster):
                 #Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
                 #on peut ainsi récupérer le lien direct
                 url = response.geturl()
+                html = response.read()
+                VSlog(html)
                 response.close()
         else:
             return False, False
@@ -154,7 +158,7 @@ class cHoster(iHoster):
 
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
 
-        #VSlog( api_call )
+        VSlog( api_call )
 
         if (api_call):
             return True, api_call
@@ -162,7 +166,6 @@ class cHoster(iHoster):
         return False, False
 
     def __getMediaLinkForGuest(self):
-        import random
         sHtmlContent = self.oPremiumHandler.GetHtml("%s" % self.__sUrl + '&e=1')
         oParser = cParser()
         api_call = False
