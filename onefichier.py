@@ -8,7 +8,7 @@ from resources.lib.comaddon import dialog, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib, urllib2
-import re, random
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -84,7 +84,6 @@ class cHoster(iHoster):
 
     def __getMediaLinkByPremiumUser(self):
         api_call = False
-        oParser = cParser()
 
         if not self.oPremiumHandler.Authentificate():
             return False, False
@@ -92,72 +91,41 @@ class cHoster(iHoster):
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
         #La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
         #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
-        sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
-        if(sHtmlContent):
-            #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
-            #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
-            m =  re.search('^(.*);.*;.*;.*$', sHtmlContent)
-            if(m):
-                url = m.group(1)
-            #L'option est activée : pour récupérer le lien direct il faut POSTer le formulaire demandant le download
-            else:
-                cookie = self.oPremiumHandler.AddCookies().replace('Cookie=', '', 1)
-                sPattern = 'accès à ce fichier est protégé par un mot de passe'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                adcode = random.uniform(000.000000000, 999.999999999)
-                if (aResult[0] == True):
-                    data = {
-                        'pass':'annuaire-telechargement.com',
-                        'did': '0',
-                        'adzone' : adcode
-                    }
-                else:
-                    data = {
-                        'submit': 'download'
-                    }
-                #Seul le Cookie est nécessaire, néanmoins autant rendre les headers cohérents
-                headers = {
-                    'User-Agent': UA,
-                    'Host': '1fichier.com',
-                    'Referer': url ,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                    'Cookie': cookie,
-                    'Content-Length': str(len(urllib.urlencode(data))),
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-                request = urllib2.Request(url, urllib.urlencode(data), headers)
-                try:
-                    response = urllib2.urlopen(request)
-                except URLError, e:
-                    print e.read()
-                    print e.reason
-                #Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
-                #on peut ainsi récupérer le lien direct
-                url = response.geturl()
-                sHtmlContent = response.read()
-                VSlog(sHtmlContent)
-                response.close()
+        url2 = url + '&e=1'
+
+        sHtmlContent = self.oPremiumHandler.GetHtml(url2)
+
+        if "L'accès à ce fichier est protégé par un mot de passe" in sHtmlContent:
+            VSlog("Fichier protege par MDP")
+
+            cookie = self.oPremiumHandler.AddCookies().replace('Cookie=', '', 1)
+            data = {'pass':'annuaire-telechargement.com'}
+            #Seul le Cookie est nécessaire, néanmoins autant rendre les headers cohérents
+            headers = {
+                'User-Agent': UA,
+                'Host': '1fichier.com',
+                'Referer': url ,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                'Cookie': cookie,
+                'Content-Length': str(len(urllib.urlencode(data))),
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            request = urllib2.Request(url, urllib.urlencode(data), headers)
+            response = urllib2.urlopen(request)
+
+            url = response.geturl()
+            response.close()
+
         else:
-            return False, False
+            VSlog("Fichier non protege par MDP")
+            url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
 
-        #Mode = ''
-        #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
-        #Mode = {'dl_no_ssl' : 'on' }
-        #postdata = urllib.urlencode( Mode )
+        VSlog( url )
 
-        #Pas de page html mais lien direct
-        #sHtmlContent = self.oPremiumHandler.GetHtml(url,postdata)
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        api_call = url + '|' + self.oPremiumHandler.AddCookies()
 
-        #mode inline
-        #url = url + '&inline'
-
-        api_call = self.GetMedialinkDL(sHtmlContent) + '|' + self.oPremiumHandler.AddCookies()
-
-        VSlog( api_call )
+        #VSlog( api_call )
 
         if (api_call):
             return True, api_call
@@ -165,10 +133,10 @@ class cHoster(iHoster):
         return False, False
 
     def __getMediaLinkForGuest(self):
-        sHtmlContent = self.oPremiumHandler.GetHtml("%s" % self.__sUrl + '&e=1')
-        oParser = cParser()
+        import random
         api_call = False
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+        sHtmlContent = self.oPremiumHandler.GetHtml(url)
 
         headers = {'User-Agent': UA ,
                    'Host': '1fichier.com',
@@ -182,10 +150,8 @@ class cHoster(iHoster):
 
         Mode = ''
         #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
-        sPattern = 'accès à ce fichier est protégé par un mot de passe'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            Mode = {'dl_no_ssl' : 'on' ,'adzone' : adcode,'pass':'annuaire-telechargement.com'}
+        if "L'accès à ce fichier est protégé par un mot de passe" in sHtmlContent:
+            Mode = {'dl_no_ssl' : 'on' ,'adzone' : adcode, 'pass':'annuaire-telechargement.com'}
         else:
             Mode = {'dl_no_ssl' : 'on' ,'adzone' : adcode}
 
@@ -234,7 +200,7 @@ class cHoster(iHoster):
 
         if (aResult[0] == True):
             #xbmc.sleep(1*1000)
-            #VSlog(  aResult[1][0] )
+            VSlog(aResult[1][0] )
             api_call = aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
             return api_call
 
