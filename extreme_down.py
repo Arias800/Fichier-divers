@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
-#
-# Votre nom ou pseudo
+#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -22,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme-Download (beta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://ww1.extreme-d0wn.com/'
+URL_MAIN = 'https://www.extreme-d0wn.net/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
@@ -50,6 +49,8 @@ MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-hd/bdrip-720p', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films-sd/dvdrip', 'showMovies')
 MOVIE_OLDDVD = (URL_MAIN + 'films-sd/ancien-dvdrip', 'showMovies')
 MOVIE_FILMO = (URL_MAIN + 'films-sd/filmographie', 'showMovies')
+MOVIE_CLASSIQUE_SD = (URL_MAIN + 'films-classique/classiques-sd', 'showMovies')
+MOVIE_CLASSIQUE_HD = (URL_MAIN + 'films-classique/classiques-hd', 'showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies')
@@ -76,9 +77,8 @@ REPLAYTV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
 def load():
     oGui = cGui()
 
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher[/COLOR]")
-
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source fonctionne différement merci d'allez voir le wiki de vstream \npour plus d'informations[/COLOR]")
+    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher.[/COLOR]")
+    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Elle fonctionne différemment. Merci d'allez voir le wiki de vStream \npour plus d'informations.[/COLOR]")
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -168,6 +168,15 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FILMO[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_FILMO[1], 'Filmographie', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CLASSIQUE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CLASSIQUE_HD[1], 'Films Classique HD', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CLASSIQUE_SD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CLASSIQUE_SD[1], 'Films Classique SD', 'films.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showMenuSeries():
@@ -332,10 +341,10 @@ def showMovies(sSearch = ''):
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-            sSearch=sSearch.replace(URL_SEARCH[0],'')
+            sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
-            query_args = (('do', 'search'), ('subaction', 'search') ,('search_start', Nextpagesearch),('story', sSearch) , ('titleonly', '3') )
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch), ('titleonly', '3') )
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
@@ -355,11 +364,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #le plus simple et de faire un  cConfig().log(str(aResult))
-    #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
-    #et modifier sPattern si besoin
 
-    #affiche une information si aucun resulat
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -391,7 +396,7 @@ def showMovies(sSearch = ''):
             if 'mangas' in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -444,7 +449,7 @@ def showLinks():
     if (aResult[1]):
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles:[/COLOR]')
 
     sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -452,7 +457,7 @@ def showLinks():
 
     sQual = ''
     if (aResult[0]):
-        sQual = aResult[1][0][0].replace('"','')
+        sQual = aResult[1][0][0].replace('"', '')
 
     sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
 
@@ -495,7 +500,7 @@ def showLinks():
     #print aResult2
 
     if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres saisons disponibles:[/COLOR]')
 
         for aEntry in aResult2[1]:
 
@@ -522,7 +527,9 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     if 'saison' in sUrl:
-        sPattern = '<div class="prez_7">([^"]+)</div>\s*<div style="padding.+?">|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+    elif 'compte Premium' in sHtmlContent:
+        sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
     else:
         sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
 
@@ -543,10 +550,10 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             if 'saison' in sUrl:
-                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;','a')
+                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;', 'a')
                 sUrl2 = aEntry[1]
             else:
-                sTitle = aEntry[2] + ' ' + aEntry[1]
+                sTitle = aEntry[2]
                 sUrl2 = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -560,27 +567,34 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def RecapchaBypass():#Ouverture de Chrome Launcher si il est intallez
+def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
+    Token_Alldebrid = "783fbed50d05600c6d739bc4db3e18a21vlvo" #A compléter avec le token utilisateur
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
+    sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=service&version=1.0-bc7e1b20c2&token="+Token_Alldebrid+"&link="+sUrl
 
-    VSlog('Liens Recaptcha : ' + sUrl)
+    oRequestHandler = cRequestHandler(sUrl_Bypass)
+    sHtmlContent = oRequestHandler.request()
+    VSlog(sHtmlContent)
 
-    import os
-    data = sUrl
-    command = 'echo ' + sUrl.strip() + '| clip'
-    os.system(command)
+    oParser = cParser()
+    sPattern1 = '"https([^"]+)"'
+    aResult3 = oParser.parse(sHtmlContent, sPattern1)
+    if (aResult3[0] == True):
+        for aEntry in aResult3[1]:
 
-    if xbmcvfs.exists(sPath):
-        sUrl2 = urllib.quote_plus(sUrl)
-        xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
+            sHosterUrl = 'https'+str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    getHoster()
+    oGui.setEndOfDirectory()
 
 def getHoster():#Ouvrir le clavier + requete
     oGui = cGui()
@@ -590,7 +604,7 @@ def getHoster():#Ouvrir le clavier + requete
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sThumb = ''
-    sSearchText = oGui.showKeyBoard("Mettre ici le liens du hoster apres avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
+    sSearchText = oGui.showKeyBoard(heading="Mettre ici le liens du hoster apres avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
     if (sSearchText != False):
         sUrl = sSearchText
 
