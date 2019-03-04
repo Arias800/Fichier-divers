@@ -8,9 +8,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress, VSlog, xbmc, dialog
 
-import xbmc
+import re
 import urllib
 import xbmcgui, xbmcvfs
 
@@ -526,15 +526,29 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if 'saison' in sUrl:
-        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
-    elif 'compte Premium' in sHtmlContent:
-        sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
+    #Detection de la taille des fichier pour separer les fichier premuim des parties en .rar
+    if not 'saison' in sUrl:
+        fileSize = re.findall('<strong>Taille</strong><span style="float: right;">(.+?)</span></td>',sHtmlContent)
+        if ' Go' in str(fileSize[0]):
+            size,unite = str(fileSize[0]).split(' ')
+            if float(size) > 4.85:
+                if "1 Lien" in sHtmlContent:
+                    VSlog('1 Lien premuim')
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>.+?\s*<div class="showNFO"'
+                else:
+                    VSlog('Pas lien premuim')
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
+            else:
+                sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        else:
+            sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
-        sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == False) and float(size) > 4.85:
+        dialog().VSinfo('Il n\'y existe que des fichier en parties non fonctionnel sur Kodi', "Extreme-Download", 15)
 
     if (aResult[0] == True):
         total = len(aResult[1])
