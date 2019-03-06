@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog, xbmc, dialog
+from resources.lib.comaddon import progress, VSlog, xbmc, dialog, addon
 
 import re
 import urllib
@@ -583,18 +583,22 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
-    Token_Alldebrid = "783fbed50d05600c6d739bc4db3e18a21vlvo" #A compléter avec le token utilisateur
+    ADDON = addon()
+    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
+    VSlog(Token_Alldebrid)
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=service&version=1.0-bc7e1b20c2&token="+Token_Alldebrid+"&link="+sUrl
+    if Token_Alldebrid == "":
+        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=service&version=1.0-bc7e1b20c2&token=783fbed50d05600c6d739bc4db3e18a21vlvo&link="+sUrl
+    else:
+        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=mySoft&token="+Token_Alldebrid+"&link="+sUrl
 
     oRequestHandler = cRequestHandler(sUrl_Bypass)
     sHtmlContent = oRequestHandler.request()
-    VSlog(sHtmlContent)
 
     oParser = cParser()
     sPattern1 = '"https([^"]+)"'
