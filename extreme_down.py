@@ -23,9 +23,9 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 
 URL_MAIN = 'https://www.extreme-d0wn.net/'
 
-URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN  + 'index.php?', 'showMovies')
+URL_SEARCH = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
+URL_SEARCH_MOVIES = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
+URL_SEARCH_SERIES = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -75,10 +75,13 @@ SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies')
 REPLAYTV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
 
 def load():
+    ADDON = addon()
     oGui = cGui()
 
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher.[/COLOR]")
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Elle fonctionne différemment. Merci d'allez voir le wiki de vStream \npour plus d'informations.[/COLOR]")
+    if ADDON.getSetting('token_alldebrid') == "":
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.\nPour les autres ceci n\'est pas necessaire.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -254,6 +257,24 @@ def showMenuAutre():
 
     oGui.setEndOfDirectory()
 
+def getToken():
+    ADDON = addon()
+    oGui = cGui()
+
+    username = oGui.showKeyBoard(heading="Rentrer votre nom d'utilisateurs")
+    password = oGui.showKeyBoard(heading="Rentrer votre mots de passe")
+    oRequestHandler = cRequestHandler('https://api.alldebrid.com/user/login?agent=mySoft&username='+username+'&password='+password)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '"token":"(.+?)"'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    VSlog(aResult)
+    ADDON.setSetting('token_alldebrid', ''.join(aResult[1]))
+    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
+    oGui.setEndOfDirectory()
+
 def showSearch():
     oGui = cGui()
 
@@ -393,7 +414,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'mangas' in sUrl:
+            if 'mangas' in sUrl and not 'manga-films' in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -543,11 +564,12 @@ def showHosters():
         else:
             sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
-        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<>]+)</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False) and float(size) > 4.85:
+        oGui.addText(SITE_IDENTIFIER)
         dialog().VSinfo('Il n\'y existe que des fichier en parties non fonctionnel sur Kodi', "Extreme-Download", 15)
 
     if (aResult[0] == True):
@@ -562,21 +584,20 @@ def showHosters():
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
-            if 'saison' in sUrl:
-                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;', 'a')
-                sUrl2 = aEntry[1]
             else:
-                sTitle = sMovieTitle
-                sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
                 sUrl2 = aEntry[1]
+                sTitle = sMovieTitle
+                if 'saison' in sUrl:
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, aEntry[2].replace('&agrave;', 'a'))
+                else:
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -585,7 +606,6 @@ def showHosters():
 def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     ADDON = addon()
     Token_Alldebrid = ADDON.getSetting('token_alldebrid')
-    VSlog(Token_Alldebrid)
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
