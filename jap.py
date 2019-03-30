@@ -20,7 +20,7 @@ def unscrambleJapscan(scrambled_image):
 
     for y in range(0, temp.height, 200):
         row1 = temp.crop((0, y, temp.width, y + 100))
-        if (y + 200) <= temp.height:
+        if (y + 210) <= temp.height:
             row2 = temp.crop((0, y + 100, temp.width, y + 200))
             output_image.paste(row1, (0, y + 100))
             output_image.paste(row2, (0, y))
