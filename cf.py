@@ -5,13 +5,16 @@
 from __future__ import division
 
 import re,os
-import urllib.request
-import urllib.error
-import urllib.parse
+import urllib2,urllib
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+import xbmcaddon
 import time, json, random
-from bs4 import BeautifulSoup
 
-Mode_Debug = True
+from resources.lib.config import GestionCookie
+from jsunfuck import JSUnfuck
+
+
+Mode_Debug = False
 
 #---------------------------------------------------------
 #Gros probleme, mais qui a l'air de passer
@@ -25,13 +28,13 @@ Mode_Debug = True
 
 #Light method
 #Ne marche que si meme user-agent
-    # req = urllib.request.Request(sUrl,None,headers)
+    # req = urllib2.Request(sUrl,None,headers)
     # try:
-        # response = urllib.request.urlopen(req)
+        # response = urllib2.urlopen(req)
         # sHtmlContent = response.read()
         # response.close()
 
-    # except urllib.error.HTTPError as e:
+    # except urllib2.HTTPError as e:
 
         # if e.code == 503:
             # if CloudflareBypass().check(e.headers):
@@ -42,9 +45,12 @@ Mode_Debug = True
 #Heavy method
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
 
-PathCache = dir_path = os.path.dirname(os.path.realpath(__file__)).replace('\\','/')+'/Cookie'
+#For memory
+#http://www.jsfuck.com/
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 
 def GetPrevchar(string, pos):
@@ -116,26 +122,18 @@ def GetItemAlone(string,separator = ' '):
 def solvecharcode(chain,t):
 
     v = chain.find('t.charCodeAt') + 12
+    if v == 11:
+        return chain
     dat = GetItemAlone(chain[v:],')')
-    #print ('chain : ' + str(dat) )
     r = parseInt(dat)
-    chain = chain.replace('t.charCodeAt' + dat, str(ord(t[int(r)])) )
+    v = ord(t[int(r)])
+    #VSlog ('chain : ' + str(dat) + ' value ' + str(r) + ' Result ' + str(v))
+    chain = chain.replace('t.charCodeAt' + dat, '+' + str(v) )
+
+    #Remove parzenthesis
+    chain = chain.replace( '(' + '+' + str(v) + ')' , '+' + str(v))
 
     return chain
-
-def parseIntOld(chain):
-
-    chain = chain.replace(' ','')
-    chain = re.sub(r'!!\[\]','1',chain) # !![] = 1
-    chain = re.sub(r'\(!\+\[\]','(1',chain)  #si le bloc commence par !+[] >> +1
-    chain = re.sub(r'(\([^()]+)\+\[\]\)','(\\1)*10)',chain)  # si le bloc fini par +[] >> *10
-
-    #bidouilles a optimiser non geree encore par regex
-    chain = re.sub(r'\(\+\[\]\)','0',chain)
-    if chain.startswith('!+[]'):
-        chain = chain.replace('!+[]','1')
-
-    return eval(chain)
 
 def checkpart(s,sens):
     number = 0
@@ -169,6 +167,12 @@ def checkpart(s,sens):
         return s[-number:],number
 
 def parseInt(s):
+    v = JSUnfuck(s).decode(False)
+    v = re.sub('([^\(\)])\++', '\\1', v)
+    v = eval(v)
+    return v
+
+def parseIntOld(s):
 
     offset=1 if s[0]=='+' else 0
     chain = s.replace('!+[]','1').replace('!![]','1').replace('[]','0').replace('(','str(')[offset:]
@@ -176,8 +180,8 @@ def parseInt(s):
 
     if '/' in chain:
 
-        ##print('division ok ')
-        ##print('avant ' + chain)
+        ##VSlog('division ok ')
+        ##VSlog('avant ' + chain)
 
         val = chain.split('/')
         gauche,sizeg = checkpart(val[0],-1)
@@ -190,15 +194,15 @@ def parseInt(s):
             sign = droite[0]
             droite = droite[1:]
 
-        ##print('debug1 ' + str(gauche))
-        ##print('debug2 ' + str(droite))
+        ##VSlog('debug1 ' + str(gauche))
+        ##VSlog('debug2 ' + str(droite))
 
         gg = eval(gauche)
         dd = eval(droite)
 
         chain = val[0][:-sizeg] + str(gg) + '/' + str(dd) + val[1][sized:]
 
-        ##print('apres ' + chain)
+        ##VSlog('apres ' + chain)
 
     val = float( eval(chain))
 
@@ -217,7 +221,7 @@ def showInfo(sTitle, sDescription, iSeconds=0):
         iSeconds = iSeconds * 1000
     #xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
 
-class NoRedirection(urllib.request.HTTPErrorProcessor):
+class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
 
@@ -236,7 +240,7 @@ class CloudflareBypass(object):
 
     #Return param for head
     def GetHeadercookie(self,url):
-        #urllib.parse.quote_plus()
+        #urllib.quote_plus()
         Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)','\\1',url)
         cook = GestionCookie().Readcookie(Domain.replace('.','_'))
         if cook == '':
@@ -249,7 +253,7 @@ class CloudflareBypass(object):
 
         sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?)(?:$|;)'
         aResult = re.findall(sPattern,data)
-        ##print(str(aResult))
+        ##VSlog(str(aResult))
         if (aResult):
             for cook in aResult:
                 if 'deleted' in cook[1]:
@@ -257,7 +261,7 @@ class CloudflareBypass(object):
                 list.append((cook[0],cook[1]))
                 #cookies = cookies + cook[0] + '=' + cook[1]+ ';'
 
-        ##print(str(list))
+        ##VSlog(str(list))
 
         return list
 
@@ -268,7 +272,14 @@ class CloudflareBypass(object):
             head.append(('Host' , self.host))
             head.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
             head.append(('Referer', self.url))
-            head.append(('Content-Type', 'text/html; charset=utf-8'))
+            #head.append(('Content-Type', 'text/html; charset=utf-8'))
+            head.append(('Connection', 'keep-alive'))
+            head.append(('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'))
+
+            head.append(('Accept-Encoding', 'gzip, deflate, br'))
+            head.append(('Upgrade-Insecure-Requests', '1'))
+            head.append(('DNT', '1'))
+
         else:
             for i in self.Memorised_Headers:
                 #Remove cookies
@@ -278,51 +289,76 @@ class CloudflareBypass(object):
         return head
 
     def GetResponse(self,htmlcontent):
-        #print(htmlcontent)
+        VSlog(htmlcontent)
         hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',self.url)
         domain = re.sub(r'https*:\/\/','',hostComplet)
 
-        #truc cache
-        rq = re.search('<div style="display:none;visibility:hidden;" id="(.*?)">(.*?)<\/div>', str(htmlcontent),re.MULTILINE | re.DOTALL)
-        id = rq.group(1)
-        val = rq.group(2)
-        #print (str(id) + ' ' + str(val))
+        try:
+            rq = re.search('<div style="display:none;visibility:hidden;" id="(.*?)">(.*?)<\/div>', str(htmlcontent),re.MULTILINE | re.DOTALL)
+            id = rq.group(1)
+            oldVer == False
+        except AttributeError:
+            oldVer = True
 
-        htmlcontent = re.sub(
-            r'function\(p\){var p = eval\(eval\(atob\(".*?"\)\+\(undefined\+""\)\[1\]\+\(true\+""\)\[0\]\+\(\+\(\+!\+\[\]\+\[\+!\+\[\]\]\+\(!!\[\]\+\[\]\)\[!\+\[\]\+!\+\[\]\+!\+\[\]\]\+\[!\+\[\]\+!\+\[\]\]\+\[\+\[\]\]\)\+\[\]\)\[\+!\+\[\]\]\+\(false\+\[0\]\+String\)\[20\]\+\(true\+""\)\[3\]\+\(true\+""\)\[0\]\+"Element"\+\(\+\[\]\+Boolean\)\[10\]\+\(NaN\+\[Infinity\]\)\[10\]\+"Id\("\+\(\+\(20\)\)\["to"\+String\["name"\]\]\(21\)\+"\)."\+atob\(".*?"\)\)\); return \+\(p\)}\(\);',
-            "{};".format(rq.group(2)),
-            str(htmlcontent)
-        )
+        if oldVer == False:
+            val = rq.group(2)
+            #VSlog (str(id) + ' ' + str(val))
 
-        line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',str(htmlcontent))
+            htmlcontent = re.sub(
+                r'function\(p\){var p = eval\(eval\(atob\(".*?"\)\+\(undefined\+""\)\[1\]\+\(true\+""\)\[0\]\+\(\+\(\+!\+\[\]\+\[\+!\+\[\]\]\+\(!!\[\]\+\[\]\)\[!\+\[\]\+!\+\[\]\+!\+\[\]\]\+\[!\+\[\]\+!\+\[\]\]\+\[\+\[\]\]\)\+\[\]\)\[\+!\+\[\]\]\+\(false\+\[0\]\+String\)\[20\]\+\(true\+""\)\[3\]\+\(true\+""\)\[0\]\+"Element"\+\(\+\[\]\+Boolean\)\[10\]\+\(NaN\+\[Infinity\]\)\[10\]\+"Id\("\+\(\+\(20\)\)\["to"\+String\["name"\]\]\(21\)\+"\)."\+atob\(".*?"\)\)\); return \+\(p\)}\(\);',
+                "{};".format(rq.group(2)),
+                str(htmlcontent)
+            )
 
-        varname = line1[0][0] + '.' + line1[0][1]
-        calcul = parseInt(line1[0][2])
+            line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',str(htmlcontent))
 
-        t = domain
+            varname = line1[0][0] + '.' + line1[0][1]
+            calcul = parseInt(line1[0][2])
 
-        js = htmlcontent
-        #Cleaning
-        js = re.sub(r"a\.value = ((.+).toFixed\(10\))?", r"\1", js)
-        #js = re.sub(r"\s{3,}[a-z](?: = |\.).+", "", js).replace("t.length", str(len(domain)))
-        js = js.replace('; 121', '')
-        js = js.replace('function(p){return eval((true+"")[0]+"."+([]["fill"]+"")[3]+(+(101))["to"+String["name"]](21)[1]+(false+"")[1]+(true+"")[1]+Function("return escape")()(("")["italics"]())[2]+(true+[]["fill"])[10]+(undefined+"")[2]+(true+"")[3]+(+[]+Array)[10]+(true+"")[0]+"("+p+")")}', 't.charCodeAt')
-        js = re.sub(r"[\n\\']", "", js)
-        js = solvecharcode(js,t)
-        htmlcontent = js
+            t = domain
 
-        AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',str(htmlcontent))
-        #print ('\nFirst line : ' + str(line1[0][2]) )
+            js = htmlcontent
+            #Cleaning
+            js = re.sub(r"a\.value = ((.+).toFixed\(10\))?", r"\1", js)
+            #js = re.sub(r"\s{3,}[a-z](?: = |\.).+", "", js).replace("t.length", str(len(domain)))
+            js = js.replace('; 121', '')
+            js = js.replace('function(p){return eval((true+"")[0]+"."+([]["fill"]+"")[3]+(+(101))["to"+String["name"]](21)[1]+(false+"")[1]+(true+"")[1]+Function("return escape")()(("")["italics"]())[2]+(true+[]["fill"])[10]+(undefined+"")[2]+(true+"")[3]+(+[]+Array)[10]+(true+"")[0]+"("+p+")")}', 't.charCodeAt')
+            js = re.sub(r"[\n\\']", "", js)
+            js = solvecharcode(js,t)
+            htmlcontent = js
 
-        for aEntry in AllLines:
-            #print ('\nother lines : ' + str(aEntry))
-            calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
-            ##print(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g')+ '\n')
+            AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',str(htmlcontent))
+            #VSlog ('\nFirst line : ' + str(line1[0][2]) )
 
-        rep = calcul + len(domain)
-        ret = format(rep,'.10f')
+            for aEntry in AllLines:
 
-        return (str(ret))
+                #VSlog ('\nother lines : ' + str(aEntry))
+                s = str(aEntry[0])
+                v = parseInt(aEntry[1])
+
+                calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(v,'.17g'))
+                #VSlog(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g')+ '\n')
+
+            rep = calcul# + len(domain)
+            ret = format(rep,'.10f')
+
+            return (str(ret))
+
+        else:
+
+            line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',htmlcontent)
+
+            varname = line1[0][0] + '.' + line1[0][1]
+            calcul = parseInt(line1[0][2])
+
+            AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',htmlcontent)
+
+            for aEntry in AllLines:
+                calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
+
+            rep = calcul + len(self.host)
+
+            return format(rep,'.10f')
 
     def GetReponseInfo(self):
         return self.RedirectionUrl, self.Header
@@ -337,7 +373,7 @@ class CloudflareBypass(object):
 
         #Memorise cookie
         self.Memorised_Cookies = cookies
-        #print(cookies)
+        #VSlog(cookies)
 
         #cookies in headers ?
         if Gived_headers != '':
@@ -349,30 +385,21 @@ class CloudflareBypass(object):
 
         #For debug
         if (Mode_Debug):
-            print('Headers present ' + str(Gived_headers))
-            print('url ' + url)
-            print('Content : ' + str(htmlcontent))
+            VSlog('Headers present ' + str(Gived_headers))
+            VSlog('url ' + url)
+            VSlog('Content : ' + str(htmlcontent))
             if (htmlcontent):
-                print('code html ok')
-            print('cookies passés' + self.Memorised_Cookies)
-            print('post data :' + str(postdata))
+                VSlog('code html ok')
+            VSlog('cookies passes' + self.Memorised_Cookies)
+            VSlog('post data :' + str(postdata))
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
         self.url = url
 
-        try:
-            with open(PathCache +'/'+self.host.replace('.','_')+'.txt','r') as f:
-                cookieMem = f.read()
-                ##print('Cookie Deja Present')
-        except FileNotFoundError:
-            f = open(PathCache +'/'+self.host.replace('.','_')+'.txt','w')
-            f.close()
-            cookieMem = ''
-
-        ##print(PathCache +'/'+self.host.replace('.','_')+'.txt')
+        cookieMem = GestionCookie().Readcookie(self.host.replace('.','_'))
         if not (cookieMem == ''):
-            ##print('cookies present sur disque :' + cookieMem )
+            #VSlog('cookies present sur disque :' + cookieMem )
             if not (self.Memorised_Cookies):
                 cookies = cookieMem
             else:
@@ -383,30 +410,43 @@ class CloudflareBypass(object):
         while (loop > 0):
             loop -= 1
 
+            #To check
+            self.check = False
+
             #Redirection possible ?
             if (True):
-                opener = urllib.request.build_opener(NoRedirection)
+                opener = urllib2.build_opener(NoRedirection)
             else:
-                opener = urllib.request.build_opener()
+                opener = urllib2.build_opener()
 
             opener.addheaders = self.SetHeader()
 
             if ('cf_clearance' not in cookies) and htmlcontent and ('__cfduid=' in cookies):
 
-                ##print("******  Decodage *****")
-                #print(htmlcontent)
+                self.check = True
+
+                VSlog("#####  Decodage #####")
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(htmlcontent.decode("utf-8") )
+                #fh.close()
+
                 #recuperation parametres
                 hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',str(htmlcontent))[0]
                 passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',str(htmlcontent))[0]
                 s = re.findall('<input type="hidden" name="s" value="([^"]+)"',str(htmlcontent), re.DOTALL)[0]
+
+                #encoding
+                s = urllib.quote_plus (s)
+                passe = urllib.quote_plus (passe)
 
                 #calcul de la reponse
                 rep = self.GetResponse(htmlcontent)
 
                 #Temporisation
                 #showInfo("Information", 'Decodage protection CloudFlare' , 5)
-                time.sleep(8)
+                xbmc.sleep(8000)
 
+                #Take care at order
                 url = self.hostComplet + '/cdn-cgi/l/chk_jschl?s=' + s + '&jschl_vc='+ hash +'&pass=' + passe + '&jschl_answer=' + rep
 
                 #No post data here
@@ -416,9 +456,12 @@ class CloudflareBypass(object):
                 if not "'Accept'" in str(opener.addheaders):
                     opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
                 if not 'Host' in str(opener.addheaders):
-                    opener.addheaders.append(('Host',domain))
+                    opener.addheaders.append(('Host',self.host))
+
                 #opener.addheaders.append(('Connection', 'keep-alive'))
                 #opener.addheaders.append(('Accept-Encoding', 'gzip, deflate, br'))
+                #opener.addheaders.append(('Upgrade-Insecure-Requests', '1'))
+                #opener.addheaders.append(('DNT', '1'))
                 #opener.addheaders.append(('Cache-Control', 'max-age=0'))
 
             #Add cookies
@@ -430,11 +473,12 @@ class CloudflareBypass(object):
             #if not 'Accept' in str(opener.addheaders):
             #    opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
 
-            #print("Url demandee " + str(url) )
-            #print(str(opener.addheaders))
+            #VSlog("Url demandee " + str(url) )
+            #VSlog(str(opener.addheaders))
 
             if not url.startswith('http'):
-                url = self.hostComplet+ url
+                url = self.hostComplet + url
+
             try:
                 if postdata:
                     self.HttpReponse = opener.open(url,postdata)
@@ -442,11 +486,10 @@ class CloudflareBypass(object):
                     self.HttpReponse = opener.open(url)
                 htmlcontent = self.HttpReponse.read()
                 self.Header = self.HttpReponse.headers
-                print(self.Header)
                 self.RedirectionUrl = self.HttpReponse.geturl()
                 self.HttpReponse.close()
-            except urllib.error.HTTPError as e:
-                ##print("Error " + str(e.code))
+            except urllib2.HTTPError as e:
+                #VSlog("Error " + str(e.code))
                 htmlcontent = e.read()
                 self.Header = e.headers
                 self.RedirectionUrl = e.geturl()
@@ -454,45 +497,52 @@ class CloudflareBypass(object):
             url = self.RedirectionUrl
             postdata = self.Memorised_PostData
 
+            #compressed page ?
+            if self.Header.get('Content-Encoding') == 'gzip':
+                import zlib
+                htmlcontent = zlib.decompress(htmlcontent, zlib.MAX_WBITS|16)
+
             #For debug
             if (Mode_Debug):
-                print("Headers send " + str(opener.addheaders))
-                print("cookie send " + str(cookies))
-                print("header recu " + str(self.Header))
-                print("Url obtenue " + str(self.RedirectionUrl))
+                VSlog("Url obtenue : " + str(self.RedirectionUrl))
+                VSlog("Headers send : " + str(opener.addheaders))
+                VSlog("cookie send : " + str(cookies))
+                VSlog("header recu : " + str(self.Header))
 
             if 'Please complete the security check' in str(htmlcontent):
-                fh = open('d:\\test.txt', "w")
-                fh.write(htmlcontent)
-                fh.close()
-                print("Probleme protection Cloudflare : Protection captcha")
+                #fh = open('d:\\test.txt', "w")
+                #fh.write(htmlcontent)
+                #fh.close()
+                VSlog("Probleme protection Cloudflare : Protection captcha")
                 #showInfo("Erreur", 'Probleme CloudFlare, pls Retry' , 5)
                 return ''
 
             if not CheckIfActive(htmlcontent):
-                # ok no more protection
-                print("Page ok")
+                VSlog ('Page decodee')
+
+                #First check if we have solved the challenge
+                if self.check and 'cf_clearance' not in self.Header.get('Set-Cookie',''):
+                    VSlog("###### Challenge rate ######")
+                    #To reset, enabled later to prevent loop
+                    htmlcontent = ''
+
                 #need to save cookies ?
                 if not cookieMem:
-                    with open(PathCache +'/'+self.host.replace('.','_')+'.txt','w') as f:
-                        f.write(cookies)
-
-                #fh = open('c:\\test.txt', "w")
-                #fh.write(htmlcontent)
-                #fh.close()
+                    GestionCookie().SaveCookie(self.host.replace('.','_'),cookies)
 
                 url2 = self.Header.get('Location','')
                 if url2:
                     url = url2
                 else:
+                    #All finished, return code
                     return htmlcontent
 
             else:
 
                 #Arf, problem, cookies not working, delete them
                 if cookieMem:
-                    print('Cookies Out of date')
-                    os.remove (PathCache +'/'+self.host.replace('.','_')+'.txt')
+                    VSlog('Cookies Out of date')
+                    GestionCookie().DeleteCookie(self.host.replace('.','_'))
                     cookieMem = ''
                     #one more loop, and reset all cookies, event only cf_clearance is needed
                     loop += 1
@@ -520,6 +570,5 @@ class CloudflareBypass(object):
                             cookies = cookies + '; '
                         cookies = cookies + str(a) + '=' + str(b)
 
-
-        print("Probleme protection Cloudflare : Cookies manquants")
+        VSlog("Probleme protection Cloudflare : Cookies manquants")
         return ''
