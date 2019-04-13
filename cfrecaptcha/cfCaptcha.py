@@ -85,8 +85,9 @@ class CloudflareScraper(Session):
             return False
 
     def ResolveCaptcha(self , body):
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'}
         captchaUrl = re.findall('<iframe src="(.+?)"',str(body))
-        r = requests.get(captchaUrl[0])
+        r = requests.get(captchaUrl[0],headers=headers)
         bodyCaptcha = r.text
         captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(bodyCaptcha))
         text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(bodyCaptcha)).group(1)
@@ -103,7 +104,7 @@ class CloudflareScraper(Session):
         url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
         print(url)
 
-        file = BytesIO(requests.get(url).content)
+        file = BytesIO(requests.get(url, headers=headers).content)
         img = Image.open(file)
         img.show()
         response = input('Select all images representing '+text+'. Type from 0 to 8 : ')
@@ -122,7 +123,7 @@ class CloudflareScraper(Session):
             'Host': 'www.google.com',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'Referer': url,
             'Content-Type': 'application/x-www-form-urlencoded',
