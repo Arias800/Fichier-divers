@@ -38,10 +38,10 @@ https://www.dailymotion.com/player/metadata/video/x3b68jn
 #EXTINF:-1 tvg-id="CANALPLUS.kazer.org" tvg-name="Canalplus" tvg-logo="canalplus.png" group-title="Generaliste",Canal + (en clair)
 https://www.dailymotion.com/player/metadata/video/x5gv6be
 
-#EXTINF:-1 tvg-id="LCP.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Politque",LCP Assemblée nationale
+#EXTINF:-1 tvg-id="LCP.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Politque",LCP Assemblee nationale
 https://www.dailymotion.com/player/metadata/video/xgepjr
 
-#EXTINF:-1 tvg-id="LCP100%.kazer.org" tvg-name="LCP100%" tvg-logo="LCP100%.png" group-title="Politque",LCP 100%
+#EXTINF:-1 tvg-id="LCP100%.kazer.org" tvg-name="LCP100" tvg-logo="LCP100%.png" group-title="Politque",LCP 100
 https://www.dailymotion.com/player/metadata/video/xji3qy
 
 #EXTINF:-1 tvg-id="BFMTV.kazer.org" tvg-name="BFMTV" tvg-logo="bfm.png" group-title="Information",BFM TV
@@ -49,9 +49,6 @@ https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1
 
 #EXTINF:-1 tvg-id="BFMBuisness.kazer.org" tvg-name="BFM buisness" tvg-logo="bfmbus.png" group-title="Econimie",BFM Buisness
 https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/playlist.m3u8
-
-#EXTINF:-1 tvg-id="RMCDECOUVERTE.kazer.org" tvg-name="Rmc decouverte" tvg-logo="rmcdecouverte.png" group-title="Documentaire",RMC Decouverte
-[REGEX]src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/1969646226001/videos/5500352445001
 
 #EXTINF:-1 tvg-id="LEQUIPE21.kazer.org" tvg-name="L'equipe 21" tvg-logo="equipe21.png" group-title="Sport",L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
