@@ -30,10 +30,13 @@ http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
 https://www.dailymotion.com/player/metadata/video/x5gv5v0
 
 #EXTINF:-1 tvg-id="C8.kazer.org" tvg-name="C8" tvg-logo="c8.png" group-title="Generaliste",C8
-https://www.dailymotion.com/cdn/live/video/x5gv5rr.m3u8?dvr=true&auth=1544290015-2690-2zy62iy0-a9bb7552b9e703cf92897102e73e935d&redirect=0
+https://www.dailymotion.com/player/metadata/video/x5gv5rr
+
+#EXTINF:-1 tvg-id="CNEWS.kazer.org" tvg-name="CNEWS" tvg-logo="c8.png" group-title="Information",CNEWS
+https://www.dailymotion.com/player/metadata/video/x3b68jn
 
 #EXTINF:-1 tvg-id="CANALPLUS.kazer.org" tvg-name="Canalplus" tvg-logo="canalplus.png" group-title="Generaliste",Canal + (en clair)
-https://www.dailymotion.com/cdn/live/video/x5gv6be.m3u8?dvr=true&auth=1544290210-2690-p5u0v6zl-705ba025294d0b963e479d94afbb5b74&redirect=0
+https://www.dailymotion.com/player/metadata/video/x5gv6be
 
 #EXTINF:-1 tvg-id="LCP.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Politque",LCP Assemblée nationale
 [REGEX](http[^"]+)[URL]https://www.dailymotion.com/cdn/live/video/xgepjr.m3u8?auth=1544290796-2690-x24zggrf-6b20f9c339bee5de334887a09918d2cc&redirect=0
