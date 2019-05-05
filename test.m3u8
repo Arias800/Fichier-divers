@@ -39,7 +39,10 @@ https://www.dailymotion.com/player/metadata/video/x3b68jn
 https://www.dailymotion.com/player/metadata/video/x5gv6be
 
 #EXTINF:-1 tvg-id="LCP.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Politque",LCP Assemblée nationale
-[REGEX](http[^"]+)[URL]https://www.dailymotion.com/cdn/live/video/xgepjr.m3u8?auth=1544290796-2690-x24zggrf-6b20f9c339bee5de334887a09918d2cc&redirect=0
+https://www.dailymotion.com/player/metadata/video/xgepjr
+
+#EXTINF:-1 tvg-id="LCP100%.kazer.org" tvg-name="LCP100%" tvg-logo="LCP100%.png" group-title="Politque",LCP 100%
+https://www.dailymotion.com/player/metadata/video/xji3qy
 
 #EXTINF:-1 tvg-id="BFMTV.kazer.org" tvg-name="BFMTV" tvg-logo="bfm.png" group-title="Information",BFM TV
 https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1/876450610001/dd257bd6bff64eccb0a29b54cc705a07/playlist_ssaiM.m3u8
@@ -48,4 +51,7 @@ https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1
 https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/playlist.m3u8
 
 #EXTINF:-1 tvg-id="RMCDECOUVERTE.kazer.org" tvg-name="Rmc decouverte" tvg-logo="rmcdecouverte.png" group-title="Documentaire",RMC Decouverte
-[POSTFORM]__nn__=5375862360001&hdnea=st=1544284800~exp=1544288400~acl=/i/*~hmac=e1d7c87c9c836fd50e3fee08b39320c339141596805739676e5cb5eddd176973[URL]https://nextmediahdslive-lh.akamaihd.net/i/RMCDECOUVERTE_KB@300868/master.m3u8
+[REGEX]src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/1969646226001/videos/5500352445001
+
+#EXTINF:-1 tvg-id="LEQUIPE21.kazer.org" tvg-name="L'equipe 21" tvg-logo="equipe21.png" group-title="Sport",L'equipe 21
+https://www.dailymotion.com/player/metadata/video/x2lefik
