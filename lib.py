@@ -6,9 +6,8 @@ from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 from resources.lib.comaddon import addon, dialog, window, VSlog, xbmc
 
-import xbmcvfs
-import urllib,re
-
+import xbmcvfs,xbmcplugin,xbmcgui
+import urllib,re,os,sys
 
 SITE_IDENTIFIER = 'cLibrary'
 SITE_NAME = 'Library'
@@ -96,9 +95,9 @@ class cLibrary:
             #sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
             sFTitle =  self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
-            
+
             #sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
-            
+
             # if sTitleGlobal.endswith(' '):
             #     sTitleGlobal = sTitleGlobal[:-1]
             # if sTitleGlobal.endswith('FINAL'):
@@ -139,10 +138,43 @@ class cLibrary:
 
 
     def getLibrary(self):
-        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
+        #xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
         #xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
-        return True
+        oGui = cGui()
+        path = 'special://userdata/addon_data/plugin.video.vstream/'
+        listDir = xbmcvfs.listdir(path)
+        for i in listDir[0]:
+            Year = os.path.basename(i)
 
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('filePath', path+i)
+            oGui.addDir(SITE_IDENTIFIER, 'openLibrary', Year, 'annees.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+    def openLibrary(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFile = oInputParameterHandler.getValue('filePath')
+
+        listDir = xbmcvfs.listdir(sFile)
+        for i in listDir[0]:
+            path = xbmc.translatePath(sFile+'/'+i) #Suppression du special: pour plus tard
+            strmFile = xbmcvfs.listdir(path) #Ovrir le repertoire avec le fichier .strm
+            Year = os.path.basename(''.join(strmFile[1])) #Titre du fichier .strm
+
+            strmPath = path+'/'+Year
+
+            addon_handle = int(sys.argv[1])
+            xbmcplugin.setContent(addon_handle, 'video')
+            li = xbmcgui.ListItem(Year)
+            xbmcplugin.addDirectoryItem(handle=addon_handle, url=strmPath, listitem=li)
+
+        xbmcplugin.endOfDirectory(addon_handle)
+
+    def callPlugin(self):
+        oInputParameterHandler = cInputParameterHandler()
+        pluginDir = oInputParameterHandler.getValue('pluginDir')
+        sTitle = oInputParameterHandler.getValue('sTitle')
 
     def Delfile(self):
         oInputParameterHandler = cInputParameterHandler()
