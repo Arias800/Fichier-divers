@@ -26,6 +26,9 @@ https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
 #EXTINF:-1 tvg-logo="franceo.png" ,France O
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
+#EXTINF:-1 tvg-logo="franceinfo.png" ,France Info
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFranceinfo%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
 #EXTINF:-1 tvg-logo="arte.png" ,Arte
 http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 
@@ -41,7 +44,7 @@ https://www.dailymotion.com/player/metadata/video/x5gv5v0
 #EXTINF:-1 tvg-logo="c8.png" ,C8
 https://www.dailymotion.com/player/metadata/video/x5gv5rr
 
-#EXTINF:-1 tvg-logo="c8.png",CNEWS
+#EXTINF:-1 tvg-logo="cnews.png",CNEWS
 https://www.dailymotion.com/player/metadata/video/x3b68jn
 
 #EXTINF:-1 tvg-logo="canalplus.png" ,Canal + (en clair)
@@ -59,6 +62,9 @@ https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1
 #EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
 https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/playlist.m3u8
 
+#EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
+https://www.dailymotion.com/player/metadata/video/x13p3qi
+
 #EXTINF:-1 tvg-logo="equipe21.png" ,L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
 
@@ -67,9 +73,3 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="gongmax.png" ,Gong Max
 [REGEX]<source.+?src="([^"]+)">[URL]http://www.bouquet-tv.live/gong-max/
-
-#EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
-https://www.dailymotion.com/player/metadata/video/x13p3qi
-
-#EXTINF:-1 tvg-logo="franceinfo.png" ,France Info
-http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFranceinfo%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
