@@ -67,3 +67,6 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="gongmax.png" ,Gong Max
 [REGEX]<source.+?src="([^"]+)">[URL]http://www.bouquet-tv.live/gong-max/
+
+#EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
+https://www.dailymotion.com/player/metadata/video/x13p3qi
