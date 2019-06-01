@@ -1,5 +1,5 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="tf1.png" group-title="Generaliste",TF1
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/TF1_logo.svg/1280px-TF1_logo.svg.png" group-title="Generaliste",TF1
 [REGEX]"(http[^"]+)"[POSTFORM]udid=B85E0FCB-A255-48BD-9A71-3C1AB782A7BB&mediaId=L_TF1&appName=sdk%2FIphone%2F1.0&authKey=d7a5407b73696fc9b1e983c7be9009db%2F1409816606000&method=getLiveUrl[URL]http://api.wat.tv/services/Delivery
 
 #EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Generaliste",France 2
@@ -52,3 +52,6 @@ https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/p
 
 #EXTINF:-1 tvg-id="LEQUIPE21.kazer.org" tvg-name="L'equipe 21" tvg-logo="equipe21.png" group-title="Sport",L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
+
+#EXTINF:-1 tvg-id="GONG.kazer.org" tvg-name="Gong" tvg-logo="https://upload.wikimedia.org/wikipedia/fr/e/e7/Gong_%28cha%C3%AEne_de_t%C3%A9l%C3%A9vision%29_Logo.png" group-title="Divertissement",Gong
+[REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
