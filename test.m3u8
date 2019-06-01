@@ -66,7 +66,7 @@ https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/p
 https://www.dailymotion.com/player/metadata/video/x13p3qi
 
 #EXTINF:-1 tvg-logo="rmcdecouverte.png" ,RMC Decouverte
-[REGEX]"src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/1969646226001/videos/5500352445001[TOKEN]https://rmcdecouverte.bfmtv.com/mediaplayer-direct/
+[REGEX]"src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/1969646226001/videos/5500352445001[BRIGHTCOVEKEY]https://rmcdecouverte.bfmtv.com/mediaplayer-direct/
 
 #EXTINF:-1 tvg-logo="equipe21.png" ,L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
