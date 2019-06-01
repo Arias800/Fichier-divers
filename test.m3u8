@@ -1,5 +1,5 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="tf1.png,TF1
+#EXTINF:-1 tvg-logo="tf1.png",TF1
 [REGEX]"(http[^"]+)"[POSTFORM]udid=B85E0FCB-A255-48BD-9A71-3C1AB782A7BB&mediaId=L_TF1&appName=sdk%2FIphone%2F1.0&authKey=d7a5407b73696fc9b1e983c7be9009db%2F1409816606000&method=getLiveUrl[URL]http://api.wat.tv/services/Delivery
 
 #EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Generaliste",France 2
