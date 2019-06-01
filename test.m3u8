@@ -70,3 +70,6 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
 https://www.dailymotion.com/player/metadata/video/x13p3qi
+
+#EXTINF:-1 tvg-logo="franceinfo.png" ,France Info
+http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFranceinfo%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
