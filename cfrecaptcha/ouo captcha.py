@@ -67,7 +67,7 @@ def ResolveCaptcha(body):
     img.show()
 
     #En attente de la saisie des resultat
-    response = input('Select all images representing '+text+'. Type from 0 to 8 : ')
+    response = input('Select all images representing '+text+'. Type from 0 to 8 (add space between all number ): ')
 
     #Format la reponse
     allNumber = [int(s) for s in response.split() if s.isdigit()]
@@ -134,3 +134,4 @@ final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><in
 #Derniere requete pour recuperer le liens du hoster
 r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers,cookies=s.cookies)
 print("Url final : " + r.url)
+input("No use")
