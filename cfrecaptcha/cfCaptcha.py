@@ -19,6 +19,8 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
+#All commented part in Recaptcha is a WIP
+
 #Debug Mode (enable lots of print())
 DEBUG_MODE = False
 __version__ = "0.0.0"
@@ -31,11 +33,11 @@ DEFAULT_USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:59.0) Gecko/20100101 Firefox/59.0",
     "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0"
+    #"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0"
 ]
 
 BUG_REPORT = ("Cloudflare may have changed their technique, or there may be a bug in the script.\n\nPlease read " "https://github.com/Anorov/cloudflare-scrape#updates, then file a "
 "bug report at https://github.com/Anorov/cloudflare-scrape/issues.")
-
 
 class CloudflareScraper(Session):
     def __init__(self, *args, **kwargs):
@@ -48,8 +50,9 @@ class CloudflareScraper(Session):
             # The captcha is trigger if :
             #   - Connection is not equal to close
             #   - If we use self.headers.update and not self.headers
+            self.UA = random.choice(DEFAULT_USER_AGENTS)
             self.headers= {
-                    'User-Agent': random.choice(DEFAULT_USER_AGENTS),
+                    'User-Agent': self.UA,
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language': 'en-US,en;q=0.5',
                     'Connection': 'close',
@@ -76,72 +79,115 @@ class CloudflareScraper(Session):
             if self.cf_tries >= 3:
                 raise Exception('Failed to solve Cloudflare challenge!')
             elif b'/cdn-cgi/l/chk_captcha' in resp.content:
+                #import time
+                #self.start_time = time.time()
+                #self.cookies = resp.cookies
                 body = resp.content
-                self.ResolveCaptcha(body)
+                gToken = self.ResolveCaptcha(body)
                 raise Exception('Protect by Captcha')
             elif resp.status_code == 503:
                 return True
         else:
             return False
 
-    def ResolveCaptcha(self , body):
-        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'}
+    def ResolveCaptcha(self ,body):
+        import time
+        start = time.perf_counter()
+        headers = {'User-Agent':self.UA}
         captchaUrl = re.findall('<iframe src="(.+?)"',str(body))
         r = requests.get(captchaUrl[0],headers=headers)
-        bodyCaptcha = r.text
-        captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(bodyCaptcha))
-        text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(bodyCaptcha)).group(1)
 
-        c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(bodyCaptcha)).group(1)
-        print(c)
-        k = re.search('k=(.+?)" alt=',str(bodyCaptcha)).group(1)
-        print(k)
+        #Recuperer le liens du payload
+        captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(r.text))
+
+        #Recuperer le texte du captcha
+        text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(r.text)).group(1)
+
+        #Recuperer les 2 parametre necessaire pour acceder au captcha
+        c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(r.text)).group(1)
+        k = re.search('k=(.+?)" alt=',str(r.text)).group(1)
         params = {
             "c": c,
             "k": k,
         }
         query_string = urllib.parse.urlencode( params )
+
+        #Requete pour le captcha
         url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
-        print(url)
+        print('\n' + url)
 
-        file = BytesIO(requests.get(url, headers=headers).content)
-        img = Image.open(file)
-        img.show()
-        response = input('Select all images representing '+text+'. Type from 0 to 8 : ')
-        allNumber = [int(s) for s in response.split() if s.isdigit()]
-        responseFinal = ""
-        for rep in allNumber:
-            responseFinal = responseFinal + '&response='+str(rep)
-
-        params = {
-            "c": c+responseFinal,
-        }
-        print(params)
-
-        url = 'https://www.google.com/recaptcha/api/fallback?k='+k
         headers = {
-            'Host': 'www.google.com',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
+            'User-Agent': self.UA,
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
             'Accept-Encoding': 'gzip, deflate, br',
             'Referer': url,
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length':str(len(params)),
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'TE': 'Trailers'
             }
 
-        r = requests.post(url, data=params, headers=headers)
-        print(r.text)
+        #Recuperation et ouverture de l'image (uniquement utile pour fonctionner hors Kodi)
+        file = BytesIO(requests.get(url).content)
+        img = Image.open(file)
+        img.show()
+
+        #En attente de la saisie des resultat
+        response = input('Select all images representing '+text+'. Type from 1 to 9: ')
+
+        #Format la reponse
+        allNumber = [int(s) for s in re.findall('([0-9])',str(response))]
+        responseFinal = ""
+        for rep in allNumber:
+            responseFinal = responseFinal + '&response='+str(int(rep)-1)
+        print(responseFinal)
+
+        #Requete pour valider le captcha
+        r = requests.post(captchaUrl[0], data='c='+c+responseFinal, headers=headers)
+
+        #Recupere le token du captcha
+        gToken = re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.text)).group(1)
+        print('\n token : ' + gToken)
+        return gToken
+
+        #s = re.search('name="s" value="(.+?)"', str(body)).group(1)
+        #print('\n s : '+s)
+        #print(body)
+        #anotherId = re.search('<strong>(.+?)</strong></span>',str(body)).group(1)
+        #print('\n : ' +anotherId)
+        #Id = re.search("bf_challenge_id.+?,.+?'(.+?)'",str(body)).group(1).replace('\\','')
+        #print('\n id : '+Id)
+
+        #lastTime = round(time.time() - self.start_time)
+        #print(lastTime)
+
+        #url = 'https://www.ianimes.co/cdn-cgi/l/chk_captcha?s='+s+'&id='+anotherId+'&g-recaptcha-response='+gToken+'&bf_challenge_id='+Id+'&bf_execution_time='+str(lastTime)+"&bf_result_hash=143230415"
+        #print(url)
+        #print(self.cookies)
+
+        #headers1 = {'Host': 'www.ianimes.co',
+        #    'User-Agent': self.UA,
+        #    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        #    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+        #    'Accept-Encoding': 'gzip, deflate, br',
+        #    'DNT': '1',
+        #    'Connection': 'keep-alive',
+        #    'Referer': 'https://www.ianimes.co/',
+        #    'Upgrade-Insecure-Requests': '1',
+        #    'Pragma': 'no-cache',
+        #    'Cache-Control': 'no-cache',
+        #    'TE': 'Trailers'}
+#
+        #r = requests.get(url,headers=headers1,cookies=self.cookies)
+        #print(r.url)
+        #print(r.cookies)
+        #return r.text
 
     def solve_cf_challenge(self, resp, **original_kwargs):
         self.cf_tries += 1
         body = resp.text
         parsed_url = urlparse(resp.url)
         domain = parsed_url.netloc
-        submit_url = "%s://%s/cdn-cgi/l/chk_jschl" % (parsed_url.scheme, domain)
+        submit_url = "{}://{}/cdn-cgi/l/chk_jschl".format(parsed_url.scheme, domain)
 
         cloudflare_kwargs = original_kwargs.copy( )
         params = cloudflare_kwargs.setdefault("params", {})
