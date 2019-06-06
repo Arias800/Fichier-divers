@@ -176,8 +176,9 @@ def showHosters():
 
     #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
 
-    sPattern = '<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>'
+    sPattern = '<b>([^"]+)</b><tr> <br>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -189,16 +190,24 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            sHost = '[COLOR coral]' + aEntry[1].capitalize() + '[/COLOR]'
-            sHost = re.sub('\.\w+', '', sHost)
-            sUrl = aEntry[0]
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+            else:
+                if aEntry[3]:
+                    sHost, sTitle = aEntry[4].split('-',1)
+                    sHost = '[COLOR coral]' + sHost + '[/COLOR]'
+                    sUrl = aEntry[3]
+                else:
+                    sHost = '[COLOR coral]' + aEntry[2].capitalize() + '[/COLOR]'
+                    sHost = re.sub('\.\w+', '', sHost)
+                    sUrl = aEntry[1]
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -265,98 +274,6 @@ def Display_protected_link():
 
     oGui.setEndOfDirectory()
 
-def DecryptOuo(sUrl):
-    urlOuo = sUrl
-    if not '/fbc/' in urlOuo:
-        urlOuo = urlOuo.replace('io/','io/fbc/').replace('press/','press/fbc/')
-    print(urlOuo)
-
-    #1er connection pour recuperer la cle du site
-    oRequestHandler = cRequestHandler(urlOuo)
-    sHtmlContent = oRequestHandler.request()
-    Cookie = oRequestHandler.GetCookies()
-    VSlog(Cookie)
-
-    key = re.search('sitekey: "(.+?)"',str(sHtmlContent)).group(1)
-    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent)).group(1)
-
-    gToken = ResolveCaptcha(key, urlOuo)
-    VSlog('Token final de Recaptcha : '+gToken)
-    VSlog('\n payload : '+'_token='+OuoToken+'&g-recaptcha-response='+gToken)
-
-    #Requete pour valider le captcha du coter de ouo
-    url = urlOuo.replace('/fbc/','/go/')
-    params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
-    headers = {'User-Agent': UA,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate',
-        'Referer': urlOuo,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length':str(len(params)),
-        'Cookie':Cookie
-        }
-
-    r = requests.post(url,data=params, headers=headers)
-    print(r.text)
-
-    #Recuperer le token et la derniere url de ouo
-    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(r.text))
-
-    #Derniere requete pour recuperer le liens du hoster
-    r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers)
-    return r.url
-
-def ResolveCaptcha(key, urlOuo):
-    #Requete vers les serveur de Google pour recuperer le captcha
-    urlBase  = 'https://www.google.com/recaptcha/api/fallback?k='+key+'&hl=fr&v=v1558333958099&t=5&ff=true'
-    oRequestHandler = cRequestHandler(urlBase)
-    oRequestHandler.addHeaderEntry('User-Agent',UA)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addHeaderEntry('Referer', urlOuo)
-    body = oRequestHandler.request()
-
-    #Recuperer le liens du payload
-    captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(body))
-
-    #Recuperer le texte du captcha
-    text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(body)).group(1)
-
-    #Recuperer les 2 parametre necessaire pour acceder au captcha
-    c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(body)).group(1)
-    k = re.search('k=(.+?)" alt=',str(body)).group(1)
-    params = {
-        "c": c,
-        "k": k,
-    }
-    query_string = urllib.urlencode( params )
-
-    #Requete pour le captcha
-    url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
-    print('\n' + url)
-
-    #Recuperation et ouverture de l'image (uniquement utile pour fonctionner hors Kodi)
-    responseFinal = get_response_Recaptcha(url,text)
-
-    headers = {
-        'User-Agent': UA,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate',
-        'Referer': url,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length':str(len(params)),
-        }
-
-    #Requete pour valider le captcha
-    r = requests.post(urlBase, data='c='+c+responseFinal, headers=headers)
-    VSlog(str(r.content))
-
-    #Recupere le token du captcha
-    return re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.content)).group(1)
-
 def DecryptddlProtect(url):
     #print 'entering DecryptddlProtect'
     if not (url): return ''
@@ -421,105 +338,6 @@ def DecryptddlProtect(url):
         GestionCookie().SaveCookie('cinemegatoil_org', cookies)
 
     return sHtmlContent
-
-def get_response_Recaptcha(img,text):
-    #on telecharge l'image
-    import xbmcvfs
-
-    dialogs = dialog()
-
-    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
-    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    #filename  = os.path.join(PathCache, 'Captcha.raw')
-
-    oRequestHandler = cRequestHandler(img)
-    htmlcontent = oRequestHandler.request()
-
-    downloaded_image = xbmcvfs.File(filename, 'wb')
-    #downloaded_image = file(filename, "wb")
-    downloaded_image.write(htmlcontent)
-    downloaded_image.close()
-
-#on affiche le dialogue
-    solution = ''
-
-    if (True):
-        ####nouveau captcha
-        try:
-            ##affichage du dialog perso
-            class XMLDialog(xbmcgui.WindowXMLDialog):
-                #"""
-                #Dialog class for captcha
-                #"""
-                def __init__(self, *args, **kwargs):
-                    xbmcgui.WindowXMLDialog.__init__(self)
-                    pass
-
-                def onInit(self):
-                    #image background captcha
-                    self.getControl(1).setImage(filename.encode("utf-8"), False)
-                    #image petit captcha memory fail
-                    self.getControl(2).setImage(filename.encode("utf-8"), False)
-                    self.getControl(2).setVisible(False)
-                    ##Focus clavier
-                    self.setFocus(self.getControl(21))
-
-                def onClick(self, controlId):
-                    if controlId == 20:
-                        #button Valider
-                        solution = self.getControl(5000).getLabel()
-                        xbmcgui.Window(10101).setProperty('captcha', solution)
-                        self.close()
-                        return
-
-                    elif controlId == 30:
-                        #button fermer
-                        self.close()
-                        return
-
-                    elif controlId == 21:
-                        #button clavier
-                        self.getControl(2).setVisible(True)
-                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
-                        kb.doModal()
-
-                        if (kb.isConfirmed()):
-                            self.getControl(5000).setLabel(kb.getText())
-                            self.getControl(2).setVisible(False)
-                        else:
-                            self.getControl(2).setVisible(False)
-
-                def onFocus(self, controlId):
-                    self.controlId = controlId
-
-                def _close_dialog(self):
-                    self.close()
-
-                def onAction(self, action):
-                    #touche return 61448
-                    if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
-                        self.close()
-
-            dialogs.VSok("Le theme est : "+ text)
-            path = "special://home/addons/plugin.video.vstream"
-            #path = cConfig().getAddonPath().decode("utf-8")
-            wd = XMLDialog('DialogReCaptcha.xml', path, 'default', '720p')
-            wd.doModal()
-            del wd
-        finally:
-            solution = xbmcgui.Window(10101).getProperty('captcha')
-            if solution == '':
-                dialogs.VSinfo("Vous devez taper le captcha")
-
-    #Format la reponse
-    allNumber = [int(s) for s in re.findall('([0-9])',str(solution))]
-    responseFinal = ""
-    for rep in allNumber:
-        VSlog(rep)
-        VSlog(rep-1)
-        responseFinal = responseFinal + '&response='+str(int(rep)-1)
-    VSlog(responseFinal)
-    return responseFinal
 
 def get_response(img,cookie):
     #on telecharge l'image
@@ -641,3 +459,194 @@ def get_response(img,cookie):
             wdlg.close()
 
     return solution, NewCookie
+
+def DecryptOuo(sUrl):
+    urlOuo = sUrl
+    if not '/fbc/' in urlOuo:
+        urlOuo = urlOuo.replace('io/','io/fbc/').replace('press/','press/fbc/')
+    print(urlOuo)
+
+    #1er connection pour recuperer la cle du site
+    oRequestHandler = cRequestHandler(urlOuo)
+    sHtmlContent = oRequestHandler.request()
+    Cookie = oRequestHandler.GetCookies()
+    VSlog(Cookie)
+
+    key = re.search('sitekey: "(.+?)"',str(sHtmlContent)).group(1)
+    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent)).group(1)
+
+    gToken = ResolveCaptcha(key, urlOuo)
+    VSlog('Token final de Recaptcha : '+gToken)
+    VSlog('\n payload : '+'_token='+OuoToken+'&g-recaptcha-response='+gToken)
+
+    #Requete pour valider le captcha du coter de ouo
+    url = urlOuo.replace('/fbc/','/go/')
+    params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
+    headers = {'User-Agent': UA,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Referer': urlOuo,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length':str(len(params)),
+        'Cookie':Cookie
+        }
+
+    r = requests.post(url,data=params, headers=headers)
+    print(r.text)
+
+    #Recuperer le token et la derniere url de ouo
+    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(r.text))
+
+    #Derniere requete pour recuperer le liens du hoster
+    r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers)
+    return r.url
+
+def ResolveCaptcha(key, urlOuo):
+    #Requete vers les serveur de Google pour recuperer le captcha
+    urlBase  = 'https://www.google.com/recaptcha/api/fallback?k='+key+'&hl=fr&v=v1558333958099&t=5&ff=true'
+    oRequestHandler = cRequestHandler(urlBase)
+    oRequestHandler.addHeaderEntry('User-Agent',UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', urlOuo)
+    body = oRequestHandler.request()
+
+    #Recuperer le liens du payload
+    captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(body))
+
+    #Recuperer le texte du captcha
+    text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(body)).group(1)
+
+    #Recuperer les 2 parametre necessaire pour acceder au captcha
+    c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(body)).group(1)
+    k = re.search('k=(.+?)" alt=',str(body)).group(1)
+    params = {
+        "c": c,
+        "k": k,
+    }
+    query_string = urllib.urlencode( params )
+
+    #Requete pour le captcha
+    url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
+    print('\n' + url)
+
+    #Recuperation et ouverture de l'image (uniquement utile pour fonctionner hors Kodi)
+    responseFinal = get_response_Recaptcha(url,text)
+
+    headers = {
+        'User-Agent': UA,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate',
+        'Referer': url,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length':str(len(params)),
+        }
+
+    #Requete pour valider le captcha
+    r = requests.post(urlBase, data='c='+c+responseFinal, headers=headers)
+    VSlog(str(r.content))
+
+    #Recupere le token du captcha
+    return re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.content)).group(1)
+
+def get_response_Recaptcha(img,text):
+    #on telecharge l'image
+    import xbmcvfs
+
+    dialogs = dialog()
+
+    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    #filename  = os.path.join(PathCache, 'Captcha.raw')
+
+    oRequestHandler = cRequestHandler(img)
+    htmlcontent = oRequestHandler.request()
+
+    downloaded_image = xbmcvfs.File(filename, 'wb')
+    #downloaded_image = file(filename, "wb")
+    downloaded_image.write(htmlcontent)
+    downloaded_image.close()
+
+#on affiche le dialogue
+    solution = ''
+
+    if (True):
+        ####nouveau captcha
+        try:
+            ##affichage du dialog perso
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+                #"""
+                #Dialog class for captcha
+                #"""
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__(self)
+                    pass
+
+                def onInit(self):
+                    #image background captcha
+                    self.getControl(1).setImage(filename.encode("utf-8"), False)
+                    #image petit captcha memory fail
+                    self.getControl(2).setImage(filename.encode("utf-8"), False)
+                    self.getControl(2).setVisible(False)
+                    ##Focus clavier
+                    self.setFocus(self.getControl(21))
+
+                def onClick(self, controlId):
+                    if controlId == 20:
+                        #button Valider
+                        solution = self.getControl(5000).getLabel()
+                        xbmcgui.Window(10101).setProperty('captcha', solution)
+                        self.close()
+                        return
+
+                    elif controlId == 30:
+                        #button fermer
+                        self.close()
+                        return
+
+                    elif controlId == 21:
+                        #button clavier
+                        self.getControl(2).setVisible(True)
+                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
+                        kb.doModal()
+
+                        if (kb.isConfirmed()):
+                            self.getControl(5000).setLabel(kb.getText())
+                            self.getControl(2).setVisible(False)
+                        else:
+                            self.getControl(2).setVisible(False)
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+
+                def _close_dialog(self):
+                    self.close()
+
+                def onAction(self, action):
+                    #touche return 61448
+                    if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
+                        self.close()
+
+            dialogs.VSok("Le theme est : "+ text)
+            path = "special://home/addons/plugin.video.vstream"
+            #path = cConfig().getAddonPath().decode("utf-8")
+            wd = XMLDialog('DialogReCaptcha.xml', path, 'default', '720p')
+            wd.doModal()
+            del wd
+        finally:
+            solution = xbmcgui.Window(10101).getProperty('captcha')
+            if solution == '':
+                dialogs.VSinfo("Vous devez taper le captcha")
+
+    #Format la reponse
+    allNumber = [int(s) for s in re.findall('([0-9])',str(solution))]
+    responseFinal = ""
+    for rep in allNumber:
+        VSlog(rep)
+        VSlog(rep-1)
+        responseFinal = responseFinal + '&response='+str(int(rep)-1)
+    VSlog(responseFinal)
+    return responseFinal
