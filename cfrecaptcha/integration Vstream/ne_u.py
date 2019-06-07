@@ -261,7 +261,6 @@ class cHoster(iHoster):
             try:
                 response = urllib2.urlopen(req)
                 data = response.read()
-                VSlog(data)
                 response.close()
             except urllib2.URLError, e:
                 VSlog(e.read())
@@ -271,55 +270,62 @@ class cHoster(iHoster):
             data = urllib.unquote(data)
 
             data = DecodeAllThePage(data)
+            VSlog(data)
 
-            at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
+            at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data).group(1)
 
-            l = re.search(r'\.get\( *"/player/get_md5.php",.+?link_1: *(.+?), *server_2: *(.+?), *vid: *"([^"]+)"}\)', data)
-            if l:
-               vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
-
-               vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
-
-               vid_key = l.group(3)
-            else:
-                VSlog("prob 3")
-
+            #l = re.search(r'\.get\( *"/player/get_md5.php",.+?link_1: *(.+?), *server_2: *(.+?), *vid: *"([^"]+)"}\)', data)
+            #if l:
+            #   vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
+#
+#               vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
+#
+#               vid_key = l.group(3)
+#            else:
+#                VSlog("prob 3")
+#
             #new video id, not really usefull
             # m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
             # if m:
                 # id = m.group(1)
 
-            if vid_server and vid_link and at and vid_key:
-
-                #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
-                get_data = {'server_2': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':vid_key}
-
-                headers['x-requested-with'] = 'XMLHttpRequest'
-
-                req = urllib2.Request(Host + "/player/get_md5.php?" + urllib.urlencode(get_data), None, headers)
-                try:
-                    response = urllib2.urlopen(req)
-                except urllib2.URLError, e:
-                    VSlog(str(e.read()))
-                    VSlog(str(e.reason))
-
-                data = response.read()
-                #VSlog(data)
-                response.close()
-
-                file_url = re.search(r'"obf_link"\s*:\s*"([^"]*?)"', data)
-
-                if file_url:
-                    list_url = decodeUN(file_url.group(1).replace('\\', ''))
-
+#            if vid_server and vid_link and at and vid_key:
+#
+###                #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
+#                get_data = {'server_2': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':vid_key}
+#
+#                headers['x-requested-with'] = 'XMLHttpRequest'
+##
+#                req = urllib2.Request(Host + "/player/get_md5.php?" + urllib.urlencode(get_data), None, headers)
+##                try:
+#                    response = urllib2.urlopen(req)
+#                except urllib2.URLError, e:
+#                    VSlog(str(e.read()))
+#                    VSlog(str(e.reason))
+#
+#                data = response.read()
+#                #VSlog(data)
+#                response.close()
+#
+#                file_url = re.search(r'"obf_link"\s*:\s*"([^"]*?)"', data)
+#
+#                if file_url:
+#                    list_url = decodeUN(file_url.group(1).replace('\\', ''))
+#
                 #Hack, je sais pas si ca va durer longtemps, mais indispensable sur certains fichiers
                 #list_url = list_url.replace("?socket", ".mp4.m3u8")
 
-            else:
-                VSlog('prb2')
-        #bricolage
-        api_call = list_url + '.mp4.m3u8'
+#            else:
+#                VSlog('prb2')
 
+        nameVar = re.search('true.+?\s*.+?link_1="\+encodeURIComponent\((.+?)\)\+"&server_2="\+encodeURIComponent\((.+?)\)',data)
+        var1 = re.search('var '+nameVar.group(1)+' = "(.+?)"', data).group(1)
+        var2 = re.search('var '+nameVar.group(2)+' = "(.+?)"', data).group(1)
+
+        #bricolage
+        api_call = "https://hqq.tv/player/get_md5.php?ver=2&at="+urllib.quote(at, safe='~()*!.\'')+"&adb=1&b=1&link_1="+urllib.quote(var1, safe='~()*!.\'')+"&server_2="+urllib.quote(var2, safe='~()*!.\'')+"&vid="+urllib.quote(vid, safe='~()*!.\'')+"&ext=.mp4.m3u8"
+        VSlog(api_call)
+        #api_call = list_url + '.mp4.m3u8'
 
         #use a fake headers
         #Header = 'User-Agent=' + UA
