@@ -5,14 +5,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import unwise
 from resources.lib.util import cUtil
+from resources.lib.recaptcha import ResolveCaptcha
 from resources.lib.comaddon import VSlog, xbmcgui, xbmc
-import urllib, urllib2
-import re
-import base64
-import requests, xbmcvfs, os, xbmcaddon
-
-__addon__ = xbmcaddon.Addon('plugin.video.vstream')
-__sLang__ = 'fr'
+import urllib, urllib2, re, base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 #UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
@@ -127,81 +122,15 @@ class cHoster(iHoster):
             return aResult[1][0]
         return ''
 
-    def ResolveCaptcha(self):
-        urlBase  = 'https://www.google.com/recaptcha/api/fallback?k=6LfCmh4TAAAAAKog9f8wTyEOc0U8Ms2RTuDFyYP_'
-        oRequestHandler = cRequestHandler(urlBase)
-        oRequestHandler.addHeaderEntry('User-Agent',UA)
-        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-        oRequestHandler.addHeaderEntry('Referer', self.__sUrl)
-        body = oRequestHandler.request()
-
-        #Recuperer le liens du payload
-        captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(body))
-
-        #Recuperer le texte du captcha
-        text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(body)).group(1)
-
-        #Recuperer les 2 parametre necessaire pour acceder au captcha
-        c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(body)).group(1)
-        k = re.search('k=(.+?)" alt=',str(body)).group(1)
-        params = {
-            "c": c,
-            "k": k,
-        }
-        query_string = urllib.urlencode( params )
-
-        #Requete pour le captcha
-        url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
-
-        filePath = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
-
-        oRequestHandler = cRequestHandler(url)
-        htmlcontent = oRequestHandler.request()
-
-        downloaded_image = xbmcvfs.File(filePath, 'wb')
-        downloaded_image.write(htmlcontent)
-        downloaded_image.close()
-
-        oSolver = cInputWindow(captcha = filePath, msg = text,roundnum=1)
-        retArg = oSolver.get()
-        VSlog('>>>>>>>> Captcha response [%s]' % (retArg))
-
-        #Format la reponse
-        allNumber = [int(s) for s in re.findall('([0-9])',str(retArg))]
-        responseFinal = ""
-        for rep in allNumber:
-            responseFinal = responseFinal + '&response='+str(rep)
-        VSlog(responseFinal)
-
-        headers = {
-            'Host': 'www.google.com',
-            'User-Agent': UA,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Referer': url,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length':str(len(params)),
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'TE': 'Trailers'
-            }
-
-        #Requete pour valider le captcha
-        r = requests.post(urlBase, data='c='+c+responseFinal, headers=headers)
-
-        #Recupere le token du captcha
-        return re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.text)).group(1)
-
     def __getMediaLinkForGuest(self):
 
         api_call = ''
 
-        id = self.__getIdFromUrl()
+        ids = self.__getIdFromUrl()
 
-        self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
+        self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + ids + '&autoplay=no'
+
+        player_url = self.__sUrl
 
         headers = {'User-Agent': UA ,
                    #'Host': 'hqq.tv',
@@ -211,17 +140,11 @@ class cHoster(iHoster):
                    #'Content-Type': 'text/html; charset=utf-8'
                    }
 
-        player_url = self.__sUrl
-
-        req = urllib2.Request(player_url, None, headers)
-        try:
-            response = urllib2.urlopen(req)
-            html = response.read()
-            response.close()
-        except urllib2.URLError, e:
-            VSlog(e.read())
-            VSlog(e.reason)
-            html = e.read()
+        oRequestHandler = cRequestHandler(player_url)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Referer', 'http://hqq.tv/')
+        html = oRequestHandler.request()
 
         Host = 'https://' + self.GetHost(player_url) + '/'
 
@@ -250,27 +173,27 @@ class cHoster(iHoster):
             _BOUNDARY_CHARS = string.digits
             boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(17))
 
-            gToken = self.ResolveCaptcha()
-            VSlog(gToken)
+            url2 = "https://hqq.tv/sec/player/embed_player_"+boundary+".php?iss="+iss+"=&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"&pass=&embed_from=&need_captcha=0&secure=0&g-recaptcha-response="
+            oRequestHandler = cRequestHandler(url2)
+            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            oRequestHandler.addHeaderEntry('Referer', 'http://hqq.tv/')
+            sHtmlContent = oRequestHandler.request()
 
-            url2 = "https://hqq.tv/sec/player/embed_player_"+boundary+".php?iss="+iss+"=&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"&pass=&embed_from=&need_captcha=0&secure=0&g-recaptcha-response="+gToken
-            VSlog(url2)
+            key = re.search("\'sitekey\' : \'(.+?)\'",str(sHtmlContent)).group(1)
+            gToken = ResolveCaptcha(key,self.__sUrl)
 
-            req = urllib2.Request(url2, None, headers)
+            url2 = url2 + gToken
 
-            try:
-                response = urllib2.urlopen(req)
-                data = response.read()
-                response.close()
-            except urllib2.URLError, e:
-                VSlog(e.read())
-                VSlog(e.reason)
-                data = e.read()
+            oRequestHandler = cRequestHandler(url2)
+            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            oRequestHandler.addHeaderEntry('Referer', 'http://hqq.tv/')
+            data = oRequestHandler.request()
 
             data = urllib.unquote(data)
 
             data = DecodeAllThePage(data)
-            VSlog(data)
 
             at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data).group(1)
 
@@ -324,8 +247,6 @@ class cHoster(iHoster):
 
         #bricolage
         api_call = "https://hqq.tv/player/get_md5.php?ver=2&at="+urllib.quote(at, safe='~()*!.\'')+"&adb=1&b=1&link_1="+urllib.quote(var1, safe='~()*!.\'')+"&server_2="+urllib.quote(var2, safe='~()*!.\'')+"&vid="+urllib.quote(vid, safe='~()*!.\'')+"&ext=.mp4.m3u8"
-        VSlog(api_call)
-        #api_call = list_url + '.mp4.m3u8'
 
         #use a fake headers
         #Header = 'User-Agent=' + UA
@@ -381,157 +302,3 @@ def DecodeAllThePage(html):
         html = html[:r.start()] + tmp + html[r.end():]
 
     return html
-
-class cInputWindow(xbmcgui.WindowDialog):
-    def __init__(self, *args, **kwargs):
-
-        self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(335,200,624,400,"")
-        xbmc.sleep(500)
-        self.img = xbmcgui.ControlImage(335,200,624,400,self.cptloc)
-        xbmc.sleep(500)
-
-        bg_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "background.png"
-        check_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_checked.png"
-        uncheck_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_unchecked1.png"
-
-        self.ctrlBackgound = xbmcgui.ControlImage(
-            0,0,
-            1280, 720,
-            bg_image
-        )
-        self.cancelled=False
-        self.addControl (self.ctrlBackgound)
-        self.msg = kwargs.get('msg')+'\nNormalement il devrai y avoir en 3 ou 4 selection'
-        self.roundnum=kwargs.get('roundnum')
-        self.strActionInfo = xbmcgui.ControlLabel(335, 120, 700, 300, "Le theme est : " + self.msg, 'font13', '0xFFFF00FF')
-        self.addControl(self.strActionInfo)
-
-        self.strActionInfo = xbmcgui.ControlLabel(335, 20, 724, 400, 'Captcha round %s'%(str(self.roundnum)), 'font40', '0xFFFF00FF')
-        self.addControl(self.strActionInfo)
-
-        self.addControl(self.img)
-
-        self.chk=[0]*9
-        self.chkbutton=[0]*9
-        self.chkstate=[False]*9
-
-        if 1==2:
-            self.chk[0]= xbmcgui.ControlCheckMark(335, 190, 220, 150, '1', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[1]= xbmcgui.ControlCheckMark(335+200, 190, 220, 150, '2', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[2]= xbmcgui.ControlCheckMark(335+400, 190, 220, 150, '3', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-
-            self.chk[3]= xbmcgui.ControlCheckMark(335, 190+130, 220, 150, '4', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[4]= xbmcgui.ControlCheckMark(335+200, 190+130, 220, 150, '5', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[5]= xbmcgui.ControlCheckMark(335+400, 190+130, 220, 150, '6', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-
-            self.chk[6]= xbmcgui.ControlCheckMark(335, 190+260, 220, 150, '7', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[7]= xbmcgui.ControlCheckMark(335+200, 190+260, 220, 150, '8', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[8]= xbmcgui.ControlCheckMark(335+400, 190+260, 220, 150, '9', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-        else:
-
-            self.chk[0]= xbmcgui.ControlImage(335, 190, 220, 150,check_image)
-            self.chk[1]= xbmcgui.ControlImage(335+200, 190, 220, 150,check_image)
-            self.chk[2]= xbmcgui.ControlImage(335+400, 190, 220, 150,check_image)
-
-            self.chk[3]= xbmcgui.ControlImage(335, 190+130, 220, 150,check_image)
-            self.chk[4]= xbmcgui.ControlImage(335+200, 190+130, 220, 150,check_image)
-            self.chk[5]= xbmcgui.ControlImage(335+400, 190+130, 220, 150,check_image)
-
-            self.chk[6]= xbmcgui.ControlImage(335, 190+260, 220, 150,check_image)
-            self.chk[7]= xbmcgui.ControlImage(335+200, 190+260, 220, 150,check_image)
-            self.chk[8]= xbmcgui.ControlImage(335+400, 190+260, 220, 150,check_image)
-
-            self.chkbutton[0]= xbmcgui.ControlButton(335, 190, 210, 150, '1', font='font1');
-            self.chkbutton[1]= xbmcgui.ControlButton(335+200, 190, 220, 150, '2', font='font1');
-            self.chkbutton[2]= xbmcgui.ControlButton(335+400, 190, 220, 150, '3', font='font1');
-
-            self.chkbutton[3]= xbmcgui.ControlButton(335, 190+130, 210, 150, '4', font='font1');
-            self.chkbutton[4]= xbmcgui.ControlButton(335+200, 190+130, 220, 150, '5', font='font1');
-            self.chkbutton[5]= xbmcgui.ControlButton(335+400, 190+130, 220, 150, '6', font='font1');
-
-            self.chkbutton[6]= xbmcgui.ControlButton(335, 190+260, 210, 150, '7', font='font1');
-            self.chkbutton[7]= xbmcgui.ControlButton(335+200, 190+260, 220, 150, '8', font='font1');
-            self.chkbutton[8]= xbmcgui.ControlButton(335+400, 190+260, 220, 150, '9', font='font1');
-
-        for obj in self.chk:
-            self.addControl(obj )
-            obj.setVisible(False)
-        for obj in self.chkbutton:
-            self.addControl(obj )
-
-        self.cancelbutton = xbmcgui.ControlButton(335+312-100,610,100,40,'Cancel',alignment=2)
-        self.okbutton = xbmcgui.ControlButton(335+312+50,610,100,40,'OK',alignment=2)
-        self.addControl(self.okbutton)
-        self.addControl(self.cancelbutton)
-
-        self.chkbutton[6].controlDown(self.cancelbutton);  self.chkbutton[6].controlUp(self.chkbutton[3])
-        self.chkbutton[7].controlDown(self.cancelbutton);  self.chkbutton[7].controlUp(self.chkbutton[4])
-        self.chkbutton[8].controlDown(self.okbutton);      self.chkbutton[8].controlUp(self.chkbutton[5])
-
-        self.chkbutton[6].controlLeft(self.chkbutton[8]);self.chkbutton[6].controlRight(self.chkbutton[7]);
-        self.chkbutton[7].controlLeft(self.chkbutton[6]);self.chkbutton[7].controlRight(self.chkbutton[8]);
-        self.chkbutton[8].controlLeft(self.chkbutton[7]);self.chkbutton[8].controlRight(self.chkbutton[6]);
-
-        self.chkbutton[3].controlDown(self.chkbutton[6]);  self.chkbutton[3].controlUp(self.chkbutton[0])
-        self.chkbutton[4].controlDown(self.chkbutton[7]);  self.chkbutton[4].controlUp(self.chkbutton[1])
-        self.chkbutton[5].controlDown(self.chkbutton[8]);  self.chkbutton[5].controlUp(self.chkbutton[2])
-
-        self.chkbutton[3].controlLeft(self.chkbutton[5]);self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);self.chkbutton[4].controlRight(self.chkbutton[5]);
-        self.chkbutton[5].controlLeft(self.chkbutton[4]);self.chkbutton[5].controlRight(self.chkbutton[3]);
-
-        self.chkbutton[0].controlDown(self.chkbutton[3]);  self.chkbutton[0].controlUp(self.cancelbutton)
-        self.chkbutton[1].controlDown(self.chkbutton[4]);  self.chkbutton[1].controlUp(self.cancelbutton)
-        self.chkbutton[2].controlDown(self.chkbutton[5]);  self.chkbutton[2].controlUp(self.okbutton)
-
-        self.chkbutton[0].controlLeft(self.chkbutton[2]);self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);self.chkbutton[2].controlRight(self.chkbutton[0]);
-
-        self.cancelled=False
-        self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton); self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[2]);self.okbutton.controlUp(self.chkbutton[8]);
-        self.cancelbutton.controlDown(self.chkbutton[0]); self.cancelbutton.controlUp(self.chkbutton[6]);
-
-    def get(self):
-        self.doModal()
-        self.close()
-        if not self.cancelled:
-            retval=""
-            for objn in range(9):
-                if self.chkstate[objn]:
-                    retval+=("" if retval=="" else ",")+str(objn)
-            return  retval
-
-        else:
-            return ""
-
-    def anythingChecked(self):
-        for obj in self.chkstate:
-            if obj:
-                return True
-        return False
-
-    def onControl(self,control):
-        if   control==self.okbutton:
-            if self.anythingChecked():
-                self.close()
-        elif control== self.cancelbutton:
-            self.cancelled=True
-            self.close()
-        try:
-            if 'xbmcgui.ControlButton' in repr(type(control)):
-                index=control.getLabel()
-                if index.isnumeric():
-                    self.chkstate[int(index)-1]= not self.chkstate[int(index)-1]
-                    self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
-
-        except: pass
-
-    def onAction(self, action):
-        if action == 10:
-            self.cancelled=True
-            self.close()
