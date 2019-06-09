@@ -1,10 +1,4 @@
-import logging
-import random
-import time
-import re
-from io import BytesIO
-import urllib.request
-import urllib.parse
+import logging, random, time, re
 '''''''''
 Disables InsecureRequestWarning: Unverified HTTPS request is being made warnings.
 '''''''''
@@ -13,13 +7,15 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 ''''''
 from requests.sessions import Session
+
+from io import BytesIO
+import urllib.parse
 from PIL import Image
+
 try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
-
-#All commented part in Recaptcha is a WIP
 
 #Debug Mode (enable lots of print())
 DEBUG_MODE = False
@@ -33,7 +29,6 @@ DEFAULT_USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:59.0) Gecko/20100101 Firefox/59.0",
     "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0"
-    #"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0"
 ]
 
 BUG_REPORT = ("Cloudflare may have changed their technique, or there may be a bug in the script.\n\nPlease read " "https://github.com/Anorov/cloudflare-scrape#updates, then file a "
@@ -42,15 +37,15 @@ BUG_REPORT = ("Cloudflare may have changed their technique, or there may be a bu
 class CloudflareScraper(Session):
     def __init__(self, *args, **kwargs):
         super(CloudflareScraper, self).__init__(*args, **kwargs)
-        self.cf_tries = 0
+        self.tries = 0
 
         if "requests" in self.headers["User-Agent"]:
+            self.UA = random.choice(DEFAULT_USER_AGENTS)
             # Spoof a desktop browser if no custom User-Agent has been set. 'Connection:keep-alive'
             # and 'Accept-Decoding:gzip,deflate' headers are already set by the super.
             # The captcha is trigger if :
             #   - Connection is not equal to close
             #   - If we use self.headers.update and not self.headers
-            self.UA = random.choice(DEFAULT_USER_AGENTS)
             self.headers= {
                     'User-Agent': self.UA,
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -74,45 +69,30 @@ class CloudflareScraper(Session):
         return resp
 
     def ifCloudflare(self, resp):
-        print(resp.content)
         if resp.headers.get('Server', '').startswith('cloudflare'):
-            if self.cf_tries >= 3:
+            if self.tries >= 3:
                 raise Exception('Failed to solve Cloudflare challenge!')
-            elif b'/cdn-cgi/l/chk_captcha' in resp.content:
-                #import time
-                #self.start_time = time.time()
-                #self.cookies = resp.cookies
-                body = resp.content
-                gToken = self.ResolveCaptcha(body)
-                raise Exception('Protect by Captcha')
-            elif resp.status_code == 503:
+            elif resp.status_code == 503 or resp.status_code == 403:
                 return True
         else:
             return False
 
     def ResolveCaptcha(self ,body):
-        import time
-        start = time.perf_counter()
         headers = {'User-Agent':self.UA}
         captchaUrl = re.findall('<iframe src="(.+?)"',str(body))
         r = requests.get(captchaUrl[0],headers=headers)
 
-        #Recuperer le liens du payload
         captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(r.text))
-
-        #Recuperer le texte du captcha
         text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(r.text)).group(1)
-
-        #Recuperer les 2 parametre necessaire pour acceder au captcha
         c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(r.text)).group(1)
         k = re.search('k=(.+?)" alt=',str(r.text)).group(1)
+
         params = {
             "c": c,
             "k": k,
         }
         query_string = urllib.parse.urlencode( params )
 
-        #Requete pour le captcha
         url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
         print('\n' + url)
 
@@ -126,144 +106,109 @@ class CloudflareScraper(Session):
             'Content-Length':str(len(params)),
             }
 
-        #Recuperation et ouverture de l'image (uniquement utile pour fonctionner hors Kodi)
         file = BytesIO(requests.get(url).content)
         img = Image.open(file)
         img.show()
 
-        #En attente de la saisie des resultat
         response = input('Select all images representing '+text+'. Type from 1 to 9: ')
 
-        #Format la reponse
         allNumber = [int(s) for s in re.findall('([0-9])',str(response))]
         responseFinal = ""
         for rep in allNumber:
             responseFinal = responseFinal + '&response='+str(int(rep)-1)
-        print(responseFinal)
 
-        #Requete pour valider le captcha
         r = requests.post(captchaUrl[0], data='c='+c+responseFinal, headers=headers)
-
-        #Recupere le token du captcha
         gToken = re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.text)).group(1)
-        print('\n token : ' + gToken)
         return gToken
 
-        #s = re.search('name="s" value="(.+?)"', str(body)).group(1)
-        #print('\n s : '+s)
-        #print(body)
-        #anotherId = re.search('<strong>(.+?)</strong></span>',str(body)).group(1)
-        #print('\n : ' +anotherId)
-        #Id = re.search("bf_challenge_id.+?,.+?'(.+?)'",str(body)).group(1).replace('\\','')
-        #print('\n id : '+Id)
-
-        #lastTime = round(time.time() - self.start_time)
-        #print(lastTime)
-
-        #url = 'https://www.ianimes.co/cdn-cgi/l/chk_captcha?s='+s+'&id='+anotherId+'&g-recaptcha-response='+gToken+'&bf_challenge_id='+Id+'&bf_execution_time='+str(lastTime)+"&bf_result_hash=143230415"
-        #print(url)
-        #print(self.cookies)
-
-        #headers1 = {'Host': 'www.ianimes.co',
-        #    'User-Agent': self.UA,
-        #    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        #    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-        #    'Accept-Encoding': 'gzip, deflate, br',
-        #    'DNT': '1',
-        #    'Connection': 'keep-alive',
-        #    'Referer': 'https://www.ianimes.co/',
-        #    'Upgrade-Insecure-Requests': '1',
-        #    'Pragma': 'no-cache',
-        #    'Cache-Control': 'no-cache',
-        #    'TE': 'Trailers'}
-#
-        #r = requests.get(url,headers=headers1,cookies=self.cookies)
-        #print(r.url)
-        #print(r.cookies)
-        #return r.text
-
     def solve_cf_challenge(self, resp, **original_kwargs):
-        self.cf_tries += 1
+        self.tries += 1
         body = resp.text
         parsed_url = urlparse(resp.url)
         domain = parsed_url.netloc
-        submit_url = "{}://{}/cdn-cgi/l/chk_jschl".format(parsed_url.scheme, domain)
 
         cloudflare_kwargs = original_kwargs.copy( )
         params = cloudflare_kwargs.setdefault("params", {})
         headers = cloudflare_kwargs.setdefault("headers", {})
         headers["Referer"] = resp.url
 
-        try:
-            cf_delay = float(re.search('submit.*?(\d+)', body, re.DOTALL).group(1)) / 1000.0
+        params["s"] = re.search('name="s" value="(.+?)"', body).group(1)
 
-            form_index = body.find('id="challenge-form"')
-            if form_index == -1:
-                raise Exception('CF form not found')
-            sub_body = body[form_index:]
+        if b'/cdn-cgi/l/chk_captcha' in resp.content:
+            params['id'] = re.search('<strong>(.+?)</strong></span>',str(body)).group(1)
+            params['g-recaptcha-response'] = self.ResolveCaptcha(body)
+            params['bf_challenge_id'] = re.search("bf_challenge_id.+?,.+?'(.+?)'",str(body)).group(1).replace('\\','')
 
-            s_match = re.search('name="s" value="(.+?)"', sub_body)
-            if s_match:
-                params["s"] = s_match.group(1) # On older variants this parameter is absent.
-            params["jschl_vc"] = re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1)
-            params["pass"] = re.search(r'name="pass" value="(.+?)"', sub_body).group(1)
+            submit_url = "https://www.ianimes.co/cdn-cgi/l/chk_captcha?s="+params['s']+"&id="+params['id']+"&g-recaptcha-response="+params['g-recaptcha-response']+"&bf_challenge_id="+params['bf_challenge_id']
+        else:
+            submit_url = "%s://%s/cdn-cgi/l/chk_jschl" % (parsed_url.scheme, domain)
+            try:
+                cf_delay = float(re.search('submit.*?(\d+)', body, re.DOTALL).group(1)) / 1000.0
 
-            if body.find('id="cf-dn-', form_index) != -1:
-                extra_div_expression = re.search('id="cf-dn-.*?>(.+?)<', sub_body).group(1)
+                form_index = body.find('id="challenge-form"')
+                if form_index == -1:
+                    raise Exception('CF form not found')
+                sub_body = body[form_index:]
 
-            # Initial value.
-            js_answer = self.cf_parse_expression(
-                re.search('setTimeout\(function\(.*?:(.*?)}', body, re.DOTALL).group(1)
-            )
-            # Extract the arithmetic operations.
-            builder = re.search("challenge-form'\);\s*;(.*);a.value", body, re.DOTALL).group(1)
-            # Remove a function semicolon before splitting on semicolons, else it messes the order.
-            lines = builder.replace(' return +(p)}();', '', 1).split(';')
+                params["jschl_vc"] = re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1)
+                params["pass"] = re.search(r'name="pass" value="(.+?)"', sub_body).group(1)
 
-            if DEBUG_MODE == True:
-                print('s : '+params["s"])
-                print('jschl_vc : '+params["jschl_vc"])
-                print('pass : '+params["pass"])
-                print('js_answer : '+str(js_answer))
-                print('html Content : '+body)
-                print('lines : ' +str(lines))
+                if body.find('id="cf-dn-', form_index) != -1:
+                    extra_div_expression = re.search('id="cf-dn-.*?>(.+?)<', sub_body).group(1)
 
-            for line in lines:
-                if len(line) and '=' in line:
-                    heading, expression = line.split('=', 1)
-                    if 'eval(eval(' in expression:
-                        # Uses the expression in an external <div>.
-                        expression_value = self.cf_parse_expression(extra_div_expression)
-                    elif 'function(p' in expression:
-                        # Expression + domain sampling function.
-                        expression_value = self.cf_parse_expression(expression, domain)
-                    else:
-                        expression_value = self.cf_parse_expression(expression)
-                    js_answer = self.cf_arithmetic_op(heading[-1], js_answer, expression_value)
+                # Initial value.
+                js_answer = self.cf_parse_expression(
+                    re.search('setTimeout\(function\(.*?:(.*?)}', body, re.DOTALL).group(1)
+                )
+                # Extract the arithmetic operations.
+                builder = re.search("challenge-form'\);\s*;(.*);a.value", body, re.DOTALL).group(1)
+                # Remove a function semicolon before splitting on semicolons, else it messes the order.
+                lines = builder.replace(' return +(p)}();', '', 1).split(';')
 
-            if '+ t.length' in body:
-                js_answer += len(domain) # Only older variants add the domain length.
+                if DEBUG_MODE == True:
+                    print('s : '+params["s"])
+                    print('jschl_vc : '+params["jschl_vc"])
+                    print('pass : '+params["pass"])
+                    print('js_answer : '+str(js_answer))
+                    print('html Content : '+body)
+                    print('lines : ' +str(lines))
 
-            params["jschl_answer"] = '%.10f' % js_answer
+                for line in lines:
+                    if len(line) and '=' in line:
+                        heading, expression = line.split('=', 1)
+                        if 'eval(eval(' in expression:
+                            # Uses the expression in an external <div>.
+                            expression_value = self.cf_parse_expression(extra_div_expression)
+                        elif 'function(p' in expression:
+                            # Expression + domain sampling function.
+                            expression_value = self.cf_parse_expression(expression, domain)
+                        else:
+                            expression_value = self.cf_parse_expression(expression)
+                        js_answer = self.cf_arithmetic_op(heading[-1], js_answer, expression_value)
 
-            if DEBUG_MODE == True:
-                print("jschl_answer : "+params["jschl_answer"])
+                if '+ t.length' in body:
+                    js_answer += len(domain) # Only older variants add the domain length.
 
-        except Exception as e:
-            # Something is wrong with the page.
-            # This may indicate Cloudflare has changed their anti-bot
-            # technique. If you see this and are running the latest version,
-            # please open a GitHub issue so I can update the code accordingly.
-            logging.error("[!] %s Unable to parse Cloudflare anti-bots page. "
-                          "Try upgrading cloudflare-scrape, or submit a bug report "
-                          "if you are running the latest version. Please read "
-                          "https://github.com/Anorov/cloudflare-scrape#updates "
-                          "before submitting a bug report." % e)
-            raise
+                params["jschl_answer"] = '%.10f' % js_answer
 
-        # Cloudflare requires a delay before solving the challenge.
-        # Always wait the full delay + 1s because of 'time.sleep()' imprecision.
-        time.sleep(cf_delay + 1.0)
+                if DEBUG_MODE == True:
+                    print("jschl_answer : "+params["jschl_answer"])
+
+            except Exception as e:
+                # Something is wrong with the page.
+                # This may indicate Cloudflare has changed their anti-bot
+                # technique. If you see this and are running the latest version,
+                # please open a GitHub issue so I can update the code accordingly.
+                logging.error("[!] %s Unable to parse Cloudflare anti-bots page. "
+                              "Try upgrading cloudflare-scrape, or submit a bug report "
+                              "if you are running the latest version. Please read "
+                              "https://github.com/Anorov/cloudflare-scrape#updates "
+                              "before submitting a bug report." % e)
+                raise
+
+            # Cloudflare requires a delay before solving the challenge.
+            # Always wait the full delay + 1s because of 'time.sleep()' imprecision.
+            time.sleep(cf_delay + 1.0)
 
         # Requests transforms any request into a GET after a redirect,
         # so the redirect has to be handled manually here to allow for
@@ -273,7 +218,6 @@ class CloudflareScraper(Session):
 
         # One of these '.request()' calls below might trigger another challenge.
         redirect = self.request(method, submit_url, **cloudflare_kwargs)
-
         if 'Location' in redirect.headers:
             redirect_location = urlparse(redirect.headers["Location"])
             if not redirect_location.netloc:
@@ -288,8 +232,9 @@ class CloudflareScraper(Session):
             response = self.request(method, redirect, **original_kwargs)
         else:
             response = redirect
+
         # Reset the repeated-try counter when the answer passes.
-        self.cf_tries = 0
+        self.tries = 0
         return response
 
     def cf_sample_domain_function(self, func_expression, domain):
@@ -388,7 +333,6 @@ class CloudflareScraper(Session):
                 },
                 scraper.headers["User-Agent"]
                )
-
 
     @classmethod
     def get_cookie_string(cls, url, user_agent=None, **kwargs):
