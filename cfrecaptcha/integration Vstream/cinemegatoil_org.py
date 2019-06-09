@@ -8,13 +8,11 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui ,VSlog
-import re, urllib, requests, xbmcvfs, os, xbmcaddon
+from resources.lib.recaptcha import ResolveCaptcha
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
+import re, urllib, requests
 
-__addon__ = xbmcaddon.Addon('plugin.video.vstream')
-__sLang__ = 'fr'
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 SITE_IDENTIFIER = 'cinemegatoil_org'
 SITE_NAME = 'CineMegaToil'
@@ -181,7 +179,6 @@ def showHosters():
 
     sPattern = '<b>([^"]+)</b><tr> <br>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -197,9 +194,14 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 if aEntry[3]:
-                    sHost, sTitle = aEntry[4].split('-',1)
-                    sHost = '[COLOR coral]' + sHost + '[/COLOR]'
-                    sUrl = aEntry[3]
+                    try:
+                        sHost, sTitle = aEntry[4].split('-',1)
+                        sHost = '[COLOR coral]' + sHost + '[/COLOR]'
+                        sUrl = aEntry[3]
+                    except ValueError:
+                        sHost = '[COLOR coral]' + aEntry[4].capitalize() + '[/COLOR]'
+                        sHost = re.sub('\.\w+', '', sHost)
+                        sUrl = aEntry[3]
                 else:
                     sHost = '[COLOR coral]' + aEntry[2].capitalize() + '[/COLOR]'
                     sHost = re.sub('\.\w+', '', sHost)
@@ -217,7 +219,6 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
-    #VSlog 'entering Display_protected_link'
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -227,7 +228,6 @@ def Display_protected_link():
 
     if 'ouo' in sUrl:
         sHosterUrl = DecryptOuo(sUrl)
-        VSlog(sHosterUrl)
         if (sHosterUrl):
             sTitle = sMovieTitle
 
@@ -467,22 +467,16 @@ def DecryptOuo(sUrl):
     urlOuo = sUrl
     if not '/fbc/' in urlOuo:
         urlOuo = urlOuo.replace('io/','io/fbc/').replace('press/','press/fbc/')
-    VSlog(urlOuo)
 
-    #1er connection pour recuperer la cle du site
     oRequestHandler = cRequestHandler(urlOuo)
     sHtmlContent = oRequestHandler.request()
     Cookie = oRequestHandler.GetCookies()
-    VSlog(Cookie)
 
     key = re.search('sitekey: "(.+?)"',str(sHtmlContent)).group(1)
     OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent)).group(1)
 
     gToken = ResolveCaptcha(key, urlOuo)
-    VSlog('Token final de Recaptcha : '+gToken)
-    VSlog('\n payload : '+'_token='+OuoToken+'&g-recaptcha-response='+gToken)
 
-    #Requete pour valider le captcha du coter de ouo
     url = urlOuo.replace('/fbc/','/go/')
     params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
     headers = {'User-Agent': UA,
@@ -496,236 +490,7 @@ def DecryptOuo(sUrl):
         }
 
     r = requests.post(url,data=params, headers=headers)
-    VSlog(r.text)
 
-    #Recuperer le token et la derniere url de ouo
     final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(r.text))
-
-    #Derniere requete pour recuperer le liens du hoster
     r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers)
     return r.url
-
-def ResolveCaptcha(key, urlOuo):
-    #Requete vers les serveur de Google pour recuperer le captcha
-    urlBase  = 'https://www.google.com/recaptcha/api/fallback?k='+key+'&hl=fr&v=v1558333958099&t=5&ff=true'
-    oRequestHandler = cRequestHandler(urlBase)
-    oRequestHandler.addHeaderEntry('User-Agent',UA)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addHeaderEntry('Referer', urlOuo)
-    body = oRequestHandler.request()
-
-    #Recuperer le liens du payload
-    captchaScrap = re.findall('value="8"><img class="fbc-imageselect-payload" src="(.+?)"',str(body))
-
-    #Recuperer le texte du captcha
-    text = re.search('<div class="rc-imageselect.+?">.+?<strong>(.+?)</strong>',str(body)).group(1)
-
-    #Recuperer les 2 parametre necessaire pour acceder au captcha
-    c = re.search('method="POST"><input type="hidden" name="c" value="(.+?)"',str(body)).group(1)
-    k = re.search('k=(.+?)" alt=',str(body)).group(1)
-    params = {
-        "c": c,
-        "k": k,
-    }
-    query_string = urllib.urlencode( params )
-
-    #Requete pour le captcha
-    url = 'https://www.google.com'+str(captchaScrap[0]) + "?" + query_string
-    VSlog('\n' + url)
-
-    #Recuperation et ouverture de l'image (uniquement utile pour fonctionner hors Kodi)
-    filePath = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
-    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    #filename  = os.path.join(PathCache, 'Captcha.raw')
-
-    oRequestHandler = cRequestHandler(url)
-    htmlcontent = oRequestHandler.request()
-
-    downloaded_image = xbmcvfs.File(filePath, 'wb')
-    #downloaded_image = file(filename, "wb")
-    downloaded_image.write(htmlcontent)
-    downloaded_image.close()
-
-    oSolver = cInputWindow(captcha = filePath, msg = text,roundnum=1)
-    retArg = oSolver.get()
-    VSlog('>>>>>>>> Captcha response [%s]' % (retArg))
-
-    #Format la reponse
-    allNumber = [int(s) for s in re.findall('([0-9])',str(retArg))]
-    responseFinal = ""
-    for rep in allNumber:
-        responseFinal = responseFinal + '&response='+str(rep)
-    VSlog(responseFinal)
-
-    headers = {
-        'User-Agent': UA,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate',
-        'Referer': url,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length':str(len(params)),
-        }
-
-    #Requete pour valider le captcha
-    r = requests.post(urlBase, data='c='+c+responseFinal, headers=headers)
-    VSlog(str(r.content))
-
-    #Recupere le token du captcha
-    return re.search('<textarea dir="ltr" readonly>(.+?)<',str(r.content)).group(1)
-
-class cInputWindow(xbmcgui.WindowDialog):
-    def __init__(self, *args, **kwargs):
-
-        self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(335,200,624,400,"")
-        xbmc.sleep(500)
-        self.img = xbmcgui.ControlImage(335,200,624,400,self.cptloc)
-        xbmc.sleep(500)
-
-        bg_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "background.png"
-        check_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_checked.png"
-        uncheck_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_unchecked1.png"
-
-        self.ctrlBackgound = xbmcgui.ControlImage(
-            0,0,
-            1280, 720,
-            bg_image
-        )
-        self.cancelled=False
-        self.addControl (self.ctrlBackgound)
-        self.msg = kwargs.get('msg')+'\nNormalement il devrai y avoir en 3 ou 4 selection'
-        self.roundnum=kwargs.get('roundnum')
-        self.strActionInfo = xbmcgui.ControlLabel(335, 120, 700, 300, "Le theme est : " + self.msg, 'font13', '0xFFFF00FF')
-        self.addControl(self.strActionInfo)
-
-        self.strActionInfo = xbmcgui.ControlLabel(335, 20, 724, 400, 'Captcha round %s'%(str(self.roundnum)), 'font40', '0xFFFF00FF')
-        self.addControl(self.strActionInfo)
-
-        self.addControl(self.img)
-
-        self.chk=[0]*9
-        self.chkbutton=[0]*9
-        self.chkstate=[False]*9
-
-        if 1==2:
-            self.chk[0]= xbmcgui.ControlCheckMark(335, 190, 220, 150, '1', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[1]= xbmcgui.ControlCheckMark(335+200, 190, 220, 150, '2', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[2]= xbmcgui.ControlCheckMark(335+400, 190, 220, 150, '3', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-
-            self.chk[3]= xbmcgui.ControlCheckMark(335, 190+130, 220, 150, '4', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[4]= xbmcgui.ControlCheckMark(335+200, 190+130, 220, 150, '5', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[5]= xbmcgui.ControlCheckMark(335+400, 190+130, 220, 150, '6', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-
-            self.chk[6]= xbmcgui.ControlCheckMark(335, 190+260, 220, 150, '7', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[7]= xbmcgui.ControlCheckMark(335+200, 190+260, 220, 150, '8', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-            self.chk[8]= xbmcgui.ControlCheckMark(335+400, 190+260, 220, 150, '9', font='font14',focusTexture=check_image ,noFocusTexture=uncheck_image,checkWidth=220,checkHeight=150)
-        else:
-
-            self.chk[0]= xbmcgui.ControlImage(335, 190, 220, 150,check_image)
-            self.chk[1]= xbmcgui.ControlImage(335+200, 190, 220, 150,check_image)
-            self.chk[2]= xbmcgui.ControlImage(335+400, 190, 220, 150,check_image)
-
-            self.chk[3]= xbmcgui.ControlImage(335, 190+130, 220, 150,check_image)
-            self.chk[4]= xbmcgui.ControlImage(335+200, 190+130, 220, 150,check_image)
-            self.chk[5]= xbmcgui.ControlImage(335+400, 190+130, 220, 150,check_image)
-
-            self.chk[6]= xbmcgui.ControlImage(335, 190+260, 220, 150,check_image)
-            self.chk[7]= xbmcgui.ControlImage(335+200, 190+260, 220, 150,check_image)
-            self.chk[8]= xbmcgui.ControlImage(335+400, 190+260, 220, 150,check_image)
-
-            self.chkbutton[0]= xbmcgui.ControlButton(335, 190, 210, 150, '1', font='font1');
-            self.chkbutton[1]= xbmcgui.ControlButton(335+200, 190, 220, 150, '2', font='font1');
-            self.chkbutton[2]= xbmcgui.ControlButton(335+400, 190, 220, 150, '3', font='font1');
-
-            self.chkbutton[3]= xbmcgui.ControlButton(335, 190+130, 210, 150, '4', font='font1');
-            self.chkbutton[4]= xbmcgui.ControlButton(335+200, 190+130, 220, 150, '5', font='font1');
-            self.chkbutton[5]= xbmcgui.ControlButton(335+400, 190+130, 220, 150, '6', font='font1');
-
-            self.chkbutton[6]= xbmcgui.ControlButton(335, 190+260, 210, 150, '7', font='font1');
-            self.chkbutton[7]= xbmcgui.ControlButton(335+200, 190+260, 220, 150, '8', font='font1');
-            self.chkbutton[8]= xbmcgui.ControlButton(335+400, 190+260, 220, 150, '9', font='font1');
-
-        for obj in self.chk:
-            self.addControl(obj )
-            obj.setVisible(False)
-        for obj in self.chkbutton:
-            self.addControl(obj )
-
-        self.cancelbutton = xbmcgui.ControlButton(335+312-100,610,100,40,'Cancel',alignment=2)
-        self.okbutton = xbmcgui.ControlButton(335+312+50,610,100,40,'OK',alignment=2)
-        self.addControl(self.okbutton)
-        self.addControl(self.cancelbutton)
-
-        self.chkbutton[6].controlDown(self.cancelbutton);  self.chkbutton[6].controlUp(self.chkbutton[3])
-        self.chkbutton[7].controlDown(self.cancelbutton);  self.chkbutton[7].controlUp(self.chkbutton[4])
-        self.chkbutton[8].controlDown(self.okbutton);      self.chkbutton[8].controlUp(self.chkbutton[5])
-
-        self.chkbutton[6].controlLeft(self.chkbutton[8]);self.chkbutton[6].controlRight(self.chkbutton[7]);
-        self.chkbutton[7].controlLeft(self.chkbutton[6]);self.chkbutton[7].controlRight(self.chkbutton[8]);
-        self.chkbutton[8].controlLeft(self.chkbutton[7]);self.chkbutton[8].controlRight(self.chkbutton[6]);
-
-        self.chkbutton[3].controlDown(self.chkbutton[6]);  self.chkbutton[3].controlUp(self.chkbutton[0])
-        self.chkbutton[4].controlDown(self.chkbutton[7]);  self.chkbutton[4].controlUp(self.chkbutton[1])
-        self.chkbutton[5].controlDown(self.chkbutton[8]);  self.chkbutton[5].controlUp(self.chkbutton[2])
-
-        self.chkbutton[3].controlLeft(self.chkbutton[5]);self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);self.chkbutton[4].controlRight(self.chkbutton[5]);
-        self.chkbutton[5].controlLeft(self.chkbutton[4]);self.chkbutton[5].controlRight(self.chkbutton[3]);
-
-        self.chkbutton[0].controlDown(self.chkbutton[3]);  self.chkbutton[0].controlUp(self.cancelbutton)
-        self.chkbutton[1].controlDown(self.chkbutton[4]);  self.chkbutton[1].controlUp(self.cancelbutton)
-        self.chkbutton[2].controlDown(self.chkbutton[5]);  self.chkbutton[2].controlUp(self.okbutton)
-
-        self.chkbutton[0].controlLeft(self.chkbutton[2]);self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);self.chkbutton[2].controlRight(self.chkbutton[0]);
-
-        self.cancelled=False
-        self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton); self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[2]);self.okbutton.controlUp(self.chkbutton[8]);
-        self.cancelbutton.controlDown(self.chkbutton[0]); self.cancelbutton.controlUp(self.chkbutton[6]);
-
-    def get(self):
-        self.doModal()
-        self.close()
-        if not self.cancelled:
-            retval=""
-            for objn in range(9):
-                if self.chkstate[objn]:
-                    retval+=("" if retval=="" else ",")+str(objn)
-            return  retval
-
-        else:
-            return ""
-
-    def anythingChecked(self):
-        for obj in self.chkstate:
-            if obj:
-                return True
-        return False
-
-    def onControl(self,control):
-        if   control==self.okbutton:
-            if self.anythingChecked():
-                self.close()
-        elif control== self.cancelbutton:
-            self.cancelled=True
-            self.close()
-        try:
-            if 'xbmcgui.ControlButton' in repr(type(control)):
-                index=control.getLabel()
-                if index.isnumeric():
-                    self.chkstate[int(index)-1]= not self.chkstate[int(index)-1]
-                    self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
-
-        except: pass
-
-    def onAction(self, action):
-        if action == 10:
-            self.cancelled=True
-            self.close()
