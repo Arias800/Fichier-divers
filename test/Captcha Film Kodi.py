@@ -268,7 +268,6 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
     oGui = cGui() #ouvre l'affichage
     if sSearch: #si une url et envoyer directement grace a la fonction showSearch
@@ -280,7 +279,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl) #envoye une requete a l'url
     sHtmlContent = oRequestHandler.request() #requete aussi
 
-    sPattern = '<div class="col-lg-4 col-md-6 without_padding">.+?<a href="([^"]+)">.+?panel panel-s4i panel-no-border.+?affiche_liste" src="([^"]+)".+?alt="([^"]+)".+?<i class="fa fa-tv"></i>([^<]+)<.+?div class="synopsis_hover".+?>([^<]+)<'
+    sPattern = '<div class="col-lg-4.+?<a href="([^"]+)">.+?affiche_liste" src="([^"]+)".+?alt="([^"]+)".+?<i class="fa fa-tv"></i>([^<]+)<.+?div class="synopsis_hover".+?>([^<]+)<'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -317,7 +316,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb) #sortie du poster
 
             if '/serie/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sDisplayTitle, '', "", "", oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
