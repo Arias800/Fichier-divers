@@ -67,6 +67,10 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -202,6 +206,11 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
+def showDetail():
+    dialog().VSok(desc= """Explication du captcha :\n Pour passer le captcha il suffit de choisir le bon titre parmis les 5 proposition.
+Le site est limité en nombre de passage pour les personnes qui n'ont pas de compte.
+Vous pouvez activer la connexion au compte dans les parametre de Vstream.""", title = "Fonctionnement du site")
+
 def showSearch():
     oGui = cGui()
 
@@ -271,10 +280,13 @@ def showMovies(sSearch = ''):
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
+    #Connection pour passer la limite
     if not 'Déconnexion' in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
         VSlog("Connection")
+
         import requests
         s = requests.Session()
+
         headers = {"Host": "time2watch.io",
             "User-Agent": UA,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -294,21 +306,10 @@ def showMovies(sSearch = ''):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password'), 'hidden': aResult[1][0][1], "token":aResult[1][0][0]}
-        #data = "username=" + ADDON.getSetting('hoster_time2watch_username') + "&pwd=" + ADDON.getSetting('hoster_time2watch_password') + "&hidden=" + aResult[1][0][1] + "&token="+aResult[1][0][0]
         
-        headers = {"Host": "time2watch.io",
-            "User-Agent": UA,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Content-Length": str(len(data)),
-            "Origin": "https://time2watch.io",
-            "DNT": "1",
-            "Connection": "keep-alive",
-            "Referer": "https://time2watch.io/login/",
-            "Upgrade-Insecure-Requests": "1",
-            "TE": "Trailers"}
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+        headers["Content-Length"] = str(len(data))
+        headers["Referer"] = "https://time2watch.io/login/"
 
         r = s.post("https://time2watch.io/login/", data = data, headers=headers, allow_redirects=False)
         Cookie = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.get_dict().items()])
@@ -464,7 +465,7 @@ def ShowSerieSaisonEpisodes():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-                oGui.addMovie(SITE_IDENTIFIER, 'DecryptTime', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'DecryptTime', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
