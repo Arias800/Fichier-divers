@@ -209,6 +209,7 @@ def showMenuMangas():
 def showDetail():
     dialog().VSok(desc= """Explication du captcha :\n Pour passer le captcha il suffit de choisir le bon titre parmis les 5 proposition.
 Le site est limité en nombre de passage pour les personnes qui n'ont pas de compte.
+Avoir un compte permets aussi de ne pas avoir le captcha qui apparait a chaque fois.
 Vous pouvez activer la connexion au compte dans les parametre de Vstream.""", title = "Fonctionnement du site")
 
 def showSearch():
@@ -492,50 +493,54 @@ def DecryptTime():
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '</p>.+?<img src="([^"]+)" style=".+?<input type="hidden" name="challenge" value="([^"]+)">'
-    result = oParser.parse(sHtmlContent, sPattern)
-    challenge = result[1][0][0]
-    challengeTok = result[1][0][1]
+    if "Test de sécurité !" in sHtmlContent:
+        sPattern = '</p>.+?<img src="([^"]+)" style=".+?<input type="hidden" name="challenge" value="([^"]+)">'
+        result = oParser.parse(sHtmlContent, sPattern)
+        challenge = result[1][0][0]
+        challengeTok = result[1][0][1]
 
-    sPattern = '<label for="(.+?)".+?onclick="ie_click.+?<img src=".+?base64,(.+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern = '<label for="(.+?)".+?onclick="ie_click.+?<img src=".+?base64,(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-    dialogs = dialog()
-    Filename = []
-    i = 0
+        dialogs = dialog()
+        Filename = []
+        i = 0
 
-    oRequestHandler = cRequestHandler(challenge)
-    if Cookie:
-        oRequestHandler.addHeaderEntry('Cookie', Cookie)
-    sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(challenge)
+        if Cookie:
+            oRequestHandler.addHeaderEntry('Cookie', Cookie)
+        sHtmlContent = oRequestHandler.request()
 
-    downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/challenge.png", 'wb')
-    downloaded_image.write(sHtmlContent)
-    downloaded_image.close()
-
-    for base64_string in aResult[1]:
-        imgdata = base64.b64decode(base64_string[1])
-
-        downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png", 'wb')
-        downloaded_image.write(imgdata)
+        downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/challenge.png", 'wb')
+        downloaded_image.write(sHtmlContent)
         downloaded_image.close()
-        Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png")
-        i = i + 1
 
-    oSolver = cInputWindow(captcha = Filename, challenge = "special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
-    retArg = oSolver.get()
+        for base64_string in aResult[1]:
+            imgdata = base64.b64decode(base64_string[1])
 
-    data = "challenge="+challengeTok+"&g-recaptcha-response="+aResult[1][int(retArg)][0]
+            downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png", 'wb')
+            downloaded_image.write(imgdata)
+            downloaded_image.close()
+            Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png")
+            i = i + 1
 
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
-    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    if Cookie:
-        oRequestHandler.addHeaderEntry('Cookie', Cookie)
-    oRequestHandler.addParametersLine(data)
-    sHtmlContent = getLinkHtml(oRequestHandler.request())
+        oSolver = cInputWindow(captcha = Filename, challenge = "special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
+        retArg = oSolver.get()
+
+        data = "challenge="+challengeTok+"&g-recaptcha-response="+aResult[1][int(retArg)][0]
+
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+        oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+        if Cookie:
+            oRequestHandler.addHeaderEntry('Cookie', Cookie)
+        oRequestHandler.addParametersLine(data)
+        sHtmlContent = getLinkHtml(oRequestHandler.request())
+
+    else:
+        sHtmlContent = getLinkHtml(sHtmlContent)
 
     sPattern = '<img src=.+?<a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
