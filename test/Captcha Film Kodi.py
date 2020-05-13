@@ -10,7 +10,7 @@ from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog, addon
 
-import re, base64, random, time, os, xbmcaddon, xbmcvfs
+import re, base64, random, os, xbmcaddon, xbmcvfs
 
 ADDON = addon()
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
@@ -207,7 +207,12 @@ def showMenuMangas():
     oGui.setEndOfDirectory()
 
 def showDetail():
-    dialog().VSok(desc= """Explication du captcha :\n Pour passer le captcha il suffit de choisir le bon titre parmis les 5 proposition.
+    dialog().VStextView(desc= """Explication du captcha :
+Pour passer le captcha il suffit de choisir le bon titre parmis les 5 propositions.
+Attention vous avez 20 seconds pour valider votre réponses.
+Si jamais vous vous trompez il suffit de recharger la page.
+
+Utilité d'avoir un compte:
 Le site est limité en nombre de passage pour les personnes qui n'ont pas de compte.
 Avoir un compte permets aussi de ne pas avoir le captcha qui apparait a chaque fois.
 Vous pouvez activer la connexion au compte dans les parametre de Vstream.""", title = "Fonctionnement du site")
@@ -473,10 +478,12 @@ def ShowSerieSaisonEpisodes():
     oGui.setEndOfDirectory()
 
 def getLinkHtml(sHtmlContent):
-    oParser = cParser()
-    sPattern = '<div class="panel panel-s4i panel-no-border".+?>(.+?)<span style='
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    return aResult[1][0]
+    if not "Limite atteinte" in sHtmlContent:
+        oParser = cParser()
+        sPattern = '<div class="panel panel-s4i panel-no-border".+?>(.+?)<span style='
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        return aResult[1][0]
+    return False
 
 def DecryptTime():
     oGui = cGui()
@@ -538,6 +545,8 @@ def DecryptTime():
             oRequestHandler.addHeaderEntry('Cookie', Cookie)
         oRequestHandler.addParametersLine(data)
         sHtmlContent = getLinkHtml(oRequestHandler.request())
+        if sHtmlContent == False:
+            dialog().VSok(desc="Limite journaliere atteinte, pour continuez a utiliser le site ajourd\'hui, il faut utilisez un compte (c\'est gratuit)", title = "Limites atteintes")
 
     else:
         sHtmlContent = getLinkHtml(sHtmlContent)
@@ -560,7 +569,7 @@ class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
         i = 0
-        u = 100
+        u = 0
         pos = []
 
         bg_image = os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + 'background.png'
@@ -572,13 +581,13 @@ class cInputWindow(xbmcgui.WindowDialog):
 
         self.img = [0]*6
         for img in self.cptloc:
-            self.img[i] = xbmcgui.ControlImage(u, 400, 200, 200, img)
+            self.img[i] = xbmcgui.ControlImage(u, 400, 250, 200, img)
             self.addControl(self.img[i])
             i = i + 1
             pos.append(u)
-            u = u + 200
+            u = u + 250
 
-        self.img[5] = xbmcgui.ControlImage(500, 0, 300, 499, kwargs.get('challenge'))
+        self.img[5] = xbmcgui.ControlImage(500, 0, 300, 400, kwargs.get('challenge'))
         self.addControl(self.img[5])
 
         self.chk = [0]*5
@@ -588,12 +597,12 @@ class cInputWindow(xbmcgui.WindowDialog):
         i = 0
         while i < 5:
             if 1 == 2:
-                self.chk[i] = xbmcgui.ControlCheckMark(pos[i], 400, 200, 200, str(i + 1), font = 'font14', focusTexture = check_image, checkWidth = 260, checkHeight = 166)
+                self.chk[i] = xbmcgui.ControlCheckMark(pos[i], 400, 250, 200, str(i + 1), font = 'font14', focusTexture = check_image, checkWidth = 260, checkHeight = 166)
 
             else:
-                self.chk[i] = xbmcgui.ControlImage(pos[i], 400, 200, 200, check_image)
+                self.chk[i] = xbmcgui.ControlImage(pos[i], 400, 250, 200, check_image)
 
-                self.chkbutton[i] = xbmcgui.ControlButton(pos[i], 400, 200, 200, str(i + 1), font = 'font1')
+                self.chkbutton[i] = xbmcgui.ControlButton(pos[i], 400, 250, 200, str(i + 1), font = 'font1')
 
             i = i + 1
 
