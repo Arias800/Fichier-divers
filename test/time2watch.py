@@ -304,35 +304,28 @@ def showMovies(sSearch=''):
     if not 'Déconnexion' in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
         VSlog("Connection")
 
-        import requests
-        s = requests.Session()
-
-        headers = {"Host": "time2watch.io",
-                   "User-Agent": UA,
-                   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                   "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-                   "Accept-Encoding": "gzip, deflate",
-                   "Origin": "https://time2watch.io",
-                   "DNT": "1",
-                   "Connection": "keep-alive",
-                   "Referer": sUrl,
-                   "Upgrade-Insecure-Requests": "1",
-                   "TE": "Trailers"}
-
-        r = s.get("https://time2watch.io/login/", headers=headers)
-        sHtmlContent = r.content
+        oRequestHandler = cRequestHandler("https://time2watch.io/login/")
+        oRequestHandler.addHeaderEntry('Cookie', Cookie)                        
+        sHtmlContent = oRequestHandler.request()
+        Cookie = oRequestHandler.GetCookies()
 
         sPattern = '<input type="hidden" name="token" id="token" value="(.+?)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password'), "token": aResult[1][0][0]}
+        data = 'username=' + ADDON.getSetting('hoster_time2watch_username') + '&pwd=' + ADDON.getSetting('hoster_time2watch_password') + "&token" + aResult[1][0][0]
 
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        headers["Content-Length"] = str(len(data))
-        headers["Referer"] = "https://time2watch.io/login/"
-
-        r = s.post("https://time2watch.io/login/", data=data, headers=headers, allow_redirects=False)
-        Cookie = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.get_dict().items()])
+        oRequestHandler = cRequestHandler("https://time2watch.io/login/")
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Host', "time2watch.io")
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
+        oRequestHandler.addHeaderEntry('Content-Length', str(len(data)))
+        oRequestHandler.addHeaderEntry('Origin', "https://time2watch.io")
+        oRequestHandler.addHeaderEntry('Referer', "https://time2watch.io/login/")
+        oRequestHandler.addHeaderEntry('Cookie', Cookie)   
+        oRequestHandler.addParametersLine(data)
+        sHtmlContent = oRequestHandler.request()
+        Cookie = oRequestHandler.GetCookies()
 
         GestionCookie().SaveCookie('time2watch', Cookie)
 
