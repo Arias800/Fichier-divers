@@ -30,7 +30,7 @@
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-logo="franceinfo.png" ,France Info
-[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https%3A%2F%2Flivefrancetv.akamaized.net%2Fsimulcast%2FFrance_Info%2Fdash%2FFrance_Info.mpd
+[URL]https://livefrancetv.akamaized.net/simulcast/France_Info/dash/ZXhwPTE1OTc5NDkwMzR+YWNsPSUyZnNpbXVsY2FzdCUyZkZyYW5jZV9JbmZvJTJmZGFzaCp+aG1hYz05YWQwYmM1Yjc2NzdhZjZhN2FkMDM3OWUzMGJmMmJlMDI0N2IzODRiNTBiZDg2ODkzZjk3MWM5YjIwZmZjOTYy/France_Info.mpd
 
 #EXTINF:-1 tvg-logo="arte.png" ,Arte
 http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
