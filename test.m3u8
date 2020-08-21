@@ -73,3 +73,6 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="gong.png" ,Gong
 [REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
+
+#EXTINF:-1 tvg-logo="gong.png" ,M6
+[REGEX]full_physical_path":"([^"]+)","type":"delta_dashcenc_h264"[URL]https://pc.middleware.6play.fr/6play/v2/platforms/m6group_web/services/6play/live?channel=M6&with=freemiumpacks,service_display_images,nextdiffusion,extra_data
