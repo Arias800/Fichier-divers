@@ -75,4 +75,4 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 [REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
 
 #EXTINF:-1 tvg-logo="gong.png" ,01Net TV
-https://www.dailymotion.com/video/k4HSurCuB7v2sQvwFiw
+https://www.dailymotion.com/player/metadata/video/k4HSurCuB7v2sQvwFiw
