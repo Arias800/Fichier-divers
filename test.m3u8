@@ -76,3 +76,7 @@ https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="gong.png" ,01Net TV
 https://www.dailymotion.com/player/metadata/video/k4HSurCuB7v2sQvwFiw
+
+#EXTINF:-1 tvg-logo="gong.png" ,Alsace 20
+[REGEX]"files":{"auto":"([^"]+)"[URL]https://www.alsace20.tv/visionneuse/visio_v9_js.php?key=live1&habillage=&mode=html
+https://www.alsace20.tv/visionneuse/visio_v9_js.php?key=live1&habillage=&mode=html
