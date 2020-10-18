@@ -3,8 +3,6 @@
 #
 import json
 import re
-import xbmcvfs
-import xbmc
 
 from resources.lib.comaddon import progress, VSlog, dialog, addon
 from resources.lib.gui.gui import cGui
@@ -99,11 +97,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
-
-    if ADDON.getSetting('token_alldebrid') == "":
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -268,17 +261,6 @@ def showMenuAutre():
     oGui.addDir(SITE_IDENTIFIER, SPECTACLE_NEWS[1], "Spectacle et théatre (Derniers ajouts)", 'buzz.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-def getToken():
-    ADDON = addon()
-    oGui = cGui()
-
-    token = oGui.showKeyBoard(heading="Entrez votre token")
-    ADDON.setSetting('token_alldebrid', token)
-    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
-    oGui.setEndOfDirectory()
-
 
 def showSearch():
     oGui = cGui()
@@ -745,31 +727,19 @@ def getHost():
     sThumb = oInputParameterHandler.getValue('sThumb')
     test = oInputParameterHandler.getValue('Token')
 
-    import requests
-    s = requests.session()
-    headers1 = {'Host': 'ed-protect.org',
-        'User-Agent': UA,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': str(len(test)),
-        'Origin': 'https://ed-protect.org',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Referer': sUrl,
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-GPC': '1',
-        'TE': 'Trailers'}
+    data = 'g-recaptcha-response=' + test + '&submit_captcha=1'
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addParametersLine(data)
+    sHtmlContent = oRequestHandler.request()
 
-    d = {'g-recaptcha-response' : test ,
-        'submit_captcha':'1'}
-
-    req = requests.Request('POST',  sUrl, data=d, headers=headers)
-    prepped = s.prepare_request(req)
-    resp = s.send(prepped)
-
-    sHtmlContent = resp.content
     sPattern = '<div><span class="lien"><a target="_blank" href="(.+?)">'
 
     oParser = cParser()
@@ -784,7 +754,7 @@ def getHost():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-            oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
     
 def CutQual(sHtmlContent):
     oParser = cParser()
