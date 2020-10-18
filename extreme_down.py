@@ -708,14 +708,18 @@ def RecapchaBypass():
         debug=False,
     )
 
-    #N'affiche pas directement le liens car sinon Kodi crash.
-    sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sThumb', sThumb)
-    oOutputParameterHandler.addParameter('Token', test)
-    oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
+    if test is None:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
+
+    else:
+        #N'affiche pas directement le liens car sinon Kodi crash.
+        sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oOutputParameterHandler.addParameter('Token', test)
+        oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
