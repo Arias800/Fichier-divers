@@ -336,6 +336,7 @@ class cTrakt:
         return
 
     def decode(self, elem, Unicode=False):
+        VSlog(str(elem))
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             return elem
         else:
@@ -532,7 +533,6 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
 
                     if sTitle:
-                        VSlog(sTitle)
                         sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
