@@ -1,9 +1,9 @@
 #EXTM3U
 #EXTINF:-1 tvg-logo="tf1.png",TF1
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TF1?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TF1?format=hls
 
 #EXTINF:-1 tvg-logo="tmc.png",TMC
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TMC?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_TMC?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=10.0&topDomain=unknown
 
 #EXTINF:-1 tvg-logo="tfx.png",TFX
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_NT1?format=hls
