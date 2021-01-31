@@ -71,11 +71,7 @@ class cHoster(iHoster):
             "Content-Type": "application/json",
             "X-Requested-With": "XMLHttpRequest",
             "Origin": "https://hqq.tv",
-            "Cookie": "__cfduid=d4f620f4791cc05648c7c0b48a4347aed1610273987; _ym_uid=1610867611576756944; _ym_d=1610867611",
             "Connection": "keep-alive",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin",
             "TE": "Trailers"}
 
         click_hash = requests.post('https://hqq.tv/player/get_player_image.php', json=data, headers=headers).json()
@@ -91,11 +87,13 @@ class cHoster(iHoster):
         sh = re.search("shh*= *\'(.+?)\';", data).group(1)
         adb = re.search("adbn = \'(.+?)\'", html).group(1)
 
-        data = {"htoken":"","sh":sh,"ver":"4","secure":"0","adb":adb,"v":self.__sUrl.split('/')[4],"token":"","gt":"","embed_from":"0","wasmcheck":1,"adscore":"","click_hash":click_hash["hash_image"],"clickx":387,"clicky":401}
+        data = {"htoken":"","sh":sh,"ver":"4","secure":"0","adb":adb,"v":self.__sUrl.split('?')[1].split('=')[1],"token":"","gt":"","embed_from":"0","wasmcheck":1,"adscore":"","click_hash":click_hash["hash_image"],"clickx":387,"clicky":401}
         html = requests.post('https://hqq.tv/player/get_md5.php', json=data, headers=headers).json()
+        VSlog(html)
 
         if int(html["need_captcha"]) == 1:
-            captcha = "https://hqq.tv/player/embed_player.php?vid=" + self.__sUrl.split('/')[4] + "&need_captcha=1&pop=0"
+            VSlog(self.__sUrl.split('?')[1])
+            captcha = "https://hqq.tv/player/embed_player.php?" + self.__sUrl.split('?')[1] + "&need_captcha=1&pop=0"
 
             oRequestHandler = cRequestHandler(captcha)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -103,30 +101,22 @@ class cHoster(iHoster):
             oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
             sHtmlContent = oRequestHandler.request()
-            cookies = oRequestHandler.GetCookies()
-            VSlog(oRequestHandler.getResponseHeader())
 
             from resources.lib import librecaptcha
             test = librecaptcha.get_token(api_key="6LfCmh4TAAAAAKog9f8wTyEOc0U8Ms2RTuDFyYP_", site_url=captcha,
                                           user_agent=UA, gui=False, debug=False)
 
-            data = 'g-recaptcha-response=' + test
-            oRequestHandler = cRequestHandler(captcha + 'g-recaptcha-response=' + test)
+            oRequestHandler = cRequestHandler(captcha + '&g-recaptcha-response=' + test)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
             oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
             oRequestHandler.addHeaderEntry('Referer', captcha)
-            oRequestHandler.addHeaderEntry('Cookie', cookies)
             sHtmlContent = oRequestHandler.request()
-            VSlog(oRequestHandler.getResponseHeader())
-            VSlog(sHtmlContent)
 
-            data = {"htoken":"","sh":sh,"ver":"4","secure":"0","adb":adb,"v":self.__sUrl.split('/')[4],"token":"","gt":"","embed_from":"0","wasmcheck":1,"adscore":"","click_hash":click_hash["hash_image"],"clickx":387,"clicky":401}
+            data = {"htoken":"","sh":sh,"ver":"4","secure":"0","adb":adb,"v":self.__sUrl.split('?')[1].split('=')[1],"token":"","gt":"","embed_from":"0","wasmcheck":1,"adscore":"","click_hash":click_hash["hash_image"],"clickx":387,"clicky":401}
             html = requests.post('https://hqq.tv/player/get_md5.php', json=data, headers=headers).json()
             VSlog(html)
-
-        api_call = oRequestHandler.getRealUrl()
 
         if (api_call):
             return True, api_call + '.mp4.m3u8' + '|User-Agent=' + UA
