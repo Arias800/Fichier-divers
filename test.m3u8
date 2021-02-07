@@ -15,16 +15,16 @@
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
 
 #EXTINF:-1 tvg-logo="france2.png",France 2
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]	https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_2/hls_fr2/index.m3u8
 
 #EXTINF:-1 tvg-logo="france3.png",France 3
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_3%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]	https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_3/hls_fr3/index.m3u8
 
 #EXTINF:-1 tvg-logo="france4.png" ,France 4
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_4%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]	https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_4/hls_fr4/index.m3u8
 
 #EXTINF:-1 tvg-logo="france5.png" ,France 5
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_5%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_5/hls_fr5/index.m3u8
 
 #EXTINF:-1 tvg-logo="franceo.png" ,France O
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
