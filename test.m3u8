@@ -33,7 +33,7 @@ http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 [REGEX]url = "(.+?)"[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
 
 #EXTINF:-1 tvg-logo="nrj12.png" ,NRJ 12
-http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
+[DECODENRJ]https://www.nrj-play.fr/nrj12/direct
 
 #EXTINF:-1 tvg-logo="cstar.png" ,CStar
 https://www.dailymotion.com/player/metadata/video/x5gv5v0
@@ -58,6 +58,7 @@ https://www.dailymotion.com/player/metadata/video/xgepjr
 
 #EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
 [BRIGHTCOVEKEY]https://www.bfmtv.com/economie/en-direct/
+
 #EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
 https://www.dailymotion.com/player/metadata/video/x13p3qi
 
@@ -66,6 +67,3 @@ https://www.dailymotion.com/player/metadata/video/x13p3qi
 
 #EXTINF:-1 tvg-logo="equipe21.png" ,L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
-
-#EXTINF:-1 tvg-logo="gong.png" ,Gong
-[REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
