@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
 from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -12,7 +12,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib.util import QuotePlus
-
 
 class cGui:
 
@@ -27,15 +26,16 @@ class cGui:
 
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
-        #dir n'a pas de type
-        if Type != "dir":
+        # dir n'a pas de type
+        if Type != 'dir':
             cGui.CONTENT = Type
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
 
         if sThumbnail == '':
-            oGuiElement.setThumbnail(oGuiElement.getIcon())   
+            oGuiElement.setThumbnail(oGuiElement.getIcon())
+            
         else:       
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
@@ -45,8 +45,9 @@ class cGui:
 
         if sCat is not None:
             oGuiElement.setCat(sCat)
-        #Pour addLink on recupere le sCat precedent.
-        elif Type == "link":
+            
+        # Pour addLink on recupere le sCat precedent.
+        elif Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
             sCat = oInputParameterHandler.getValue('sCat')
             if sCat:
@@ -59,7 +60,6 @@ class cGui:
             oGuiElement.setFileName(sTitle)
 
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
         try:
@@ -83,7 +83,7 @@ class cGui:
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
 
     def addDir(self, sId, sFunction, sLabel, sThumbnail, oOutputParameterHandler='', sDesc=""):
-        if not "http" in sThumbnail:
+        if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
         self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
@@ -98,8 +98,8 @@ class cGui:
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
-    def addPerson(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        if not "http" in sThumbnail:
+    def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
+        if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
@@ -109,7 +109,7 @@ class cGui:
         if not "http" in sIcon:
             sIcon = 'special://home/addons/plugin.video.vstream/resources/art/' + sIcon
         sThumbnail = sIcon
-        sDesc = "Retrouvez tout le catalogue de " + sLabel
+        sDesc = ''
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
@@ -120,7 +120,6 @@ class cGui:
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
-        # oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
@@ -207,18 +206,6 @@ class cGui:
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
 
-        # affiche tag HD
-        # if '1080' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 1920, 'height': 1080})
-        # elif '720' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.50', 'width': 1280, 'height': 720})
-        # elif '2160'in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 3840, 'height': 2160})
-        # oListItem.addStreamInfo('audio', {'language': 'fr'})
-
-        # if oGuiElement.getMeta():
-        #     oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
-
         if oGuiElement.getCat():
             cGui.sCat = oGuiElement.getCat()
             oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
@@ -242,9 +229,6 @@ class cGui:
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
-
-        # sPluginHandle = cPluginHandler().getPluginHandle()
-        # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
         self.listing.append((sItemUrl, oListItem, _isFolder))
 
     # affiche les liens playable
@@ -273,9 +257,6 @@ class cGui:
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-        # sPluginHandle = cPluginHandler().getPluginHandle()
-
-        # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
         self.listing.append((sItemUrl, oListItem, False))
 
     def createListItem(self, oGuiElement):
@@ -284,8 +265,6 @@ class cGui:
 
         # voir : https://kodi.wiki/view/InfoLabels
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
-        # oListItem.setIconImage(oGuiElement.getIcon())
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
@@ -460,9 +439,6 @@ class cGui:
             oOutputParameterHandler = cOutputParameterHandler()
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-        # cree une id unique
-        # if oGuiElement.getSiteUrl():
-            # print(str(hash(oGuiElement.getSiteUrl())))
 
         sPluginPath = cPluginHandler().getPluginPath()
 
@@ -540,7 +516,7 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
         else:
-            #On appel la fonction integrer a Kodi pour charger les infos.
+            # On appel la fonction integrer a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
@@ -662,7 +638,7 @@ class cGui:
         dialogs = dialog()
         numboard = dialogs.numeric(0, self.ADDON.VSlang(30019), sDefaultNum)
         # numboard.doModal()
-        if numboard != None:
+        if numboard is not None:
             return numboard
 
         return False
