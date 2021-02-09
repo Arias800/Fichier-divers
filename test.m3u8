@@ -1,5 +1,5 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="tf1.png",TF1
+#EXTINF:-1 tvg-logo="https://cdn.1min30.com/wp-content/uploads/2018/01/Embl%C3%A8me-TF1.jpg,TF1
 [REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_TF1?context=MYTF1&pver=4009003&platform=web&os=windows&osVersion=10.0&topDomain=unknown
 
 #EXTINF:-1 tvg-logo="tmc.png",TMC
