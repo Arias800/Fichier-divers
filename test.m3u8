@@ -72,5 +72,5 @@ https://www.dailymotion.com/player/metadata/video/x13p3qi
 https://www.dailymotion.com/player/metadata/video/x2lefik
 
 #EXTINF:-1 tvg-logo="m6.png",M6
-[6Play]hhttps://chromecast.middleware.6play.fr/6play/v2/platforms/chromecast/services/6play/live?channel=M6&with=freemiumpacks,service_display_images,nextdiffusion,extra_data
+[SixPlay]hhttps://chromecast.middleware.6play.fr/6play/v2/platforms/chromecast/services/6play/live?channel=M6&with=freemiumpacks,service_display_images,nextdiffusion,extra_data
 
