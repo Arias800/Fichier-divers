@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Votre pseudo
+# Arias800
 from resources.lib.handler.requestHandler import cRequestHandler  # requete url
 from resources.lib.parser import cParser  # recherche de code
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog, isMatrix
+from resources.lib.comaddon import VSlog, isMatrix, VSPath
 from resources.lib.jsparser import JsParser
+from resources.lib.util import urlEncode, Quote
 from ast import literal_eval
 
 if isMatrix():
@@ -17,6 +18,7 @@ import zlib
 import re
 import base64
 import json
+import xbmcvfs
 
 class cHoster(iHoster):
 
@@ -96,20 +98,9 @@ class cHoster(iHoster):
         api_call = False
 
         headers = {
-            "Host":"geoip.redirect-ads.com",
             "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
-            "Accept-Language":"fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
             "Accept-Encoding":"gzip, deflate",
-            "DNT":"1",
-            "Connection":"keep-alive",
-            "Referer":"https://hdss.la/",
-            "Upgrade-Insecure-Requests":"1"}
-
-        if isMatrix():
-            import urllib.request as urllib
-        else:
-            import urllib
-        import zlib
+            "Origin": "https://geoip.redirect-ads.com"}
 
         req = urllib.Request(self.__sUrl, None, headers)
         with urllib.urlopen(req) as response:
@@ -120,39 +111,60 @@ class cHoster(iHoster):
         sPattern =  '<script src="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0]):
-            urlJS = "https://geoip.redirect-ads.com" + aResult[1][-2]
+        urlJS = "https://geoip.redirect-ads.com" + aResult[1][-2]
 
-            headers['Referer'] = self.__sUrl
-            req = urllib.Request(urlJS, None, headers)
-            with urllib.urlopen(req) as response:
-                decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                sHtmlContent = decomp.decompress(response.read()).decode('utf-8')
+        headers['Referer'] = self.__sUrl
+        req = urllib.Request(urlJS, None, headers)
+        with urllib.urlopen(req) as response:
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            sHtmlContent = decomp.decompress(response.read()).decode('utf-8')
 
-            #2ème partie des données.
+        #2ème partie des données.
+        aResult1 = re.search('([^>]+)', sHtmlContent, re.DOTALL | re.UNICODE).group(1)
+        data = CheckAADecoder(aResult1)
+        dataPartOne = json.loads(re.search('SoTrymConfigDefault = ([^>]+)"',data).group(1))
 
-            aResult1 = re.search('([^>]+)', sHtmlContent, re.DOTALL | re.UNICODE).group(1)
-            data = CheckAADecoder(aResult1)
-            dataPartOne = json.loads(re.search('SoTrymConfigDefault = ([^>]+)"',data).group(1))
-            VSlog(dataPartOne)
+        urlJS = "https://geoip.redirect-ads.com" + aResult[1][-1]
 
-        if (aResult[0]):
-            urlJS = "https://geoip.redirect-ads.com" + aResult[1][-1]
+        req = urllib.Request(urlJS, None, headers)
+        with urllib.urlopen(req) as response:
+            decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            sHtmlContent = decomp.decompress(response.read()).decode('utf-8')
 
-            headers['Referer'] = self.__sUrl
-            req = urllib.Request(urlJS, None, headers)
-            with urllib.urlopen(req) as response:
-                decomp = zlib.decompressobj(16 + zlib.MAX_WBITS)
-                sHtmlContent = decomp.decompress(response.read()).decode('utf-8')
+        #1er partie des données
+        aResult2 = re.search('\}([^>]+)', sHtmlContent, re.DOTALL | re.UNICODE).group(1)
+        data = CheckAADecoder(aResult2)
 
-            #1er partie des données
-            aResult2 = re.search('\}([^>]+)', sHtmlContent, re.DOTALL | re.UNICODE).group(1)
-            data = CheckAADecoder(aResult2)
+        dataPartTwo = json.loads(base64.b64decode(re.search('atob\("(.+?)"',data).group(1)))
 
-            dataPartTwo = json.loads(base64.b64decode(re.search('atob\("(.+?)"',data).group(1)))
-            VSlog(dataPartTwo)
+        from resources.lib.comaddon import dialog
 
-        HosterUrl = "https://cdn.heycdn67.xyz/{}/{}/{}/0/".format(dataPartTwo['md5_id'], dataPartOne['sd'][0],dataPartOne['pieceLength'])
+        url = [dataPartOne["sd"],dataPartOne['hd']]
+        qua = ["SD","HD"]
+
+        # Affichage du tableau
+        ID = dialog().VSselectqual(qua, url)
+
+        pathfile = VSPath('special://userdata/addon_data/plugin.video.vstream/playlist.m3u8')
+
+        HosterUrl = "https://cdn.heycdn{}.xyz/{}/{}/{}/".format(dataPartTwo['cdn_id'].split('.')[1], dataPartTwo['md5_id'], ID[0],dataPartOne['pieceLength'])
+
+        data = '#EXTM3U\n'
+        data += '#EXT-X-VERSION:3\n'
+        data += '#EXT-X-MEDIA-SEQUENCE:0\n'
+            
+        i = 0
+        while i < 80:
+            data += '#EXTINF:%s,\n' % str(i)
+            data += "http://127.0.0.1:2424?u="+HosterUrl + str(i)+ "@" + urlEncode(headers) + ' \n'
+            i = i + 1
+
+        data += '#EXT-X-ENDLIST'
+
+        with open(pathfile, 'w') as file:
+            file.write(data)
+        api_call = pathfile
+
         if (api_call):
             # Rajout d'un header ?
             # api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
@@ -171,27 +183,3 @@ def CheckAADecoder(data):
         return data
 
     return data
-
-# Attention : Pour fonctionner le nouvel hebergeur doit être rajouté dans le corps de vStream, fichier Hosters.py.
-#----------------------------------------------------------------------------------------------------------------
-#
-# Code pour selection de plusieurs liens
-#--------------------------------------
-#
-#            from resources.lib.comaddon import dialog
-#
-#            url = []
-#            qua = []
-#            api_call = False
-#
-#            for aEntry in aResult[1]:
-#                url.append(aEntry[0])
-#                qua.append(aEntry[1])
-#
-#            # Affichage du tableau
-#            api_call = dialog().VSselectqual(qua, url)
-#
-#             if (api_call):
-#                  return True, api_call
-
-#             return False, False
