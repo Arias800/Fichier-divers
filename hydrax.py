@@ -6,7 +6,7 @@ from resources.lib.parser import cParser  # recherche de code
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog, isMatrix, VSPath
 from resources.lib.jsparser import JsParser
-from resources.lib.util import urlEncode, Quote
+from resources.lib.util import urlEncode
 from ast import literal_eval
 
 if isMatrix():
@@ -18,7 +18,6 @@ import zlib
 import re
 import base64
 import json
-import xbmcvfs
 
 class cHoster(iHoster):
 
@@ -147,7 +146,7 @@ class cHoster(iHoster):
 
         pathfile = VSPath('special://userdata/addon_data/plugin.video.vstream/playlist.m3u8')
 
-        HosterUrl = "https://cdn.heycdn{}.xyz/{}/{}/{}/".format(dataPartTwo['cdn_id'].split('.')[1], dataPartTwo['md5_id'], ID[0],dataPartOne['pieceLength'])
+        HosterUrl = "https://cdn.heycdn21.xyz/{}/{}/{}/".format(dataPartTwo['md5_id'], ID[0],dataPartOne['pieceLength'])
 
         data = '#EXTM3U\n'
         data += '#EXT-X-VERSION:3\n'
