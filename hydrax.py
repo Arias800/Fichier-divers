@@ -18,6 +18,7 @@ import zlib
 import re
 import base64
 import json
+import requests
 
 class cHoster(iHoster):
 
@@ -144,32 +145,67 @@ class cHoster(iHoster):
         # Affichage du tableau
         ID = dialog().VSselectqual(qua, url)
 
-        pathfile = VSPath('special://userdata/addon_data/plugin.video.vstream/playlist.m3u8')
+        pathfile = VSPath('special://userdata/addon_data/plugin.video.vstream/')
 
         HosterUrl = "https://cdn.heycdn21.xyz/{}/{}/{}/".format(dataPartTwo['md5_id'], ID[0],dataPartOne['pieceLength'])
 
-        data = '#EXTM3U\n'
-        data += '#EXT-X-VERSION:3\n'
-        data += '#EXT-X-MEDIA-SEQUENCE:0\n'
-            
+        response = requests.get(HosterUrl + "0/",headers=headers).content
+        b64response = base64.b64decode(response)
+
+        with open(pathfile + "video.mp4", "wb") as fh:
+            fh.write(b64response)
+
+        duration = get_video_duration(pathfile + "video.mp4")
+        splitDuration = str(duration / 79)
+
+        data = '#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:%s\n#EXT-X-MEDIA-SEQUENCE:0\n' % str(duration)
+
         i = 0
         while i < 80:
-            data += '#EXTINF:%s,\n' % str(i)
+            data += '#EXTINF:%s,\n' % splitDuration
             data += "http://127.0.0.1:2424?u="+HosterUrl + str(i)+ "@" + urlEncode(headers) + ' \n'
             i = i + 1
 
         data += '#EXT-X-ENDLIST'
 
-        with open(pathfile, 'w') as file:
+        with open(pathfile + "playlist.m3u8", 'w') as file:
             file.write(data)
-        api_call = pathfile
+
+        api_call = pathfile + "playlist.m3u8"
 
         if (api_call):
-            # Rajout d'un header ?
-            # api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call
 
         return False, False
+
+
+def get_video_duration(file_path_name):
+    #Based on https://github.com/ZhenningLang/python-video-info/blob/master/src/_video_info.py
+    """获取视频时常
+
+    Args:
+        file_path_name:
+
+    Returns: duration, or -1 fail to dectect
+
+    """
+    CONTENTS = ['ver_and_expand', 'ctime', 'mtime', 'time_scale', 'duration']
+    with open(file_path_name, 'rb') as f:
+        # find mvhd
+        for i in range(1000):
+            data = f.read(4)
+            if data == b'\x6d\x76\x68\x64':
+                break
+        # find time_scale and duration
+        time_scale = 0
+        duration = 0
+        for i in range(len(CONTENTS)):
+            data = f.read(4)
+            if CONTENTS[i] == 'time_scale':
+                time_scale = int.from_bytes(data, byteorder='big')
+            elif CONTENTS[i] == 'duration':
+                duration = int.from_bytes(data, byteorder='big')
+        return round(duration / time_scale, 3)
 
 def CheckAADecoder(data):
     aResult = re.search('(ﾟωﾟ.+?\(\'_\'\);)', data, re.DOTALL | re.UNICODE)
