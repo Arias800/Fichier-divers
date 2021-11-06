@@ -6,10 +6,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import VSlog
 from resources.lib.tinyjsparser import JsParser
+from collections import OrderedDict
 import re, requests
 import urllib.request
 import gzip
 import json
+import ast
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'
 
@@ -32,7 +34,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl
+        self.__sUrl = sUrl.replace('/f/','/e/')
 
     def __getIdFromUrl(self):
         sPattern = 'https*:\/\/waaw\.(?:tv|player|watch)\/player\/embed_player\.php\?vid=([0-9A-Za-z]+)'
@@ -63,66 +65,68 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = ''
 
-        headers = { 
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-encoding": "gzip, deflate",
-            "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-            "cache-control": "no-cache",
-            "pragma": "no-cache",
-            "referer": "https://www.4kstreamz.net/",
-            "sec-ch-ua": 'Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-fetch-dest": "iframe",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "cross-site",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": UA,
-        }
+        oRequestHandler = cRequestHandler(self.__sUrl )
+        oRequestHandler.addHeaderEntry('Host', "waaw.to")
+        oRequestHandler.addHeaderEntry('Referer', self.__sUrl)
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+        oRequestHandler.addParametersLine("http_referer=https://wvv.33seriestreaming.com/")
+        html = oRequestHandler.request()
 
-        req = urllib.request.Request(self.__sUrl, None, headers)
-        with urllib.request.urlopen(req) as response:
-           html = gzip.decompress(response.read()).decode('unicode-escape')
-
-        JScode = re.search(' = null;\s*}(.+?)var',html, re.MULTILINE|re.DOTALL).group(1).encode('latin1').decode('utf-8')
+        JScode = re.search(' = null;\s*}(.+?)var',html, re.MULTILINE|re.DOTALL).group(1)
         JP = JsParser()
-        data = JP.ProcessJS(JScode).encode('latin1').decode('unicode-escape')
+        data = JP.ProcessJS(JScode)
+        data = ast.literal_eval("b'{}'".format(data)).decode('unicode_escape')
 
         sh = re.search("shh*= *\'(.+?)\';", data).group(1)
         adb = re.search("adbn = \'(.+?)\'", html).group(1)
 
-        data = {"videokey":self.__getIdFromUrl(),"width":693,"height":480}
-        headers["accept"] = "application/json, text/javascript, */*; q=0.01"
-        headers['Content-Type'] = 'application/json'
-        headers['Content-Length'] = len(str(data))
-
-        req = urllib.request.Request('https://waaw.tv/player/get_player_image.php', json.dumps(data).encode('utf-8'), headers)
-        with urllib.request.urlopen(req) as response:
-           html = json.loads(gzip.decompress(response.read()).decode('unicode-escape'))
+        oRequestHandler = cRequestHandler('https://waaw.to/player/get_player_image.php')
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Host', "waaw.to")
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', self.__sUrl + "?http_referer=https%3A%2F%2Fwvv.33seriestreaming.com%2F")
+        oRequestHandler.addHeaderEntry('Accept', "*/*")
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addHeaderEntry('Content-Type', "application/json")
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+        oRequestHandler.addHeaderEntry('x-requested-with', 'XMLHttpRequest')
+        oRequestHandler.addHeaderEntry("origin","https://waaw.to")
+        oRequestHandler.addJSONEntry("videokey",self.__getIdFromUrl())
+        oRequestHandler.addJSONEntry("width",799)
+        oRequestHandler.addJSONEntry("height",450)                
+        html = oRequestHandler.request(jsonDecode=True)
 
         data = {'adb': adb, 'adscore': '', 'click_hash': html['hash_image'], 'clickx': 321, 'clicky': 174, 'embed_from': '0', 'gt': '', 'htoken': '', 'secure': '0', 'sh': sh, 'token': '', 'v': self.__getIdFromUrl(), 'ver': '4', 'wasmcheck': 1}
-
-        headers = {'accept': 'application/json, text/javascript, */*; q=0.01',
+        
+        headers = OrderedDict({'accept': 'application/json, text/javascript, */*; q=0.01',
             'accept-encoding': 'gzip, deflate',
             'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
             'cache-control': 'no-cache',
-            'content-length': len(str(data)),
+            'content-length': str(len(str(data))),
             'content-type': 'application/json',
             'origin': 'https://waaw.tv',
             'pragma': 'no-cache',
-            'referer': self.__sUrl,
+            'referer': self.__sUrl + "?http_referer=https%3A%2F%2Fwvv.33seriestreaming.com%2F",
             'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
             'sec-ch-ua-mobile': '?0',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'user-agent': UA,
-            'x-requested-with': 'XMLHttpRequest'}
+            'x-requested-with': 'XMLHttpRequest'})
 
-        req = urllib.request.Request('https://waaw.tv/player/get_md5.php', json.dumps(data).encode('utf-8'), headers)
-        with urllib.request.urlopen(req) as response:
-           html = gzip.decompress(response.read())
-           VSlog(html)
+        oRequestHandler = cRequestHandler('https://waaw.tv/player/get_md5.php')
+        oRequestHandler.setRequestType(1)
+        for h in headers:
+            oRequestHandler.addHeaderEntry(h, headers[h])            
+        for a in data:
+            oRequestHandler.addJSONEntry(a, data[a])             
+        html = oRequestHandler.request()
+        VSlog(html)
 
         if (api_call):
             return True, api_call + '.mp4.m3u8' + '|User-Agent=' + UA
