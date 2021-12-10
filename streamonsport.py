@@ -252,9 +252,8 @@ def Showlink():
             if aResult[0]:
                 sUrl2 = aResult[1][0]
 
-
     if 'leet365.cc' in sUrl:  # redirection
-        sUrl = redirectionHandler(sUrl, "")
+        sUrl2 = redirectionHandler(sUrl, "")
 
     # pas de pre requete
     if 'laylow.cyou' in sUrl:
@@ -280,7 +279,7 @@ def Showlink():
             if bvalid:
                 sHosterUrl = shosterurl
 
-        if 'wigistream' in sUrl2 or 'cloudstream' in sUrl2:
+        if 'wigistream' in sUrl2 or 'cloudstream' in sUrl2 or "ragnarp" in sUrl2:
             bvalid, shosterurl = Hoster_Wigistream(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
@@ -290,6 +289,11 @@ def Showlink():
             bvalid, shosterurl = Hoster_Laylow(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
+
+        if 'fclecteur' in sUrl2:
+            bvalid, shosterurl = Hoster_fclecteur(sUrl2, sUrl)
+            if bvalid:
+                sHosterUrl = shosterurl            
 
         if sHosterUrl:
             sHosterUrl = sHosterUrl.strip()
@@ -310,11 +314,30 @@ def redirectionHandler(url, referer=""):
         oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        return aResult[1][0]
-               
+    if "iframe" in sHtmlContent:
+        sPattern = '<iframe.+?src="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            return aResult[1][0]
+    elif 'fid' in sHtmlContent:
+        sPattern = 'fid="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            return "https://fclecteur.com/footy.php?player=desktop&live=" + aResult[1][0]        
+     
+def Hoster_fclecteur(url, referer):
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = 'return\(\[(.+?)\]'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return True, ''.join(re.findall('"(.+?)"',aResult[0])).replace("\/",'/') + "|Referer=https://fclecteur.com/"
+
+    return False, False
+
 def Hoster_Pkcast(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
