@@ -50,8 +50,10 @@ if exist *.mkv set formatVid=mkv
 if exist *.ass set format=ass
 if exist *.srt set format=srt
 
-for %%i in (*.mkv) do (
-    ffmpeg -y -i "%%i" -i "%%~ni."%format% -c:v copy -c:a copy -c:s copy  -map 0:v -map 0:a -map 1 -metadata:s:s:0 language=fre "Final/%%~ni."%formatVid%
+set /p lang="Choix de la langue [tapez eng ou fre] : "
+
+for %%i in (*.%formatVid%) do (
+    ffmpeg -y -i "%%i" -i "%%~ni."%format% -c:v copy -c:a copy -c:s copy  -map 0:v -map 0:a -map 1 -metadata:s:s:0 language=%lang% "Final/%%~ni."%formatVid%
 )|| pause
 
 GOTO Begin
