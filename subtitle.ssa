@@ -1,0 +1,884 @@
+﻿[Script Info]
+ScriptType: v4.00+
+Collisions: Normal
+PlayDepth: 0
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, BackColour, OutlineColour, Bold, Italic, Alignment, BorderStyle, Outline, Shadow, MarginL, MarginR, MarginV
+Style: Default,Arial,50,&H00FFFFFF,&H40000000,&H00000000,-1,0,2,1,2,3,0,0,40
+
+[Events]
+Format: Layer, Start, End, Style, Text
+Dialogue: 0,0:00:05.17,0:00:05.25,Default,.
+Dialogue: 0,0:00:05.45,0:00:05.67,Default,**
+Dialogue: 0,0:00:06.87,0:00:09.09,Default,Okay, so, Agents Park and Zuma\Nare reviewing security footage
+Dialogue: 0,0:00:09.29,0:00:11.09,Default,from around the site\Nof the explosion.
+Dialogue: 0,0:00:11.29,0:00:14.56,Default,Agent Ressler is looking\Nfor anything he can find
+Dialogue: 0,0:00:14.76,0:00:18.66,Default,on, uh, Reggie Cole\Nor Lacroix,
+Dialogue: 0,0:00:18.86,0:00:20.23,Default,but I still need to, uh,
+Dialogue: 0,0:00:20.43,0:00:22.50,Default,look over the forensics report\Nfrom the crime scene.
+Dialogue: 0,0:00:22.70,0:00:24.34,Default,I sent you my notes\Non the report last night.
+Dialogue: 0,0:00:24.54,0:00:27.17,Default,I'm discussing the findings with\NReddington later this morning.
+Dialogue: 0,0:00:27.37,0:00:28.47,Default,{\i1}Right, sorry, I knew that.{\i0}
+Dialogue: 0,0:00:28.67,0:00:32.54,Default,Okay, so, I'll be in\Nno later than 2:00.
+Dialogue: 0,0:00:32.74,0:00:35.63,Default,If something comes up\Nwith Mr. Reddington...
+Dialogue: 0,0:00:37.50,0:00:39.28,Default,...call me.\N{\i1}I will. But don't worry.{\i0}
+Dialogue: 0,0:00:39.48,0:00:41.79,Default,{\i1}Everything's under control.{\i0}\N{\i1}We'll see you when you get in.{\i0}
+Dialogue: 0,0:00:41.99,0:00:42.92,Default,Okay.
+Dialogue: 0,0:00:43.12,0:00:44.92,Default,[ Siren wailing in distance ]
+Dialogue: 0,0:00:45.12,0:00:46.46,Default,**
+Dialogue: 0,0:00:46.66,0:00:47.93,Default,[ Car horn honks in distance ]
+Dialogue: 0,0:00:48.13,0:00:50.93,Default,**
+Dialogue: 0,0:00:51.13,0:00:53.33,Default,[ Monitors beeping ]
+Dialogue: 0,0:00:53.53,0:01:00.07,Default,**
+Dialogue: 0,0:01:00.27,0:01:01.41,Default,[ Weakly ] Raymond.
+Dialogue: 0,0:01:01.61,0:01:03.17,Default,[ Grunting ]\NWeecha. Whoa, whoa, whoa.
+Dialogue: 0,0:01:03.38,0:01:05.11,Default,Easy, easy,\Neasy, easy, easy.
+Dialogue: 0,0:01:05.31,0:01:08.11,Default,**
+Dialogue: 0,0:01:08.31,0:01:10.82,Default,How long have I been down?
+Dialogue: 0,0:01:11.02,0:01:12.55,Default,Almost four days.
+Dialogue: 0,0:01:12.75,0:01:15.75,Default,**
+Dialogue: 0,0:01:15.95,0:01:17.97,Default,Where's Morgan?
+Dialogue: 0,0:01:18.17,0:01:19.52,Default,I saw him\Nwalking into the room --
+Dialogue: 0,0:01:19.72,0:01:20.98,Default,Morgan didn't make it.
+Dialogue: 0,0:01:21.18,0:01:27.13,Default,**
+Dialogue: 0,0:01:27.33,0:01:33.20,Default,**
+Dialogue: 0,0:01:33.41,0:01:35.57,Default,I am so sorry.
+Dialogue: 0,0:01:35.77,0:01:39.14,Default,**
+Dialogue: 0,0:01:39.34,0:01:41.51,Default,Weecha,\Nbefore the explosion --
+Dialogue: 0,0:01:41.71,0:01:43.58,Default,**
+Dialogue: 0,0:01:43.78,0:01:47.82,Default,There was the woman.
+Dialogue: 0,0:01:48.02,0:01:49.49,Default,Was it Kate?
+Dialogue: 0,0:01:49.69,0:01:51.66,Default,**
+Dialogue: 0,0:01:51.86,0:01:53.73,Default,I don't know.
+Dialogue: 0,0:01:53.93,0:01:55.36,Default,You should rest.
+Dialogue: 0,0:01:55.56,0:01:57.70,Default,We're gonna get you home\Nas soon as we can.
+Dialogue: 0,0:01:57.90,0:01:59.70,Default,[ Monitors beeping ]
+Dialogue: 0,0:01:59.90,0:02:09.67,Default,**
+Dialogue: 0,0:02:09.88,0:02:10.81,Default,How's Weecha?
+Dialogue: 0,0:02:11.01,0:02:12.84,Default,Tenacious.
+Dialogue: 0,0:02:13.04,0:02:16.28,Default,I didn't expect her to last the\Nfirst night, let alone three.
+Dialogue: 0,0:02:16.48,0:02:17.55,Default,Something to drink?
+Dialogue: 0,0:02:17.75,0:02:19.02,Default,No, thank you.
+Dialogue: 0,0:02:19.22,0:02:22.02,Default,**
+Dialogue: 0,0:02:22.22,0:02:23.52,Default,What do you have?
+Dialogue: 0,0:02:23.72,0:02:26.16,Default,Forensics ran the DNA\Nfrom the woman in the apartment
+Dialogue: 0,0:02:26.36,0:02:29.03,Default,against the sample\Nyou provided for Mr. Kaplan.
+Dialogue: 0,0:02:29.23,0:02:30.73,Default,The fire caused\Nby the explosion
+Dialogue: 0,0:02:30.93,0:02:32.30,Default,degraded the samples\Nsignificantly,
+Dialogue: 0,0:02:32.50,0:02:33.57,Default,but there is an overlap.
+Dialogue: 0,0:02:33.77,0:02:37.44,Default,As far as the M.E.'s\Nconcerned, it's her.
+Dialogue: 0,0:02:37.64,0:02:39.17,Default,You're not convinced.
+Dialogue: 0,0:02:39.37,0:02:40.61,Default,DNA evidence\Nnotwithstanding,
+Dialogue: 0,0:02:40.81,0:02:43.51,Default,something doesn't add up.\NI have a hard time believing
+Dialogue: 0,0:02:43.71,0:02:47.05,Default,Mr. Kaplan would hire\NReggie Cole to kill Doug Koster
+Dialogue: 0,0:02:47.25,0:02:48.41,Default,in order to blackmail me.
+Dialogue: 0,0:02:48.61,0:02:51.42,Default,I understand why\NKate's involvement
+Dialogue: 0,0:02:51.62,0:02:53.85,Default,would be difficult\Nfor you to accept, Harold.
+Dialogue: 0,0:02:54.05,0:02:57.29,Default,We negotiated a stay in your\Nprosecution on the condition
+Dialogue: 0,0:02:57.49,0:02:59.72,Default,that you could expose\Na broader conspiracy.
+Dialogue: 0,0:02:59.93,0:03:02.76,Default,If the one person responsible\Ndied in that building --
+Dialogue: 0,0:03:02.96,0:03:06.16,Default,The only head left to serve\Nthe Justice Department is mine.
+Dialogue: 0,0:03:06.36,0:03:08.00,Default,You stay on Reggie Cole\Nand his lawyer.
+Dialogue: 0,0:03:08.20,0:03:10.47,Default,With any luck, you'll find\Na connection to Kaplan.
+Dialogue: 0,0:03:10.67,0:03:13.64,Default,In the meantime, I'm gonna\Nget a second opinion.
+Dialogue: 0,0:03:13.84,0:03:15.34,Default,**
+Dialogue: 0,0:03:15.54,0:03:18.74,Default,I've been dealing with anxiety\Nand OCD and depression
+Dialogue: 0,0:03:18.94,0:03:19.84,Default,pretty much my whole life.
+Dialogue: 0,0:03:20.05,0:03:23.92,Default,I've been able to manage with,\Num, support and therapy
+Dialogue: 0,0:03:24.12,0:03:27.22,Default,and medication,\Nbut lately, nothing helps.
+Dialogue: 0,0:03:27.42,0:03:29.92,Default,I haven't been sleeping.\NI can hardly eat,
+Dialogue: 0,0:03:30.12,0:03:32.29,Default,which is not like me.
+Dialogue: 0,0:03:32.49,0:03:36.09,Default,I just, um...
+Dialogue: 0,0:03:36.29,0:03:39.30,Default,I feel like I'm barely\Nholding it together.
+Dialogue: 0,0:03:39.50,0:03:42.00,Default,Would you like\Nto set those down?
+Dialogue: 0,0:03:42.20,0:03:44.50,Default,Yeah, sorry.
+Dialogue: 0,0:03:44.70,0:03:48.11,Default,I appreciate you bringing me in\Nso early, by the way.
+Dialogue: 0,0:03:48.31,0:03:51.61,Default,Mr. Homan was a supporter\Nof some of my earliest research.
+Dialogue: 0,0:03:51.81,0:03:55.00,Default,Any friend of his is welcome\Nanytime they like.
+Dialogue: 0,0:03:55.20,0:03:56.38,Default,You know, when I, um,
+Dialogue: 0,0:03:56.58,0:03:59.05,Default,first heard\Nabout psychedelic therapy,
+Dialogue: 0,0:03:59.25,0:04:01.99,Default,I imagined something\Na bit more...
+Dialogue: 0,0:04:02.19,0:04:03.96,Default,Tie-dye and trance music?
+Dialogue: 0,0:04:04.16,0:04:05.02,Default,Yeah.
+Dialogue: 0,0:04:05.22,0:04:06.66,Default,[ Chuckles ]\NWe get that a lot.
+Dialogue: 0,0:04:06.86,0:04:09.73,Default,But the truth is, Ketamine\Nand other psychedelic therapies
+Dialogue: 0,0:04:09.93,0:04:11.40,Default,are revolutionizing care
+Dialogue: 0,0:04:11.60,0:04:14.37,Default,for people with\Ntreatment-resistant
+Dialogue: 0,0:04:14.57,0:04:16.90,Default,anxiety and depression.
+Dialogue: 0,0:04:17.10,0:04:21.04,Default,The treatment we're offering\Nis experimental, but it's legal.
+Dialogue: 0,0:04:21.24,0:04:22.71,Default,Any questions?
+Dialogue: 0,0:04:22.91,0:04:25.04,Default,**
+Dialogue: 0,0:04:25.24,0:04:26.74,Default,What's your fish's name?
+Dialogue: 0,0:04:26.95,0:04:28.08,Default,What fish?
+Dialogue: 0,0:04:28.28,0:04:30.15,Default,**
+Dialogue: 0,0:04:30.35,0:04:31.65,Default,His name is Frank.
+Dialogue: 0,0:04:31.85,0:04:33.45,Default,That was a joke. [ Laughs ]\NOh.
+Dialogue: 0,0:04:33.65,0:04:34.97,Default,[ Chuckles nervously ]
+Dialogue: 0,0:04:35.17,0:04:37.69,Default,**
+Dialogue: 0,0:04:37.89,0:04:40.02,Default,Shall we begin?
+Dialogue: 0,0:04:40.23,0:04:41.73,Default,Okay.\NThe medication you will be
+Dialogue: 0,0:04:41.93,0:04:47.72,Default,receiving today is derived\Nfrom psychoactive plants...
+Dialogue: 0,0:04:49.08,0:04:51.00,Default,Little stick.
+Dialogue: 0,0:04:51.20,0:04:52.74,Default,Ow.\N...and is delivered
+Dialogue: 0,0:04:52.94,0:04:58.08,Default,alongside an imidazopyridine\Nclass agonist
+Dialogue: 0,0:04:58.28,0:05:00.04,Default,to induce REM states.
+Dialogue: 0,0:05:00.25,0:05:01.31,Default,So I'll be dreaming.
+Dialogue: 0,0:05:01.51,0:05:04.05,Default,In a manner of speaking.
+Dialogue: 0,0:05:04.25,0:05:06.38,Default,We'll be playing music\Nto help you relax
+Dialogue: 0,0:05:06.59,0:05:08.39,Default,throughout the treatment.\NThanks.
+Dialogue: 0,0:05:08.59,0:05:11.39,Default,But if you see something\Nthat upsets you,
+Dialogue: 0,0:05:11.59,0:05:13.16,Default,just try to be curious\Nabout it.
+Dialogue: 0,0:05:13.36,0:05:18.70,Default,**
+Dialogue: 0,0:05:18.90,0:05:24.10,Default,**
+Dialogue: 0,0:05:24.30,0:05:25.44,Default,We can always reschedule
+Dialogue: 0,0:05:25.64,0:05:28.04,Default,if you want more time\Nto think about it.
+Dialogue: 0,0:05:28.24,0:05:31.54,Default,No, um...\NI'm ready.
+Dialogue: 0,0:05:31.74,0:05:33.38,Default,Okay.
+Dialogue: 0,0:05:33.58,0:05:35.01,Default,See you soon.
+Dialogue: 0,0:05:35.21,0:05:41.97,Default,**
+Dialogue: 0,0:05:42.17,0:05:49.08,Default,**
+Dialogue: 0,0:05:55.72,0:05:58.64,Default,[ Car horn honks ]
+Dialogue: 0,0:05:58.84,0:06:01.51,Default,[ Construction workers\Nspeaking indistinctly ]
+Dialogue: 0,0:06:01.71,0:06:04.18,Default,Good morning!
+Dialogue: 0,0:06:04.38,0:06:05.74,Default,Hey.
+Dialogue: 0,0:06:05.94,0:06:13.94,Default,**
+Dialogue: 0,0:06:14.14,0:06:15.79,Default,[ Telephones ringing ]
+Dialogue: 0,0:06:15.99,0:06:19.26,Default,**
+Dialogue: 0,0:06:19.46,0:06:21.94,Default,Oh! Figures!
+Dialogue: 0,0:06:22.14,0:06:23.26,Default,[ Sighs ]
+Dialogue: 0,0:06:23.46,0:06:29.13,Default,**
+Dialogue: 0,0:06:29.33,0:06:30.57,Default,[ Sighs ]
+Dialogue: 0,0:06:30.77,0:06:32.40,Default,How was your appointment?
+Dialogue: 0,0:06:32.60,0:06:34.41,Default,Excellent.\NThank you for asking.
+Dialogue: 0,0:06:34.61,0:06:36.27,Default,Well, at least one of us\Nis in a good mood.
+Dialogue: 0,0:06:36.48,0:06:39.64,Default,Some TikToker in a 6 Series\Nrear-ended me on my way in.
+Dialogue: 0,0:06:39.85,0:06:41.96,Default,{\i1}Hiscar was fine,{\i0}\Nof course.
+Dialogue: 0,0:06:42.16,0:06:43.97,Default,If you need a mechanic,\NI know a good one.
+Dialogue: 0,0:06:44.17,0:06:46.62,Default,Fast, cheap, and reliable.\NWhat's the catch?
+Dialogue: 0,0:06:46.82,0:06:48.97,Default,He used to work\Nfor the Albanian Mafia.
+Dialogue: 0,0:06:49.17,0:06:49.97,Default,I'll keep him in mind.
+Dialogue: 0,0:06:50.17,0:06:52.29,Default,You know what I was thinking\Non the way over?
+Dialogue: 0,0:06:52.49,0:06:53.99,Default,We should take a trip,\Nall of us.
+Dialogue: 0,0:06:54.19,0:06:56.98,Default,Someone just tried to blow up\NReddington, so, maybe next week?
+Dialogue: 0,0:06:57.18,0:06:59.06,Default,[ Chuckles ] Yeah,\Nobviously for the future.
+Dialogue: 0,0:06:59.26,0:07:03.20,Default,I just -- I think we all deserve\Nsomething to look forward to.
+Dialogue: 0,0:07:03.40,0:07:04.97,Default,Sounds like fun.\NGreat.
+Dialogue: 0,0:07:05.17,0:07:09.74,Default,If anyone needs me, I will be\Nreviewing these upstairs.
+Dialogue: 0,0:07:09.94,0:07:15.78,Default,**
+Dialogue: 0,0:07:15.98,0:07:18.48,Default,[ Woman speaking indistinctly\Nin distance ]
+Dialogue: 0,0:07:18.68,0:07:28.49,Default,**
+Dialogue: 0,0:07:28.69,0:07:31.03,Default,[ Indistinct conversations\Nin distance ]
+Dialogue: 0,0:07:31.23,0:07:36.07,Default,**
+Dialogue: 0,0:07:36.27,0:07:38.24,Default,[ Knock on door ]\NI know, I know. No knocking.
+Dialogue: 0,0:07:38.44,0:07:40.96,Default,But Reddington called.\NHe's on his way in.
+Dialogue: 0,0:07:41.16,0:07:42.51,Default,Sounds important.
+Dialogue: 0,0:07:42.71,0:07:45.34,Default,Okay. Um, do you, uh --
+Dialogue: 0,0:07:45.54,0:07:46.98,Default,Do you know who sent this?
+Dialogue: 0,0:07:47.18,0:07:47.78,Default,Beats me.
+Dialogue: 0,0:07:47.98,0:07:50.22,Default,[ Alarm blaring,\Npeople clamoring ]
+Dialogue: 0,0:07:50.42,0:07:56.09,Default,**
+Dialogue: 0,0:07:56.29,0:07:57.69,Default,What?\NWhat is going on?
+Dialogue: 0,0:07:57.89,0:08:01.16,Default,Someone tripped the emergency\Nalarm on sub-section C.
+Dialogue: 0,0:08:01.36,0:08:02.86,Default,What's wrong with that feed?\NPark: I don't know,
+Dialogue: 0,0:08:03.06,0:08:04.91,Default,but we have\Nbigger problems.
+Dialogue: 0,0:08:06.38,0:08:07.73,Default,[ People gasping ]\NOh, my God.
+Dialogue: 0,0:08:07.93,0:08:09.63,Default,We have small teams moving down\Nmultiple hallways.
+Dialogue: 0,0:08:09.84,0:08:11.27,Default,Who are they?\NWhere did they come from?
+Dialogue: 0,0:08:11.47,0:08:13.20,Default,I don't know, but they've taken\Nthe elevator entrance.
+Dialogue: 0,0:08:13.41,0:08:15.94,Default,Ressler: Cell reception's down.\NWe need backup now!
+Dialogue: 0,0:08:16.14,0:08:17.64,Default,**
+Dialogue: 0,0:08:17.84,0:08:18.94,Default,This is Special Agent\NDembe Zuma.
+Dialogue: 0,0:08:19.14,0:08:21.66,Default,We are under attack.\NI repeat, we are --
+Dialogue: 0,0:08:23.10,0:08:24.93,Default,Did they hear you?\NI don't know.
+Dialogue: 0,0:08:25.13,0:08:28.94,Default,Look, whoever these guys are,\Nwe need a plan. Now!
+Dialogue: 0,0:08:29.14,0:08:30.76,Default,Hey, Aram!
+Dialogue: 0,0:08:30.96,0:08:33.29,Default,There's a phone, in the\Nstorage bay on sub-section E.
+Dialogue: 0,0:08:33.49,0:08:35.26,Default,I couldn't integrate it\Ninto our comms system,
+Dialogue: 0,0:08:35.46,0:08:37.63,Default,because it's connected to\Na totally, uh, different --
+Dialogue: 0,0:08:37.83,0:08:39.96,Default,That doesn't matter.\NOkay, if Ressler and I
+Dialogue: 0,0:08:40.17,0:08:41.97,Default,can get there,\Nwe can call for backup.
+Dialogue: 0,0:08:42.17,0:08:43.80,Default,What should we do?\NUh, you two stay here.
+Dialogue: 0,0:08:44.00,0:08:48.17,Default,Everyone, everyone,\Ntake defensive positions!
+Dialogue: 0,0:08:48.37,0:08:49.31,Default,Let's go.
+Dialogue: 0,0:08:49.51,0:08:53.11,Default,**
+Dialogue: 0,0:08:53.31,0:08:54.96,Default,Better make this quick.
+Dialogue: 0,0:08:56.53,0:08:59.35,Default,{\i1}[ Louis Armstrong's{\i0}\N{\i1}"What a Wonderful World"{\i0}\N{\i1}playing, distorted]{\i0}
+Dialogue: 0,0:08:59.55,0:09:00.90,Default,{\i1}* I see trees of green*{\i0}
+Dialogue: 0,0:09:01.10,0:09:02.32,Default,Red:\N{\i1}Aram, can you hear me?{\i0}
+Dialogue: 0,0:09:02.52,0:09:03.96,Default,Mr. Reddington?
+Dialogue: 0,0:09:04.16,0:09:06.39,Default,{\i1}If you want it to stop,{\i0}\N{\i1}you have to get everyone out.{\i0}
+Dialogue: 0,0:09:06.59,0:09:12.13,Default,{\i1}* I see them bloom{\i0}\N{\i1}for me and you*{\i0}
+Dialogue: 0,0:09:12.33,0:09:13.77,Default,Aram, we've gotta go now!
+Dialogue: 0,0:09:13.97,0:09:16.80,Default,{\i1}* And I think to myself*{\i0}
+Dialogue: 0,0:09:17.00,0:09:18.44,Default,Mr. Reddington?\NAram!
+Dialogue: 0,0:09:18.64,0:09:20.57,Default,Okay, okay, okay.
+Dialogue: 0,0:09:20.77,0:09:23.17,Default,Let's go!\NOkay. Okay. Okay.
+Dialogue: 0,0:09:23.38,0:09:27.21,Default,**
+Dialogue: 0,0:09:27.41,0:09:28.45,Default,Park: There!
+Dialogue: 0,0:09:28.65,0:09:33.72,Default,**
+Dialogue: 0,0:09:33.92,0:09:36.14,Default,Dembe.\NReloading.
+Dialogue: 0,0:09:37.57,0:09:39.19,Default,11 o'clock!
+Dialogue: 0,0:09:39.39,0:09:48.07,Default,**
+Dialogue: 0,0:09:48.27,0:09:49.33,Default,Alina!
+Dialogue: 0,0:09:49.53,0:09:57.96,Default,**
+Dialogue: 0,0:09:58.16,0:10:01.25,Default,No, no, no, no, no.\NNo! No! No! No! No!
+Dialogue: 0,0:10:01.45,0:10:03.25,Default,I'm sorry.
+Dialogue: 0,0:10:03.45,0:10:04.35,Default,No.
+Dialogue: 0,0:10:04.55,0:10:07.02,Default,**
+Dialogue: 0,0:10:07.22,0:10:10.05,Default,No. No. Alina.\NOh, my God.
+Dialogue: 0,0:10:10.26,0:10:12.62,Default,No. God. No!
+Dialogue: 0,0:10:12.82,0:10:16.08,Default,No! No! No!
+Dialogue: 0,0:10:17.51,0:10:19.06,Default,Elevator!
+Dialogue: 0,0:10:19.26,0:10:24.54,Default,**
+Dialogue: 0,0:10:24.74,0:10:26.42,Default,[ Telephones ringing ]
+Dialogue: 0,0:10:37.47,0:10:38.38,Default,Figures.
+Dialogue: 0,0:10:38.58,0:10:41.32,Default,* What a wonderful world
+Dialogue: 0,0:10:41.52,0:10:44.52,Default,**
+Dialogue: 0,0:10:44.72,0:10:51.08,Default,* Yes, I think to myself
+Dialogue: 0,0:10:52.15,0:10:59.10,Default,* What a wonderful world
+Dialogue: 0,0:10:59.30,0:11:02.36,Default,**
+Dialogue: 0,0:11:10.17,0:11:10.30,Default,.
+Dialogue: 0,0:11:11.70,0:11:20.08,Default,**
+Dialogue: 0,0:11:20.28,0:11:22.06,Default,Alina?
+Dialogue: 0,0:11:22.26,0:11:24.98,Default,You're alive.\NSo it would seem.
+Dialogue: 0,0:11:25.18,0:11:26.86,Default,I don't understand.\NThere --
+Dialogue: 0,0:11:27.07,0:11:28.83,Default,**
+Dialogue: 0,0:11:29.03,0:11:30.40,Default,There was an attack.
+Dialogue: 0,0:11:30.60,0:11:32.04,Default,An attack?
+Dialogue: 0,0:11:32.24,0:11:35.44,Default,It seemed so real.
+Dialogue: 0,0:11:35.64,0:11:38.78,Default,Are you alright?
+Dialogue: 0,0:11:38.98,0:11:40.38,Default,I'm fine.
+Dialogue: 0,0:11:40.58,0:11:44.22,Default,If you'll just, um,\Nexcuse me. Just --
+Dialogue: 0,0:11:44.42,0:11:45.62,Default,I pulled every piece of paper\NI could find
+Dialogue: 0,0:11:45.82,0:11:48.15,Default,on your blackmailer\Nand his lawyer, Lacroix.
+Dialogue: 0,0:11:48.35,0:11:50.46,Default,Did you find anything\Nconnecting them to Mr. Kaplan?
+Dialogue: 0,0:11:50.66,0:11:52.96,Default,No, but I did find\Nthe shell corporations
+Dialogue: 0,0:11:53.16,0:11:54.79,Default,that Lacroix used\Nto hide the profits
+Dialogue: 0,0:11:54.99,0:11:56.29,Default,from their\Nblackmail operation.
+Dialogue: 0,0:11:56.50,0:11:58.13,Default,The guy had\Nseven properties,
+Dialogue: 0,0:11:58.33,0:12:00.60,Default,a half dozen bank accounts,\Neven a yacht.
+Dialogue: 0,0:12:00.80,0:12:03.27,Default,Not exactly the upstanding\Nlawyer his wife described.
+Dialogue: 0,0:12:03.47,0:12:05.17,Default,You think she knows more\Nthan she was letting on?
+Dialogue: 0,0:12:05.37,0:12:06.60,Default,I do.\NI called her office.
+Dialogue: 0,0:12:06.81,0:12:08.57,Default,Her assistant said\Nshe got in 20 minutes ago.
+Dialogue: 0,0:12:08.77,0:12:10.44,Default,Send me that address,\Nand I'll meet you there.
+Dialogue: 0,0:12:10.64,0:12:13.21,Default,And, Donald, thank you.\NFor everything.
+Dialogue: 0,0:12:13.41,0:12:16.81,Default,Look, whoever's behind this,\NI'm keeping you out of prison.
+Dialogue: 0,0:12:17.02,0:12:18.42,Default,Whatever it takes.
+Dialogue: 0,0:12:18.62,0:12:20.79,Default,**
+Dialogue: 0,0:12:20.99,0:12:23.25,Default,Ah! [ Chuckles ]\NErnest Glampers.
+Dialogue: 0,0:12:23.46,0:12:25.49,Default,Glampers, Trout, and Pilgrim\Nattorneys-at-law.
+Dialogue: 0,0:12:25.69,0:12:29.16,Default,You have the body of Ms. Kathryn\NNemec, is that correct?
+Dialogue: 0,0:12:29.36,0:12:30.60,Default,I'm sorry, sir.\NYou're not actually --
+Dialogue: 0,0:12:30.80,0:12:32.93,Default,You see, Ms. Nemec\Nwas a Rosicrucian.
+Dialogue: 0,0:12:33.13,0:12:34.70,Default,A-A what?\NA Rosicrucian.
+Dialogue: 0,0:12:34.90,0:12:37.20,Default,A member if a small religious\Nand cultural community
+Dialogue: 0,0:12:37.40,0:12:39.47,Default,whose laws demand that\Nthe bodies of the deceased
+Dialogue: 0,0:12:39.67,0:12:42.17,Default,are buried within\N24 hours of their deaths.
+Dialogue: 0,0:12:42.37,0:12:43.74,Default,I'm sorry --\NYou should be.
+Dialogue: 0,0:12:43.94,0:12:46.61,Default,This is a copy of the complaint\Nwhich I am prepared to file
+Dialogue: 0,0:12:46.81,0:12:49.65,Default,with the Superior Court\Nof the District of Columbia.
+Dialogue: 0,0:12:49.85,0:12:52.22,Default,It asserts that by denying\NMs. Nemec's family
+Dialogue: 0,0:12:52.42,0:12:54.85,Default,access to her body,\Nyou and your superiors
+Dialogue: 0,0:12:55.05,0:12:57.19,Default,have violated\Ntheir civil rights.
+Dialogue: 0,0:12:57.39,0:12:59.39,Default,Now, Ms. Nemec's family\Nhave instructed me
+Dialogue: 0,0:12:59.59,0:13:02.39,Default,to refrain from filing the suit,\Nif you will simply allow me
+Dialogue: 0,0:13:02.59,0:13:05.43,Default,to perform the rite\Nof "alure plurot."
+Dialogue: 0,0:13:05.63,0:13:08.40,Default,You're a "rosarian," too?\NBy marriage.
+Dialogue: 0,0:13:08.60,0:13:10.95,Default,So, if you could be so kind as\Nto show me to Ms. Nemec's body,
+Dialogue: 0,0:13:11.15,0:13:12.27,Default,you can get back\Nto your sandwich,
+Dialogue: 0,0:13:12.47,0:13:14.97,Default,and we can all avoid\Nan awful lot of unpleasantness.
+Dialogue: 0,0:13:15.17,0:13:17.44,Default,What do you say?
+Dialogue: 0,0:13:17.64,0:13:19.28,Default,Please, lead the way.
+Dialogue: 0,0:13:19.48,0:13:21.91,Default,Yeah, hi.\NThis is, uh, Aram Mojtabai.
+Dialogue: 0,0:13:22.11,0:13:23.38,Default,I was in the office\Nearlier today,
+Dialogue: 0,0:13:23.58,0:13:25.97,Default,and I-I seem to be having\Nsome kind of really,
+Dialogue: 0,0:13:26.17,0:13:27.39,Default,really intense dÃ©jÃ  vu,
+Dialogue: 0,0:13:27.59,0:13:31.72,Default,and I need to speak\Nto Dr. Idigbe right away.
+Dialogue: 0,0:13:31.92,0:13:33.34,Default,Hello?
+Dialogue: 0,0:13:34.68,0:13:43.50,Default,**
+Dialogue: 0,0:13:43.70,0:13:52.48,Default,**
+Dialogue: 0,0:13:52.68,0:14:01.22,Default,**
+Dialogue: 0,0:14:01.42,0:14:03.35,Default,[ Knock on door ]\NI know, I know. No knocking.
+Dialogue: 0,0:14:03.56,0:14:05.26,Default,Reddington called.\NHe's on his way in.
+Dialogue: 0,0:14:05.46,0:14:07.23,Default,Sounds important.
+Dialogue: 0,0:14:07.43,0:14:10.26,Default,What did you just --
+Dialogue: 0,0:14:10.46,0:14:13.00,Default,Oh, God.\NOh, God. Oh, God.
+Dialogue: 0,0:14:13.20,0:14:17.24,Default,**
+Dialogue: 0,0:14:17.44,0:14:19.07,Default,Okay, so, uh, I know\Nthis might sound crazy,
+Dialogue: 0,0:14:19.27,0:14:21.27,Default,but, um, I think we're about\Nto be attacked.
+Dialogue: 0,0:14:21.47,0:14:22.71,Default,Attacked? By who?\NI don't know.
+Dialogue: 0,0:14:22.91,0:14:25.04,Default,That is what I am going\Nto try to figure here.
+Dialogue: 0,0:14:25.24,0:14:27.45,Default,I'm sorry.\NAram, what is going on?
+Dialogue: 0,0:14:27.65,0:14:30.08,Default,[ Alarm blaring ]
+Dialogue: 0,0:14:30.28,0:14:31.98,Default,[ People gasping ]
+Dialogue: 0,0:14:32.18,0:14:33.48,Default,How did you know\Nthat would happen?
+Dialogue: 0,0:14:33.69,0:14:35.65,Default,I've seen it before. At first,\NI thought it was a dream
+Dialogue: 0,0:14:35.85,0:14:37.36,Default,or some kind\Nof weird dÃ©jÃ  vu --
+Dialogue: 0,0:14:37.56,0:14:39.49,Default,We have small teams\Nmoving down multiple hallways.
+Dialogue: 0,0:14:39.69,0:14:41.49,Default,On the phone, Mr. Reddington\Nsaid that to make it stop,
+Dialogue: 0,0:14:41.69,0:14:43.09,Default,we have to get out\Nof the Post Office.
+Dialogue: 0,0:14:43.30,0:14:44.66,Default,When did you talk\Nto Reddington?
+Dialogue: 0,0:14:44.86,0:14:46.10,Default,They've taken\Nthe elevator entrance.
+Dialogue: 0,0:14:46.30,0:14:47.73,Default,If I could just find us\Na clear path --
+Dialogue: 0,0:14:47.93,0:14:50.10,Default,Cell reception's down.\NWe need backup now!
+Dialogue: 0,0:14:50.30,0:14:52.74,Default,Okay, there, there!\NThe south-east exit!
+Dialogue: 0,0:14:52.94,0:14:55.81,Default,**
+Dialogue: 0,0:14:56.01,0:14:58.99,Default,Are you guys seeing this?
+Dialogue: 0,0:14:59.19,0:15:00.25,Default,This is Special Agent\NDembe Zuma.
+Dialogue: 0,0:15:00.45,0:15:02.63,Default,We are under attack.\NI repeat, we are --
+Dialogue: 0,0:15:05.13,0:15:06.35,Default,This is a dream.
+Dialogue: 0,0:15:06.55,0:15:08.32,Default,I'm still in\Nthe doctor's office.
+Dialogue: 0,0:15:08.52,0:15:11.69,Default,Aram, what is going on?\NI don't know.
+Dialogue: 0,0:15:11.89,0:15:14.63,Default,But there is a clear path to\Nthe south-east exit right now.
+Dialogue: 0,0:15:14.83,0:15:16.18,Default,So, everyone!
+Dialogue: 0,0:15:17.25,0:15:18.60,Default,Park: Aram!
+Dialogue: 0,0:15:18.80,0:15:21.13,Default,**
+Dialogue: 0,0:15:21.33,0:15:26.74,Default,Okay. I know this\Ndoesn't make any sense, but...
+Dialogue: 0,0:15:26.94,0:15:30.19,Default,we need to get out\Nof the Post Office. Now.
+Dialogue: 0,0:15:31.79,0:15:32.98,Default,Okay.
+Dialogue: 0,0:15:33.18,0:15:34.96,Default,We trust you.
+Dialogue: 0,0:15:35.16,0:15:36.01,Default,Okay.
+Dialogue: 0,0:15:36.21,0:15:39.68,Default,**
+Dialogue: 0,0:15:39.89,0:15:41.49,Default,We make a left\Nout of the stairwell.
+Dialogue: 0,0:15:41.69,0:15:43.86,Default,Then it's 50 yards to the exit\Nat the end of the hall.
+Dialogue: 0,0:15:44.06,0:15:45.97,Default,**
+Dialogue: 0,0:15:46.17,0:15:47.76,Default,[ Men grunting ]
+Dialogue: 0,0:15:47.96,0:15:52.66,Default,**
+Dialogue: 0,0:15:52.86,0:15:54.00,Default,Aram!
+Dialogue: 0,0:15:54.20,0:15:58.74,Default,**
+Dialogue: 0,0:15:58.94,0:15:59.87,Default,Thank you.
+Dialogue: 0,0:16:00.07,0:16:01.17,Default,[ Ressler grunts ]
+Dialogue: 0,0:16:01.37,0:16:09.18,Default,**
+Dialogue: 0,0:16:09.38,0:16:11.72,Default,[ Beeping ]
+Dialogue: 0,0:16:11.92,0:16:12.72,Default,It's not working!
+Dialogue: 0,0:16:12.92,0:16:14.99,Default,That's not possible.
+Dialogue: 0,0:16:15.19,0:16:16.65,Default,What? I don't --\NI don't understand.
+Dialogue: 0,0:16:16.86,0:16:18.56,Default,I-I wrote the security\Nprotocols myself.
+Dialogue: 0,0:16:18.76,0:16:20.94,Default,To access those, you'd need\Nmilitary-grade hacking tools
+Dialogue: 0,0:16:21.14,0:16:23.39,Default,or...Greylock.
+Dialogue: 0,0:16:23.60,0:16:25.16,Default,They used your software\Nto hack the system?
+Dialogue: 0,0:16:25.36,0:16:27.13,Default,I don't know.\NI thought you destroyed it.
+Dialogue: 0,0:16:27.33,0:16:28.60,Default,I did!
+Dialogue: 0,0:16:28.80,0:16:34.74,Default,**
+Dialogue: 0,0:16:34.94,0:16:35.81,Default,We gotta fall back!
+Dialogue: 0,0:16:36.01,0:16:38.54,Default,No, no, no, no, no, no, no, no.\NWe gotta get out.
+Dialogue: 0,0:16:38.74,0:16:41.55,Default,We don't have a choice!\NLet's go!
+Dialogue: 0,0:16:41.75,0:16:45.08,Default,No! Come on,\Nwe have to get out!
+Dialogue: 0,0:16:45.28,0:16:46.85,Default,No.
+Dialogue: 0,0:16:47.05,0:16:48.35,Default,We have to get out!
+Dialogue: 0,0:16:48.55,0:16:50.66,Default,[ Pixies' "Where Is My Mind?"\Nplaying ]
+Dialogue: 0,0:16:50.86,0:16:54.46,Default,* Ooh
+Dialogue: 0,0:16:54.66,0:16:56.66,Default,**
+Dialogue: 0,0:16:56.86,0:17:01.20,Default,* Ooh
+Dialogue: 0,0:17:01.40,0:17:05.04,Default,* With your feet on the air\Nand your head on the ground *
+Dialogue: 0,0:17:05.24,0:17:08.61,Default,**
+Dialogue: 0,0:17:08.81,0:17:14.11,Default,* Try this trick\Nand spin it, yeah *
+Dialogue: 0,0:17:14.31,0:17:17.62,Default,* Your head will collapse,\Nbut there's nothing in it *
+Dialogue: 0,0:17:17.82,0:17:20.05,Default,* And you'll ask yourself
+Dialogue: 0,0:17:20.25,0:17:22.95,Default,* Where is my mind?
+Dialogue: 0,0:17:23.16,0:17:24.96,Default,* Where is my mind?
+Dialogue: 0,0:17:25.16,0:17:28.79,Default,* Where is my mind?
+Dialogue: 0,0:17:28.99,0:17:36.60,Default,**
+Dialogue: 0,0:17:36.80,0:17:43.27,Default,* Way out in the water,\Nsee it swimming *
+Dialogue: 0,0:17:43.48,0:17:44.96,Default,[ Gunshot ]
+Dialogue: 0,0:17:45.16,0:17:48.81,Default,**
+Dialogue: 0,0:17:49.01,0:17:52.28,Default,* I was swimming\Nin the Caribbean *
+Dialogue: 0,0:17:52.48,0:17:55.59,Default,**
+Dialogue: 0,0:17:55.79,0:17:59.64,Default,* Animals were hiding\Nbehind the rocks *
+Dialogue: 0,0:18:01.11,0:18:04.00,Default,* Except the little fish,\Nbump into me *
+Dialogue: 0,0:18:04.20,0:18:07.10,Default,* Swear he's tryin' to talk\Nto me, say wait wait *
+Dialogue: 0,0:18:07.30,0:18:10.07,Default,* Where is my mind?
+Dialogue: 0,0:18:10.27,0:18:12.04,Default,* Where is my mind?
+Dialogue: 0,0:18:12.24,0:18:15.92,Default,* Where is my mind?
+Dialogue: 0,0:18:16.12,0:18:23.65,Default,**
+Dialogue: 0,0:18:23.85,0:18:25.32,Default,* Way out in the water
+Dialogue: 0,0:18:25.52,0:18:27.82,Default,Hey. Hey.
+Dialogue: 0,0:18:28.02,0:18:29.19,Default,Hey, hey!
+Dialogue: 0,0:18:29.39,0:18:32.94,Default,**
+Dialogue: 0,0:18:33.14,0:18:34.83,Default,Hey, hey, hey!
+Dialogue: 0,0:18:35.03,0:18:39.05,Default,**
+Dialogue: 0,0:18:41.18,0:18:43.13,Default,[ Telephones ringing ]
+Dialogue: 0,0:18:43.34,0:18:44.80,Default,[ Panting ]
+Dialogue: 0,0:18:45.00,0:18:47.81,Default,**
+Dialogue: 0,0:18:48.01,0:18:49.42,Default,Figures.
+Dialogue: 0,0:19:00.10,0:19:00.24,Default,.
+Dialogue: 0,0:19:01.17,0:19:06.37,Default,**
+Dialogue: 0,0:19:06.61,0:19:11.73,Default,**
+Dialogue: 0,0:19:11.93,0:19:14.33,Default,Excuse me, Mrs. Lacroix.\NDonald Ressler, FBI.
+Dialogue: 0,0:19:14.53,0:19:16.40,Default,I need you\Nto step out of the car.
+Dialogue: 0,0:19:16.60,0:19:18.60,Default,**
+Dialogue: 0,0:19:18.80,0:19:20.57,Default,Mrs. Lacroix?
+Dialogue: 0,0:19:20.77,0:19:26.11,Default,**
+Dialogue: 0,0:19:26.31,0:19:28.98,Default,We're gonna need\Na crime scene unit.
+Dialogue: 0,0:19:29.18,0:19:30.28,Default,This is Harold Cooper.
+Dialogue: 0,0:19:30.48,0:19:33.15,Default,I need a crime scene unit\Nsent to my location.
+Dialogue: 0,0:19:33.35,0:19:35.49,Default,**
+Dialogue: 0,0:19:35.69,0:19:37.09,Default,She's still warm.
+Dialogue: 0,0:19:37.29,0:19:44.50,Default,**
+Dialogue: 0,0:19:44.70,0:19:51.77,Default,**
+Dialogue: 0,0:19:51.97,0:19:59.34,Default,**
+Dialogue: 0,0:19:59.54,0:20:00.78,Default,Don't move. I'm FBI.
+Dialogue: 0,0:20:00.98,0:20:02.51,Default,Put your gun on the ground.
+Dialogue: 0,0:20:02.71,0:20:03.78,Default,Slowly.
+Dialogue: 0,0:20:03.98,0:20:11.29,Default,**
+Dialogue: 0,0:20:11.49,0:20:15.39,Default,Whatever you're thinking about\Nsaying, don't.
+Dialogue: 0,0:20:15.59,0:20:18.36,Default,**
+Dialogue: 0,0:20:18.56,0:20:21.67,Default,Aram, just slow down.\NAram: Please just listen to me!
+Dialogue: 0,0:20:21.87,0:20:22.93,Default,Every time I get off\Nthat elevator,
+Dialogue: 0,0:20:23.14,0:20:24.60,Default,we have this same conversation,
+Dialogue: 0,0:20:24.80,0:20:27.47,Default,and then a few minutes later,\Nall of you are dead, alright?
+Dialogue: 0,0:20:27.67,0:20:30.04,Default,This is some kind of a bad\Nacid trip, and we're all in it?
+Dialogue: 0,0:20:30.24,0:20:32.04,Default,Yeah, and I am sorry\Nabout that,
+Dialogue: 0,0:20:32.24,0:20:34.11,Default,but what matters is that\NI heard Mr. Reddington earlier,
+Dialogue: 0,0:20:34.31,0:20:35.71,Default,and he told me\Nto get everyone out. Look,
+Dialogue: 0,0:20:35.91,0:20:38.05,Default,I know how this must sound,\Nbut I think to make this stop,
+Dialogue: 0,0:20:38.25,0:20:39.38,Default,I need to get us\Nout of the Post Office --
+Dialogue: 0,0:20:39.58,0:20:41.55,Default,Aram --\NLook, I can prove it.
+Dialogue: 0,0:20:41.75,0:20:43.39,Default,You were in a car accident\Nearlier this morning, right?
+Dialogue: 0,0:20:43.59,0:20:44.82,Default,Rear-ended by a guy\Nin a 6 Series.
+Dialogue: 0,0:20:45.02,0:20:46.49,Default,How did you --\NBut it's no big deal,
+Dialogue: 0,0:20:46.69,0:20:48.63,Default,because Dembe knows a mechanic\Nwho used to run guns for...
+Dialogue: 0,0:20:48.83,0:20:50.26,Default,The Albanians.  The Albanians.
+Dialogue: 0,0:20:50.46,0:20:52.96,Default,Look, I would love to discuss\Nthe metaphysics of all this,
+Dialogue: 0,0:20:53.17,0:20:54.77,Default,but any second now,\Nthey are going to come
+Dialogue: 0,0:20:54.97,0:20:56.80,Default,through sub-section C --\NWho's coming through
+Dialogue: 0,0:20:57.00,0:20:58.17,Default,sub-section C?\NI don't know.
+Dialogue: 0,0:20:58.37,0:21:00.34,Default,There is, like, a guy\Nin a bear mask
+Dialogue: 0,0:21:00.54,0:21:02.11,Default,with, like, a bunch\Nof mercenaries,
+Dialogue: 0,0:21:02.31,0:21:03.37,Default,and it's like\Nwe're in a maze.
+Dialogue: 0,0:21:03.58,0:21:05.58,Default,And if I can't find a way\Nto get us out,
+Dialogue: 0,0:21:05.78,0:21:09.38,Default,it's gonna start all over again.\NIt's -- It's a loop.
+Dialogue: 0,0:21:09.58,0:21:10.85,Default,Aram, just breathe.
+Dialogue: 0,0:21:11.05,0:21:12.97,Default,[ Breathing heavily ]
+Dialogue: 0,0:21:13.17,0:21:15.25,Default,I can't watch you all\Ndie again, okay?
+Dialogue: 0,0:21:15.45,0:21:17.26,Default,Listen, I know you've been\Nunder a lot of pressure lately.
+Dialogue: 0,0:21:17.46,0:21:18.86,Default,There's nothing wrong\Nwith taking some time --
+Dialogue: 0,0:21:19.06,0:21:20.09,Default,The sewer.
+Dialogue: 0,0:21:20.29,0:21:22.86,Default,[ Keyboard clacking ]
+Dialogue: 0,0:21:23.06,0:21:24.86,Default,I saw workers accessing it\Non my way in.
+Dialogue: 0,0:21:25.06,0:21:26.70,Default,[ Alarm blaring ]
+Dialogue: 0,0:21:26.90,0:21:29.00,Default,**
+Dialogue: 0,0:21:29.20,0:21:30.47,Default,[ People speaking indistinctly ]
+Dialogue: 0,0:21:30.67,0:21:32.34,Default,My God.\NThere's a mechanical room
+Dialogue: 0,0:21:32.54,0:21:34.37,Default,in sub-section C\Nthat runs alongside
+Dialogue: 0,0:21:34.57,0:21:36.41,Default,an old Water & Sewer\Nservice shaft.
+Dialogue: 0,0:21:36.61,0:21:38.71,Default,We have small teams\Nmoving down multiple hallways.
+Dialogue: 0,0:21:38.91,0:21:40.18,Default,They've taken\Nthe elevator entrance.
+Dialogue: 0,0:21:40.38,0:21:42.28,Default,They staged in the shaft\Nand blew through the walls.
+Dialogue: 0,0:21:42.48,0:21:44.22,Default,All the other exits\Nare locked down,
+Dialogue: 0,0:21:44.42,0:21:46.82,Default,so the only way out\Nis the way they came in.
+Dialogue: 0,0:21:47.02,0:21:51.06,Default,**
+Dialogue: 0,0:21:51.26,0:21:54.13,Default,I don't understand. I thought\NMr. Kaplan died years ago.
+Dialogue: 0,0:21:54.33,0:21:56.23,Default,So did I, but the authorities\Nweren't able
+Dialogue: 0,0:21:56.43,0:21:58.20,Default,to definitively determine
+Dialogue: 0,0:21:58.40,0:22:00.57,Default,whether the woman who died\Nin the explosion
+Dialogue: 0,0:22:00.77,0:22:03.23,Default,was Kate or not,\Nso I went to the morgue
+Dialogue: 0,0:22:03.44,0:22:05.34,Default,to collect a sample\Nfor you to analyze.
+Dialogue: 0,0:22:05.54,0:22:07.77,Default,I don't want to keep you\Nfrom your vacation, Vlad,
+Dialogue: 0,0:22:07.97,0:22:10.04,Default,but I have to know for sure.
+Dialogue: 0,0:22:10.24,0:22:12.24,Default,I need eight hours.\NEdward will be waiting for you
+Dialogue: 0,0:22:12.44,0:22:15.48,Default,on my jet\Nwith the engines running.
+Dialogue: 0,0:22:15.68,0:22:17.25,Default,So, just assuming you're right,\Nand this is all
+Dialogue: 0,0:22:17.45,0:22:19.42,Default,a hallucination,\Nwhat happens if you die?
+Dialogue: 0,0:22:19.62,0:22:20.97,Default,Does everything reset?\NI don't know,
+Dialogue: 0,0:22:21.17,0:22:23.82,Default,and honestly,\NI'd rather not find out.
+Dialogue: 0,0:22:24.02,0:22:24.97,Default,Man: Aah!\NHow did you --
+Dialogue: 0,0:22:25.17,0:22:27.86,Default,Duck.
+Dialogue: 0,0:22:28.06,0:22:30.26,Default,How many times\Nhave you done this?
+Dialogue: 0,0:22:30.46,0:22:31.53,Default,Enough.
+Dialogue: 0,0:22:31.73,0:22:34.20,Default,**
+Dialogue: 0,0:22:34.40,0:22:36.63,Default,There. There.\NThis is how it stops.
+Dialogue: 0,0:22:36.84,0:22:37.99,Default,Come on. Go.
+Dialogue: 0,0:22:38.19,0:22:39.99,Default,Go. Go now! Come on.
+Dialogue: 0,0:22:40.19,0:22:42.99,Default,**
+Dialogue: 0,0:22:43.19,0:22:44.64,Default,[ Men shouting ]
+Dialogue: 0,0:22:44.84,0:22:54.39,Default,**
+Dialogue: 0,0:22:54.59,0:22:56.05,Default,Sorry, bear-face.
+Dialogue: 0,0:22:56.25,0:22:57.62,Default,Not this time.
+Dialogue: 0,0:22:57.82,0:22:59.14,Default,**
+Dialogue: 0,0:23:00.74,0:23:02.41,Default,[ Elevator doors clank ]
+Dialogue: 0,0:23:06.68,0:23:08.80,Default,Figures.
+Dialogue: 0,0:23:09.00,0:23:10.57,Default,I got everyone out.
+Dialogue: 0,0:23:10.77,0:23:13.10,Default,[ Static ]
+Dialogue: 0,0:23:13.31,0:23:14.96,Default,Red: [ Echoing ]\N{\i1}Can you hear me?{\i0}
+Dialogue: 0,0:23:15.16,0:23:16.51,Default,{\i1}Can you hear me?{\i0}
+Dialogue: 0,0:23:16.71,0:23:17.78,Default,{\i1}Can you hear me?{\i0}
+Dialogue: 0,0:23:17.98,0:23:19.71,Default,[ Static ]
+Dialogue: 0,0:23:19.91,0:23:21.98,Default,[ Speaking in reverse ]
+Dialogue: 0,0:23:22.18,0:23:24.40,Default,[ Light fizzling, twinkling ]
+Dialogue: 0,0:23:26.07,0:23:28.42,Default,[ People speaking indistinctly ]
+Dialogue: 0,0:23:28.62,0:23:30.42,Default,**
+Dialogue: 0,0:23:30.62,0:23:31.97,Default,Figures.
+Dialogue: 0,0:23:32.17,0:23:34.33,Default,**
+Dialogue: 0,0:23:34.53,0:23:35.98,Default,Dr. Idigbe:\NThe medication you will be
+Dialogue: 0,0:23:36.18,0:23:41.80,Default,receiving today is derived\Nfrom psychoactive plants...
+Dialogue: 0,0:23:42.00,0:23:43.53,Default,Little stick.
+Dialogue: 0,0:23:43.74,0:23:45.25,Default,[ Echoing ] Wait!
+Dialogue: 0,0:23:46.82,0:23:48.61,Default,Mommy!
+Dialogue: 0,0:23:48.81,0:23:50.38,Default,Oh!
+Dialogue: 0,0:23:50.58,0:23:57.00,Default,* I see trees of green,\Nred roses, too *
+Dialogue: 0,0:23:57.20,0:23:58.35,Default,Please.
+Dialogue: 0,0:23:58.55,0:24:00.75,Default,* I see them bloom
+Dialogue: 0,0:24:00.95,0:24:01.79,Default,[ Gunshot ]
+Dialogue: 0,0:24:01.99,0:24:04.02,Default,* For me and you
+Dialogue: 0,0:24:04.22,0:24:05.26,Default,* And I think to myself
+Dialogue: 0,0:24:05.46,0:24:09.03,Default,[ Echoing ] This isn't real.
+Dialogue: 0,0:24:09.23,0:24:10.83,Default,This isn't real.
+Dialogue: 0,0:24:11.03,0:24:12.75,Default,* What a wonderful world
+Dialogue: 0,0:24:14.82,0:24:23.91,Default,**
+Dialogue: 0,0:24:24.11,0:24:33.05,Default,**
+Dialogue: 0,0:24:33.25,0:24:42.39,Default,**
+Dialogue: 0,0:24:42.59,0:24:51.57,Default,**
+Dialogue: 0,0:24:51.77,0:25:00.75,Default,**
+Dialogue: 0,0:25:00.95,0:25:02.71,Default,Who are you?
+Dialogue: 0,0:25:02.91,0:25:11.99,Default,**
+Dialogue: 0,0:25:12.19,0:25:13.56,Default,Oh --
+Dialogue: 0,0:25:13.76,0:25:15.73,Default,**
+Dialogue: 0,0:25:15.93,0:25:17.83,Default,[ Gasps ] Oh, no.
+Dialogue: 0,0:25:18.03,0:25:19.03,Default,[ Grunts ]
+Dialogue: 0,0:25:19.23,0:25:25.74,Default,**
+Dialogue: 0,0:25:25.94,0:25:27.86,Default,I'm you.
+Dialogue: 0,0:25:42.17,0:25:42.30,Default,.
+Dialogue: 0,0:25:44.07,0:25:45.34,Default,Cooper: Anything?\NNothing. Guy won't say a word.
+Dialogue: 0,0:25:46.31,0:25:48.36,Default,Maybe he won't have to.\NWe found confirmation
+Dialogue: 0,0:25:48.56,0:25:51.56,Default,of a secure payment for $25,000\Non our suspect's phone.
+Dialogue: 0,0:25:51.76,0:25:54.47,Default,We think it was down payment\Nfor the hit on Mrs. Lacroix.
+Dialogue: 0,0:25:54.67,0:25:55.80,Default,Any idea\Nwho made the payment?
+Dialogue: 0,0:25:56.00,0:25:57.87,Default,Not yet, but it came from\Na numbered account
+Dialogue: 0,0:25:58.07,0:26:00.24,Default,which we've traced to\Nthe Hatem Trust Bank in Lebanon.
+Dialogue: 0,0:26:00.44,0:26:02.04,Default,The only problem is\NHatem Trust Bank
+Dialogue: 0,0:26:02.24,0:26:03.93,Default,closed\Nover three years ago.
+Dialogue: 0,0:26:04.13,0:26:06.14,Default,How was a payment made from\Nan account at a shuttered bank?
+Dialogue: 0,0:26:06.34,0:26:07.98,Default,We're not sure, but the payment\Nwas time-stamped
+Dialogue: 0,0:26:08.18,0:26:10.05,Default,for the morning of the bombing,\Nso it's possible
+Dialogue: 0,0:26:10.25,0:26:12.08,Default,Mr. Kaplan was the one\Nwho made the transfer.
+Dialogue: 0,0:26:12.28,0:26:14.82,Default,The timing might work,\Nbut the motive doesn't.
+Dialogue: 0,0:26:15.02,0:26:16.82,Default,Why would Kaplan bother\Nkilling Mrs. Lacroix
+Dialogue: 0,0:26:17.02,0:26:18.62,Default,when the plan was\Nto kill herself?
+Dialogue: 0,0:26:18.82,0:26:21.46,Default,Maybe she has co-conspirators\Nthat she wanted to protect.
+Dialogue: 0,0:26:21.66,0:26:22.69,Default,The only way to know for sure
+Dialogue: 0,0:26:22.89,0:26:24.95,Default,is to identify\Nthe owner of that account.
+Dialogue: 0,0:26:25.15,0:26:28.23,Default,Contact former bank clients\Nand employees.
+Dialogue: 0,0:26:28.43,0:26:29.27,Default,We need a name.
+Dialogue: 0,0:26:29.47,0:26:35.57,Default,**
+Dialogue: 0,0:26:35.77,0:26:37.31,Default,Red: Okay.
+Dialogue: 0,0:26:37.51,0:26:39.64,Default,[ Weecha grunts ]
+Dialogue: 0,0:26:39.85,0:26:41.28,Default,Okay.
+Dialogue: 0,0:26:41.48,0:26:42.96,Default,There you go.
+Dialogue: 0,0:26:43.16,0:26:44.45,Default,I'm not an invalid.
+Dialogue: 0,0:26:44.65,0:26:47.97,Default,No, you're not, but you suffered\Na major percussive trauma
+Dialogue: 0,0:26:48.17,0:26:51.49,Default,and pretty severe burns,\Nand you need to rest.
+Dialogue: 0,0:26:51.69,0:26:53.49,Default,I'm tired of rest.
+Dialogue: 0,0:26:53.69,0:26:55.93,Default,Remember what you told me\Non the Brazo Morales
+Dialogue: 0,0:26:56.13,0:26:57.80,Default,the night we met?
+Dialogue: 0,0:26:58.00,0:26:59.93,Default,Be quiet.\NGo to sleep.
+Dialogue: 0,0:27:00.13,0:27:01.93,Default,There you go, sweetheart.
+Dialogue: 0,0:27:02.13,0:27:03.80,Default,You get the sample\Nto Cvetko?
+Dialogue: 0,0:27:04.00,0:27:05.60,Default,Yes, I did.
+Dialogue: 0,0:27:05.80,0:27:07.64,Default,[ Vehicle approaches ]
+Dialogue: 0,0:27:07.84,0:27:09.36,Default,What is it?
+Dialogue: 0,0:27:10.39,0:27:11.64,Default,[ Car door shuts ]
+Dialogue: 0,0:27:11.84,0:27:20.65,Default,**
+Dialogue: 0,0:27:20.85,0:27:23.12,Default,Ah, Mierce.
+Dialogue: 0,0:27:23.32,0:27:25.19,Default,Oh, I'm so glad you came.\NI wasn't sure if --
+Dialogue: 0,0:27:25.39,0:27:29.33,Default,I came to help\NWeecha get better.
+Dialogue: 0,0:27:29.53,0:27:32.16,Default,That's all.\NOkay.
+Dialogue: 0,0:27:32.36,0:27:34.30,Default,It would be bad enough\Nif you were the only one
+Dialogue: 0,0:27:34.50,0:27:37.50,Default,to suffer the consequences\Nof your decisions.
+Dialogue: 0,0:27:37.70,0:27:39.70,Default,**
+Dialogue: 0,0:27:39.91,0:27:42.34,Default,But vengeance\Nis like a virus --
+Dialogue: 0,0:27:42.54,0:27:46.84,Default,In time, everyone close to you\Nbecomes afflicted.
+Dialogue: 0,0:27:47.05,0:27:48.75,Default,And still, you won't stop,\Nwill you?
+Dialogue: 0,0:27:48.95,0:27:51.85,Default,**
+Dialogue: 0,0:27:52.05,0:27:53.42,Default,Mierce --\NThen we have nothing left
+Dialogue: 0,0:27:53.62,0:27:54.79,Default,to discuss.
+Dialogue: 0,0:27:54.99,0:27:56.97,Default,Excuse me.
+Dialogue: 0,0:27:57.17,0:27:59.22,Default,[ Door opens, shuts ]
+Dialogue: 0,0:27:59.42,0:28:02.23,Default,**
+Dialogue: 0,0:28:02.43,0:28:04.93,Default,[ Groans ]\NAram X: Remember junior prom?
+Dialogue: 0,0:28:05.13,0:28:07.00,Default,Came back from the bathroom\Nto find Linda Beckman
+Dialogue: 0,0:28:07.20,0:28:10.17,Default,making out\Nwith Dominic Angelella.
+Dialogue: 0,0:28:10.37,0:28:12.00,Default,You should have hit him\Nin the face.
+Dialogue: 0,0:28:12.20,0:28:14.34,Default,This isn't happening.
+Dialogue: 0,0:28:14.54,0:28:15.64,Default,You're not --\NReal?
+Dialogue: 0,0:28:15.84,0:28:17.71,Default,Oh, I think I am.
+Dialogue: 0,0:28:17.91,0:28:20.01,Default,I'm part of you.
+Dialogue: 0,0:28:20.21,0:28:22.75,Default,And I've been waiting\Na long time for this.
+Dialogue: 0,0:28:22.95,0:28:28.89,Default,**
+Dialogue: 0,0:28:29.09,0:28:34.94,Default,**
+Dialogue: 0,0:28:35.14,0:28:36.56,Default,No point running.
+Dialogue: 0,0:28:36.76,0:28:38.40,Default,Can't escape yourself.
+Dialogue: 0,0:28:38.60,0:28:40.40,Default,**
+Dialogue: 0,0:28:40.60,0:28:42.50,Default,I got 'em out --\N[ Imitates buzzer ]
+Dialogue: 0,0:28:42.70,0:28:44.04,Default,Wrong.
+Dialogue: 0,0:28:44.24,0:28:45.50,Default,Getting everyone\Nout of the Post Office
+Dialogue: 0,0:28:45.70,0:28:49.37,Default,was a lie you made up because\Nyou can't face the truth.
+Dialogue: 0,0:28:49.57,0:28:51.96,Default,And you want to know\Nwhy you believed it?
+Dialogue: 0,0:28:52.16,0:28:55.25,Default,Because Reddington said so.
+Dialogue: 0,0:28:55.45,0:28:57.05,Default,Gotta love the comforting\Nvoice of authority
+Dialogue: 0,0:28:57.25,0:28:59.05,Default,when you're too weak\Nto trust yourself.
+Dialogue: 0,0:28:59.25,0:29:01.19,Default,But, hey,\NI don't blame you.
+Dialogue: 0,0:29:01.39,0:29:03.22,Default,I wouldn't\Ntrust you, either.
+Dialogue: 0,0:29:03.42,0:29:07.66,Default,**
+Dialogue: 0,0:29:07.86,0:29:09.23,Default,Nick was my friend.
+Dialogue: 0,0:29:09.43,0:29:11.93,Default,I didn't know --\N[ Mockingly ] "I didn't know!"
+Dialogue: 0,0:29:12.13,0:29:15.53,Default,You know they thought you were\Nthe smart one, right?
+Dialogue: 0,0:29:15.73,0:29:18.37,Default,[ Grunts ]
+Dialogue: 0,0:29:18.57,0:29:20.74,Default,Admit it, man.
+Dialogue: 0,0:29:20.94,0:29:22.97,Default,Deep down,
+Dialogue: 0,0:29:23.18,0:29:26.08,Default,when it really\Nmatters most,
+Dialogue: 0,0:29:26.28,0:29:30.01,Default,you'll always be a day late\Nand dollar short.
+Dialogue: 0,0:29:30.22,0:29:32.88,Default,I mean, if you weren't,
+Dialogue: 0,0:29:33.08,0:29:34.94,Default,she'd still be alive.
+Dialogue: 0,0:29:36.37,0:29:38.09,Default,[ Gunshot ]
+Dialogue: 0,0:29:38.29,0:29:47.43,Default,**
+Dialogue: 0,0:29:47.63,0:29:49.40,Default,She was right\Nin front of you...
+Dialogue: 0,0:29:49.60,0:29:58.24,Default,**
+Dialogue: 0,0:29:58.44,0:30:01.11,Default,...and you were too scared\Nto stop her.
+Dialogue: 0,0:30:01.31,0:30:05.38,Default,But, hey, at least you managed\Nto make Agnes Keen an orphan.
+Dialogue: 0,0:30:05.58,0:30:13.69,Default,**
+Dialogue: 0,0:30:13.89,0:30:15.46,Default,And then there's Samar.
+Dialogue: 0,0:30:15.66,0:30:22.07,Default,**
+Dialogue: 0,0:30:22.27,0:30:24.34,Default,Come on!\N[ Gasping ]
+Dialogue: 0,0:30:24.54,0:30:30.34,Default,**
+Dialogue: 0,0:30:30.54,0:30:36.15,Default,**
+Dialogue: 0,0:30:36.35,0:30:39.72,Default,You know, I don't actually\Nknow what happens
+Dialogue: 0,0:30:39.92,0:30:42.09,Default,when you die in here.
+Dialogue: 0,0:30:42.29,0:30:45.89,Default,But the truth is,\NI don't really care.
+Dialogue: 0,0:30:46.09,0:30:50.66,Default,Because in here\Nor out there,
+Dialogue: 0,0:30:50.86,0:30:52.70,Default,I'll be waiting.
+Dialogue: 0,0:30:52.90,0:30:56.77,Default,And it's only a matter of time\Nbefore you realize
+Dialogue: 0,0:30:56.97,0:30:58.67,Default,you need me.
+Dialogue: 0,0:30:58.87,0:31:00.74,Default,[ Gasping ]
+Dialogue: 0,0:31:00.94,0:31:05.51,Default,**
+Dialogue: 0,0:31:05.71,0:31:09.18,Default,You know the most amazing part\Nabout all this?
+Dialogue: 0,0:31:09.38,0:31:13.38,Default,I can't do a thing in here\Nthat you don't want me to.
+Dialogue: 0,0:31:13.59,0:31:19.19,Default,**
+Dialogue: 0,0:31:19.39,0:31:23.93,Default,It would be sad,\Nif it wasn't so pathetic.
+Dialogue: 0,0:31:24.13,0:31:25.80,Default,[ Gunshot ]
+Dialogue: 0,0:31:26.00,0:31:28.93,Default,**
+Dialogue: 0,0:31:29.13,0:31:30.50,Default,[ Thud ]
+Dialogue: 0,0:31:30.70,0:31:34.94,Default,**
+Dialogue: 0,0:31:35.14,0:31:37.34,Default,God, I thought\Nhe'd never shut up.
+Dialogue: 0,0:31:37.54,0:31:39.83,Default,**
+Dialogue: 0,0:31:49.20,0:31:49.34,Default,.
+Dialogue: 0,0:31:50.21,0:31:51.84,Default,[ Groaning ]
+Dialogue: 0,0:31:52.54,0:31:54.43,Default,This is just\Nanother hallucination.
+Dialogue: 0,0:31:54.63,0:31:57.81,Default,Yes, and yet here I am.
+Dialogue: 0,0:31:58.65,0:32:00.53,Default,You look incredible.
+Dialogue: 0,0:32:00.73,0:32:02.90,Default,You look like hell.\NYeah.
+Dialogue: 0,0:32:03.10,0:32:07.07,Default,Well, it's, um,\Nkind of been a rough day.
+Dialogue: 0,0:32:07.27,0:32:09.41,Default,Seems like it's been\Na rough couple of years.
+Dialogue: 0,0:32:09.61,0:32:11.96,Default,If I knew all it took\Nto see you again
+Dialogue: 0,0:32:12.16,0:32:13.85,Default,was a medical-grade\Nacid trip --
+Dialogue: 0,0:32:14.05,0:32:16.51,Default,You've been\Nliving a lie, Aram,
+Dialogue: 0,0:32:16.72,0:32:18.82,Default,and I couldn't sit back\Nand watch it any longer.
+Dialogue: 0,0:32:19.02,0:32:20.75,Default,What lie?\NThe one you've been\Ntelling yourself
+Dialogue: 0,0:32:20.95,0:32:22.52,Default,since I went into the water.
+Dialogue: 0,0:32:22.72,0:32:24.92,Default,The one you repeated\Nwhen Liz died
+Dialogue: 0,0:32:25.12,0:32:26.76,Default,and when Nick\Nhijacked your code.
+Dialogue: 0,0:32:26.96,0:32:28.19,Default,The one convincing you
+Dialogue: 0,0:32:28.39,0:32:30.36,Default,that you'll fail as leader\Nof the task force.
+Dialogue: 0,0:32:30.56,0:32:33.57,Default,[ Grunts ]\NI don't --
+Dialogue: 0,0:32:33.77,0:32:35.83,Default,I don't know\Nwhat you're talking about.
+Dialogue: 0,0:32:36.03,0:32:37.67,Default,Yes, you do.
+Dialogue: 0,0:32:37.87,0:32:39.60,Default,And I need you to see it.
+Dialogue: 0,0:32:39.81,0:32:41.21,Default,The man in the mask\Nhad your face.
+Dialogue: 0,0:32:41.41,0:32:42.37,Default,Why?\NWhy'd you leave?
+Dialogue: 0,0:32:42.57,0:32:43.64,Default,Aram, please,\Nwe don't have much time.
+Dialogue: 0,0:32:43.84,0:32:46.44,Default,I would've taken care of you.\NEven if you forgot everything.
+Dialogue: 0,0:32:46.65,0:32:48.05,Default,I just wanted\Nto be near you.
+Dialogue: 0,0:32:48.25,0:32:50.68,Default,Why did you make yourself\Ninto a Blacklister, Aram?
+Dialogue: 0,0:32:50.88,0:32:53.52,Default,Because it's my fault.\NAll of it.
+Dialogue: 0,0:32:53.72,0:32:55.09,Default,If I had just\Ngotten to you sooner,
+Dialogue: 0,0:32:55.29,0:32:56.05,Default,you'd still be here with me,
+Dialogue: 0,0:32:56.25,0:32:59.46,Default,instead of wasting away\Nalone on some island.
+Dialogue: 0,0:32:59.66,0:33:01.09,Default,It was my choice, Aram.
+Dialogue: 0,0:33:01.29,0:33:05.76,Default,[ Crying ] I was supposed\Nto protect you, and I failed.
+Dialogue: 0,0:33:05.96,0:33:10.13,Default,Just like I failed Liz\Nand I failed Agnes
+Dialogue: 0,0:33:10.34,0:33:13.96,Default,and I failed Greylock and...
+Dialogue: 0,0:33:14.16,0:33:16.71,Default,just like I'm gonna\Nfail the task force.
+Dialogue: 0,0:33:16.91,0:33:18.91,Default,That's what he wants you\Nto believe.
+Dialogue: 0,0:33:19.11,0:33:21.58,Default,That doesn't make it true.\NHe wants you to believe
+Dialogue: 0,0:33:21.78,0:33:23.75,Default,that if you were only stronger
+Dialogue: 0,0:33:23.95,0:33:25.45,Default,or smarter or more ruthless,
+Dialogue: 0,0:33:25.65,0:33:29.49,Default,that you could have stopped\Neverything from happening.
+Dialogue: 0,0:33:29.69,0:33:31.99,Default,But no one has\Nthat much control.
+Dialogue: 0,0:33:32.19,0:33:34.98,Default,Not Cooper, not Reddington,\Nnot you.
+Dialogue: 0,0:33:35.18,0:33:38.30,Default,**
+Dialogue: 0,0:33:38.50,0:33:40.50,Default,It wasn't your fault.
+Dialogue: 0,0:33:40.70,0:33:45.64,Default,**
+Dialogue: 0,0:33:45.84,0:33:48.11,Default,[ Crying ]\NSamar. Samar.
+Dialogue: 0,0:33:48.31,0:33:52.84,Default,**
+Dialogue: 0,0:33:53.04,0:33:54.45,Default,For what it's worth,\Nthe savior complex
+Dialogue: 0,0:33:54.65,0:33:57.32,Default,was more charming when it wasn't\Ncompletely homicidal.
+Dialogue: 0,0:33:57.52,0:33:58.93,Default,[ Gasping tearfully ]
+Dialogue: 0,0:34:02.64,0:34:05.46,Default,Oh, God.
+Dialogue: 0,0:34:05.66,0:34:08.46,Default,You've always been enough.
+Dialogue: 0,0:34:08.66,0:34:10.50,Default,It's about time\Nthat you see it.
+Dialogue: 0,0:34:10.70,0:34:18.34,Default,**
+Dialogue: 0,0:34:18.54,0:34:26.14,Default,**
+Dialogue: 0,0:34:26.34,0:34:28.25,Default,Welcome back, Aram.
+Dialogue: 0,0:34:28.45,0:34:36.94,Default,**
+Dialogue: 0,0:34:39.71,0:34:41.56,Default,Where are you going?
+Dialogue: 0,0:34:41.76,0:34:44.76,Default,I thought I'd give you\Nsome space.
+Dialogue: 0,0:34:44.96,0:34:47.85,Default,You can always reach me\Non the usual number.
+Dialogue: 0,0:34:49.08,0:34:51.04,Default,Oh, Raymond.
+Dialogue: 0,0:34:51.24,0:34:52.87,Default,I don't know\Nwhat you want me to say.
+Dialogue: 0,0:34:53.07,0:34:55.34,Default,You don't need\Nto say anything.
+Dialogue: 0,0:34:55.54,0:34:57.99,Default,You warned me that if I\Ncontinued down this path,
+Dialogue: 0,0:34:58.19,0:35:01.08,Default,terrible things would happen.\NAnd they did.
+Dialogue: 0,0:35:01.28,0:35:04.32,Default,I knew they would.\NThey always have.
+Dialogue: 0,0:35:04.52,0:35:08.94,Default,I want so badly\Nto be angry with you.
+Dialogue: 0,0:35:09.14,0:35:11.94,Default,I think\Nyou want me to be, too.
+Dialogue: 0,0:35:12.14,0:35:14.24,Default,But the truth is, I'm not.
+Dialogue: 0,0:35:15.64,0:35:17.68,Default,I'm just sad.
+Dialogue: 0,0:35:19.21,0:35:20.30,Default,Yes.
+Dialogue: 0,0:35:20.50,0:35:23.10,Default,[ Knock on door ]
+Dialogue: 0,0:35:23.30,0:35:26.80,Default,Vlad.\NAh, Vlad.
+Dialogue: 0,0:35:27.01,0:35:28.11,Default,Am I interrupting?\NNo.
+Dialogue: 0,0:35:28.31,0:35:30.78,Default,Mierce, this is\NVladimir Cvetko.
+Dialogue: 0,0:35:30.98,0:35:33.04,Default,Vlad, this is Weecha's sister,\NMierce.
+Dialogue: 0,0:35:33.25,0:35:35.65,Default,Mucho gusto.\NVlad: Encantado.
+Dialogue: 0,0:35:35.85,0:35:37.72,Default,Vlad, you have\Na plane waiting.
+Dialogue: 0,0:35:37.92,0:35:39.97,Default,The woman in the apartment --\NWas she Kate or not?
+Dialogue: 0,0:35:40.17,0:35:43.76,Default,No. After compensating for\Nthe damage caused by the fire,
+Dialogue: 0,0:35:43.96,0:35:47.66,Default,I found that the samples\Nwere a 50% match.
+Dialogue: 0,0:35:47.86,0:35:49.56,Default,This means the woman\Nin the apartment
+Dialogue: 0,0:35:49.76,0:35:51.43,Default,was not Mr. Kaplan.\NIt was --
+Dialogue: 0,0:35:51.63,0:35:54.03,Default,Her sister. Maureen.
+Dialogue: 0,0:35:54.23,0:35:56.67,Default,**
+Dialogue: 0,0:35:56.87,0:36:00.14,Default,Thank you, Vlad.
+Dialogue: 0,0:36:00.34,0:36:01.67,Default,AdiÃ³s.\NAdiÃ³s.
+Dialogue: 0,0:36:01.87,0:36:08.08,Default,**
+Dialogue: 0,0:36:08.28,0:36:12.32,Default,Raymond, go.
+Dialogue: 0,0:36:12.52,0:36:14.05,Default,Do what you will.
+Dialogue: 0,0:36:14.25,0:36:23.36,Default,**
+Dialogue: 0,0:36:23.56,0:36:32.70,Default,**
+Dialogue: 0,0:36:32.90,0:36:35.04,Default,So, that's not normal?
+Dialogue: 0,0:36:35.24,0:36:39.96,Default,It's not uncommon for patients\Nto encounter feelings of shame
+Dialogue: 0,0:36:40.16,0:36:43.97,Default,and grief or even experience\Nradical confrontations
+Dialogue: 0,0:36:44.17,0:36:46.62,Default,with the self, but --\NMurder loops?
+Dialogue: 0,0:36:46.82,0:36:48.79,Default,Not something\NI've heard before.
+Dialogue: 0,0:36:48.99,0:36:51.92,Default,I'm not sure I'd put it\Nin the brochure.
+Dialogue: 0,0:36:52.12,0:36:54.83,Default,How do you feel?
+Dialogue: 0,0:36:55.03,0:36:57.50,Default,I don't know.
+Dialogue: 0,0:36:57.70,0:37:00.53,Default,It's like I was certain that\Nit was just a matter of time
+Dialogue: 0,0:37:00.73,0:37:02.40,Default,before everything\Nfell apart,
+Dialogue: 0,0:37:02.60,0:37:04.67,Default,and so I fought as hard\Nas I could to stop it,
+Dialogue: 0,0:37:04.87,0:37:06.34,Default,even though\NI knew I couldn't.
+Dialogue: 0,0:37:06.54,0:37:08.37,Default,And now
+Dialogue: 0,0:37:08.57,0:37:11.38,Default,for the first time\Nthat I can remember...
+Dialogue: 0,0:37:11.58,0:37:14.95,Default,**
+Dialogue: 0,0:37:15.15,0:37:18.38,Default,...I don't feel like\NI have to fight anymore.
+Dialogue: 0,0:37:18.58,0:37:20.62,Default,I'm glad, Aram.
+Dialogue: 0,0:37:20.82,0:37:24.94,Default,It's not uncommon to feel like\None has a new lease on life --
+Dialogue: 0,0:37:25.14,0:37:25.72,Default,But?
+Dialogue: 0,0:37:25.92,0:37:28.94,Default,This treatment\Nisn't a cure-all.
+Dialogue: 0,0:37:29.14,0:37:31.06,Default,Do you understand?
+Dialogue: 0,0:37:31.26,0:37:32.23,Default,I understand\Nabout as much
+Dialogue: 0,0:37:32.43,0:37:34.73,Default,as anything that happened\Nto me today.
+Dialogue: 0,0:37:34.93,0:37:37.47,Default,So, 50%?
+Dialogue: 0,0:37:37.67,0:37:39.19,Default,[ Chuckles ]
+Dialogue: 0,0:37:47.16,0:37:47.30,Default,.
+Dialogue: 0,0:37:48.06,0:37:50.77,Default,**
+Dialogue: 0,0:37:51.57,0:37:55.02,Default,That night,\Nbefore the explosion...
+Dialogue: 0,0:37:55.22,0:37:57.12,Default,**
+Dialogue: 0,0:37:57.32,0:37:59.09,Default,...I was wondering\Nwhat I would do
+Dialogue: 0,0:37:59.29,0:38:04.40,Default,if all this\Nreally was Kate's doing.
+Dialogue: 0,0:38:04.60,0:38:06.76,Default,I remember knowing\Nwith absolute certainty
+Dialogue: 0,0:38:06.97,0:38:10.77,Default,that Elizabeth would have\Nwanted me to show her mercy.
+Dialogue: 0,0:38:10.97,0:38:14.37,Default,**
+Dialogue: 0,0:38:14.57,0:38:18.18,Default,I can still hear her voice.
+Dialogue: 0,0:38:18.38,0:38:19.78,Default,Me, too.
+Dialogue: 0,0:38:19.98,0:38:22.01,Default,**
+Dialogue: 0,0:38:22.21,0:38:24.35,Default,Before the bomb went off,
+Dialogue: 0,0:38:24.55,0:38:26.22,Default,I thought maybe...
+Dialogue: 0,0:38:26.42,0:38:28.69,Default,**
+Dialogue: 0,0:38:28.89,0:38:31.22,Default,...I just might rise\Nto the occasion.
+Dialogue: 0,0:38:31.42,0:38:32.96,Default,**
+Dialogue: 0,0:38:33.16,0:38:34.36,Default,At least now we know
+Dialogue: 0,0:38:34.56,0:38:37.63,Default,Mr. Kaplan wasn't responsible\Nfor Liz's death.
+Dialogue: 0,0:38:37.83,0:38:40.60,Default,**
+Dialogue: 0,0:38:40.80,0:38:43.17,Default,You have something new\Non Mrs. Lacroix?
+Dialogue: 0,0:38:43.37,0:38:45.17,Default,**
+Dialogue: 0,0:38:45.37,0:38:48.64,Default,Mystery, really.
+Dialogue: 0,0:38:48.84,0:38:50.84,Default,The assassin was paid\Nvia wire transfer
+Dialogue: 0,0:38:51.04,0:38:52.84,Default,from an account\Nat a Lebanese bank.
+Dialogue: 0,0:38:53.04,0:38:54.75,Default,The only problem is that,\Naccording to public records,
+Dialogue: 0,0:38:54.95,0:38:56.71,Default,that bank has been\Nclosed for years.
+Dialogue: 0,0:38:56.92,0:38:58.85,Default,Trying to figure out\Nhow the payment was made now,
+Dialogue: 0,0:38:59.05,0:39:00.79,Default,but so far, we haven't been\Nable to find out
+Dialogue: 0,0:39:00.99,0:39:03.91,Default,anything about\Nthe account holder --
+Dialogue: 0,0:39:04.11,0:39:06.26,Default,And you never will.
+Dialogue: 0,0:39:06.46,0:39:08.26,Default,That account is part\Nof a financial network
+Dialogue: 0,0:39:08.46,0:39:11.86,Default,more secure\Nthan any other bank on earth.
+Dialogue: 0,0:39:12.06,0:39:16.17,Default,That's why I opened the account\Nin the first place.
+Dialogue: 0,0:39:16.37,0:39:18.97,Default,The payment for\NMrs. Lacroix's assassin,
+Dialogue: 0,0:39:19.17,0:39:20.87,Default,it came from your account?
+Dialogue: 0,0:39:21.07,0:39:22.24,Default,It did.
+Dialogue: 0,0:39:22.44,0:39:24.11,Default,**
+Dialogue: 0,0:39:24.31,0:39:27.93,Default,Our enemy is closer\Nthan I ever imagined, Harold.
+Dialogue: 0,0:39:28.13,0:39:33.55,Default,**
+Dialogue: 0,0:39:33.75,0:39:35.79,Default,[ Telephones ringing ]
+Dialogue: 0,0:39:35.99,0:39:42.19,Default,**
+Dialogue: 0,0:39:42.39,0:39:48.57,Default,**
+Dialogue: 0,0:39:48.77,0:39:50.30,Default,How was your appointment?
+Dialogue: 0,0:39:50.50,0:39:52.62,Default,Oh, it was --
+Dialogue: 0,0:39:54.16,0:39:57.04,Default,You weren't in a fender bender\Nthis morning, were you?
+Dialogue: 0,0:39:57.24,0:40:00.25,Default,No. Why?
+Dialogue: 0,0:40:00.45,0:40:01.75,Default,No reason.
+Dialogue: 0,0:40:01.95,0:40:03.65,Default,Uh, look, before we get started,
+Dialogue: 0,0:40:03.85,0:40:06.45,Default,I need you to do me a favor.\NThis is gonna sound strange,
+Dialogue: 0,0:40:06.65,0:40:09.15,Default,but I need you to\Nslap me in the face. Hard.
+Dialogue: 0,0:40:09.35,0:40:10.76,Default,I know that's a weird --\NOw.
+Dialogue: 0,0:40:10.96,0:40:13.32,Default,Okay.\N[ Clears throat ]
+Dialogue: 0,0:40:13.53,0:40:15.06,Default,Thank you.
+Dialogue: 0,0:40:15.26,0:40:16.66,Default,Happy to help.
+Dialogue: 0,0:40:16.86,0:40:23.74,Default,**
+Dialogue: 0,0:40:23.94,0:40:26.94,Default,Ever since I got back,\NI've been wondering why now?
+Dialogue: 0,0:40:27.14,0:40:30.24,Default,I've been feeling guilty about\NSamar, about Liz for years,
+Dialogue: 0,0:40:30.44,0:40:34.68,Default,and what happened with Nick\Nand Greylock was awful, but...
+Dialogue: 0,0:40:34.88,0:40:38.65,Default,why did I choose that moment\Nto totally fall off a cliff?
+Dialogue: 0,0:40:38.85,0:40:39.88,Default,I'm not sure\Nyou chose anything,
+Dialogue: 0,0:40:40.09,0:40:44.22,Default,but I'm curious\Nif you have any ideas.
+Dialogue: 0,0:40:44.42,0:40:45.52,Default,Well I can't be sure,
+Dialogue: 0,0:40:45.72,0:40:48.03,Default,but I actually think\Nit's all your fault.
+Dialogue: 0,0:40:48.23,0:40:50.83,Default,[ Chuckles ]\NI mean, with you in charge,
+Dialogue: 0,0:40:51.03,0:40:53.77,Default,I always had someone to rely on.\NTo make the hard calls.
+Dialogue: 0,0:40:53.97,0:40:56.77,Default,Take the blame\Nif things went wrong.
+Dialogue: 0,0:40:56.97,0:40:59.30,Default,I knew I wasn't ready,\Nbut I was hoping
+Dialogue: 0,0:40:59.50,0:41:01.96,Default,I'd handle it\Na little better.
+Dialogue: 0,0:41:02.16,0:41:03.24,Default,You're handling it fine.
+Dialogue: 0,0:41:03.44,0:41:04.78,Default,I've been so anxious\Nand depressed,
+Dialogue: 0,0:41:04.98,0:41:07.81,Default,I took an experimental\Nhallucinogen.
+Dialogue: 0,0:41:08.01,0:41:08.81,Default,You got help.
+Dialogue: 0,0:41:09.01,0:41:11.32,Default,And I'm proud of you\Nfor that.
+Dialogue: 0,0:41:11.52,0:41:12.65,Default,This place is a crucible.
+Dialogue: 0,0:41:12.85,0:41:14.52,Default,Of course\Nyou were overwhelmed.
+Dialogue: 0,0:41:14.72,0:41:17.86,Default,You remember you were kidnapped\Nabout a month ago, right?
+Dialogue: 0,0:41:18.06,0:41:19.62,Default,This job demands\Nthat you recognize
+Dialogue: 0,0:41:19.83,0:41:23.29,Default,the things you can control\Nand the things you can't.
+Dialogue: 0,0:41:23.50,0:41:25.98,Default,You make the best choices\Nyou can,
+Dialogue: 0,0:41:26.18,0:41:27.50,Default,then you find a way\Nto forgive yourself
+Dialogue: 0,0:41:27.70,0:41:29.40,Default,so you can move forward.
+Dialogue: 0,0:41:29.60,0:41:32.40,Default,That sounds completely\Nimpossible.
+Dialogue: 0,0:41:32.60,0:41:35.01,Default,I know.
+Dialogue: 0,0:41:35.21,0:41:36.37,Default,But you'll learn.
+Dialogue: 0,0:41:36.58,0:41:40.01,Default,And I'll have your back\Nwhile you do.
+Dialogue: 0,0:41:40.21,0:41:41.41,Default,We all will.
+Dialogue: 0,0:41:41.61,0:41:45.90,Default,**
+Dialogue: 0,0:41:49.20,0:41:57.30,Default,**
+Dialogue: 0,0:41:57.50,0:42:05.70,Default,**
+Dialogue: 0,0:42:05.90,0:42:13.96,Default,**
+Dialogue: 0,0:42:14.16,0:42:22.22,Default,**
+Dialogue: 0,0:42:22.42,0:42:30.71,Default,**
+Dialogue: 0,0:42:36.08,0:42:36.12,Default,**
+Dialogue: 0,0:42:36.42,0:42:44.11,Default,**
+Dialogue: 0,0:42:44.31,0:42:52.38,Default,**
+Dialogue: 0,0:42:52.58,0:43:00.94,Default,**
+Dialogue: 0,0:43:01.14,0:43:09.45,Default,**
