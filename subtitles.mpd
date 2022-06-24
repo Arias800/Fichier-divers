@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:cenc="urn:mpeg:cenc:2013" xmlns:mspr="urn:microsoft:playready" mediaPresentationDuration="PT1H6M28.067S" minBufferTime="PT5.00S" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static">
+ <!-- Created with Bento4 mp4-dash.py, VERSION=1.8.0-624 -->
+ <Period>
+   <!-- Video -->
+   <AdaptationSet maxHeight="1080" maxWidth="1920" mimeType="video/mp4" minHeight="1080" minWidth="1920" segmentAlignment="true" startWithSAP="1">
+     <!-- MPEG Common Encryption -->
+     <ContentProtection cenc:default_KID="30d3a879-ba62-42d8-a9d1-cfc01c9b57f2" schemeIdUri="urn:mpeg:dash:mp4protection:2011" value="cenc"/>
+     <!-- PlayReady -->
+     <ContentProtection schemeIdUri="urn:uuid:9a04f079-9840-4286-ab92-e65be0885f95">
+       <mspr:pro>wgMAAAEAAQC4AzwAVwBSAE0ASABFAEEARABFAFIAIAB4AG0AbABuAHMAPQAiAGgAdAB0AHAAOgAvAC8AcwBjAGgAZQBtAGEAcwAuAG0AaQBjAHIAbwBzAG8AZgB0AC4AYwBvAG0ALwBEAFIATQAvADIAMAAwADcALwAwADMALwBQAGwAYQB5AFIAZQBhAGQAeQBIAGUAYQBkAGUAcgAiACAAdgBlAHIAcwBpAG8AbgA9ACIANAAuADAALgAwAC4AMAAiAD4APABEAEEAVABBAD4APABQAFIATwBUAEUAQwBUAEkATgBGAE8APgA8AEsARQBZAEwARQBOAD4AMQA2ADwALwBLAEUAWQBMAEUATgA+ADwAQQBMAEcASQBEAD4AQQBFAFMAQwBUAFIAPAAvAEEATABHAEkARAA+ADwALwBQAFIATwBUAEUAQwBUAEkATgBGAE8APgA8AEsASQBEAD4AZQBhAGoAVABNAEcASwA2ADIARQBLAHAAMABjAC8AQQBIAEoAdABYADgAZwA9AD0APAAvAEsASQBEAD4APABMAEEAXwBVAFIATAA+AGgAdAB0AHAAOgAvAC8AcAByAC0AawBlAHkAbwBzAC4AbABpAGMAZQBuAHMAZQBrAGUAeQBzAGUAcgB2AGUAcgAuAGMAbwBtAC8AYwBvAHIAZQAvAHIAaQBnAGgAdABzAG0AYQBuAGEAZwBlAHIALgBhAHMAbQB4ADwALwBMAEEAXwBVAFIATAA+ADwARABTAF8ASQBEAD4AVgBsAFIANwBJAGQAcwBJAEoARQB1AFIAZAAwADYATABhAHEAcwAyAGoAdwA9AD0APAAvAEQAUwBfAEkARAA+ADwAQwBVAFMAVABPAE0AQQBUAFQAUgBJAEIAVQBUAEUAUwAgAHgAbQBsAG4AcwA9ACIAIgA+ADwAQwBJAEQAPgBlAGEAagBUAE0ARwBLADYAMgBFAEsAcAAwAGMALwBBAEgASgB0AFgAOABnAD0APQA8AC8AQwBJAEQAPgA8AEQAUgBNAFQAWQBQAEUAPgBzAG0AbwBvAHQAaAA8AC8ARABSAE0AVABZAFAARQA+ADwALwBDAFUAUwBUAE8ATQBBAFQAVABSAEkAQgBVAFQARQBTAD4APABDAEgARQBDAEsAUwBVAE0APgBrAEwASgBUAGsARwB2AFQAYgBpADgAPQA8AC8AQwBIAEUAQwBLAFMAVQBNAD4APAAvAEQAQQBUAEEAPgA8AC8AVwBSAE0ASABFAEEARABFAFIAPgA=</mspr:pro>
+     </ContentProtection>
+     <!-- Widevine -->
+     <ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed">
+       <cenc:pssh>AAAAV3Bzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAADcIARIQMNOoebpiQtip0c/AHJtX8hoLYnV5ZHJta2V5b3MiEDDTqHm6YkLYqdHPwBybV/IqAkhE</cenc:pssh>
+     </ContentProtection>
+     <Representation bandwidth="3295307" codecs="avc1.640028" frameRate="30" height="1080" id="0" scanType="progressive" width="1920">
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_1080p_drm_444acc_2111061709-video-avc1.mp4</BaseURL>
+       <SegmentBase indexRange="1912-11519">
+         <Initialization range="0-1911"/>
+       </SegmentBase>
+     </Representation>
+     <Representation bandwidth="302355" codecs="avc1.640015" frameRate="30" height="238" id="1" scanType="progressive" width="426">
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_240p_drm_2f484c_2111061429-video-avc1.mp4</BaseURL>
+       <SegmentBase indexRange="1931-11538">
+         <Initialization range="0-1930"/>
+       </SegmentBase>
+     </Representation>
+     <Representation bandwidth="569057" codecs="avc1.64001E" frameRate="30" height="360" id="2" scanType="progressive" width="640">
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_360p_drm_da4beb_2111061439-video-avc1.mp4</BaseURL>
+       <SegmentBase indexRange="1911-11518">
+         <Initialization range="0-1910"/>
+       </SegmentBase>
+     </Representation>
+     <Representation bandwidth="830364" codecs="avc1.64001F" frameRate="30" height="480" id="3" scanType="progressive" width="852">
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_480p_drm_0f953e_2111061449-video-avc1.mp4</BaseURL>
+       <SegmentBase indexRange="1931-11538">
+         <Initialization range="0-1930"/>
+       </SegmentBase>
+     </Representation>
+     <Representation bandwidth="1748616" codecs="avc1.64001F" frameRate="30" height="720" id="4" scanType="progressive" width="1280">
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_720p_drm_4b922e_2111061539-video-avc1.mp4</BaseURL>
+       <SegmentBase indexRange="1911-11518">
+         <Initialization range="0-1910"/>
+       </SegmentBase>
+     </Representation>
+   </AdaptationSet>
+   <!-- Audio -->
+   <AdaptationSet mimeType="audio/mp4" segmentAlignment="true" startWithSAP="1">
+     <!-- MPEG Common Encryption -->
+     <ContentProtection cenc:default_KID="30d3a879-ba62-42d8-a9d1-cfc01c9b57f2" schemeIdUri="urn:mpeg:dash:mp4protection:2011" value="cenc"/>
+     <!-- PlayReady -->
+     <ContentProtection schemeIdUri="urn:uuid:9a04f079-9840-4286-ab92-e65be0885f95">
+       <mspr:pro>wgMAAAEAAQC4AzwAVwBSAE0ASABFAEEARABFAFIAIAB4AG0AbABuAHMAPQAiAGgAdAB0AHAAOgAvAC8AcwBjAGgAZQBtAGEAcwAuAG0AaQBjAHIAbwBzAG8AZgB0AC4AYwBvAG0ALwBEAFIATQAvADIAMAAwADcALwAwADMALwBQAGwAYQB5AFIAZQBhAGQAeQBIAGUAYQBkAGUAcgAiACAAdgBlAHIAcwBpAG8AbgA9ACIANAAuADAALgAwAC4AMAAiAD4APABEAEEAVABBAD4APABQAFIATwBUAEUAQwBUAEkATgBGAE8APgA8AEsARQBZAEwARQBOAD4AMQA2ADwALwBLAEUAWQBMAEUATgA+ADwAQQBMAEcASQBEAD4AQQBFAFMAQwBUAFIAPAAvAEEATABHAEkARAA+ADwALwBQAFIATwBUAEUAQwBUAEkATgBGAE8APgA8AEsASQBEAD4AZQBhAGoAVABNAEcASwA2ADIARQBLAHAAMABjAC8AQQBIAEoAdABYADgAZwA9AD0APAAvAEsASQBEAD4APABMAEEAXwBVAFIATAA+AGgAdAB0AHAAOgAvAC8AcAByAC0AawBlAHkAbwBzAC4AbABpAGMAZQBuAHMAZQBrAGUAeQBzAGUAcgB2AGUAcgAuAGMAbwBtAC8AYwBvAHIAZQAvAHIAaQBnAGgAdABzAG0AYQBuAGEAZwBlAHIALgBhAHMAbQB4ADwALwBMAEEAXwBVAFIATAA+ADwARABTAF8ASQBEAD4AVgBsAFIANwBJAGQAcwBJAEoARQB1AFIAZAAwADYATABhAHEAcwAyAGoAdwA9AD0APAAvAEQAUwBfAEkARAA+ADwAQwBVAFMAVABPAE0AQQBUAFQAUgBJAEIAVQBUAEUAUwAgAHgAbQBsAG4AcwA9ACIAIgA+ADwAQwBJAEQAPgBlAGEAagBUAE0ARwBLADYAMgBFAEsAcAAwAGMALwBBAEgASgB0AFgAOABnAD0APQA8AC8AQwBJAEQAPgA8AEQAUgBNAFQAWQBQAEUAPgBzAG0AbwBvAHQAaAA8AC8ARABSAE0AVABZAFAARQA+ADwALwBDAFUAUwBUAE8ATQBBAFQAVABSAEkAQgBVAFQARQBTAD4APABDAEgARQBDAEsAUwBVAE0APgBrAEwASgBUAGsARwB2AFQAYgBpADgAPQA8AC8AQwBIAEUAQwBLAFMAVQBNAD4APAAvAEQAQQBUAEEAPgA8AC8AVwBSAE0ASABFAEEARABFAFIAPgA=</mspr:pro>
+     </ContentProtection>
+     <!-- Widevine -->
+     <ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed">
+       <cenc:pssh>AAAAV3Bzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAADcIARIQMNOoebpiQtip0c/AHJtX8hoLYnV5ZHJta2V5b3MiEDDTqHm6YkLYqdHPwBybV/IqAkhE</cenc:pssh>
+     </ContentProtection>
+     <Representation audioSamplingRate="48000" bandwidth="89081" codecs="mp4a.40.2" id="5">
+       <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_480p_drm_0f953e_2111061449-audio-und-mp4a.mp4</BaseURL>
+       <SegmentBase indexRange="1829-11436">
+         <Initialization range="0-1828"/>
+       </SegmentBase>
+     </Representation>
+     <Representation audioSamplingRate="48000" bandwidth="57011" codecs="mp4a.40.2" id="6">
+       <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_240p_drm_2f484c_2111061429-audio-und-mp4a.mp4</BaseURL>
+       <SegmentBase indexRange="1829-11436">
+         <Initialization range="0-1828"/>
+       </SegmentBase>
+     </Representation>
+     <Representation audioSamplingRate="48000" bandwidth="73304" codecs="mp4a.40.2" id="7">
+       <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_360p_drm_da4beb_2111061439-audio-und-mp4a.mp4</BaseURL>
+       <SegmentBase indexRange="1829-11436">
+         <Initialization range="0-1828"/>
+       </SegmentBase>
+     </Representation>
+     <Representation audioSamplingRate="48000" bandwidth="200072" codecs="mp4a.40.2" id="8">
+       <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_1080p_drm_444acc_2111061709-audio-und-mp4a.mp4</BaseURL>
+       <SegmentBase indexRange="1829-11436">
+         <Initialization range="0-1828"/>
+       </SegmentBase>
+     </Representation>
+     <Representation audioSamplingRate="48000" bandwidth="200072" codecs="mp4a.40.2" id="9">
+       <AudioChannelConfiguration schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011" value="2"/>
+       <BaseURL>https://m-content-viki.s.llnwi.net/1188760v/dash/1188760v_dash_high_720p_drm_4b922e_2111061539-audio-und-mp4a.mp4</BaseURL>
+       <SegmentBase indexRange="1829-11436">
+         <Initialization range="0-1828"/>
+       </SegmentBase>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet mimeType="image/jpeg">
+     <SegmentTemplate media="preview/1188760v_preview_38bbd4_2111061349_$Number$.jpg" timescale="1" duration="250"/>
+     <Representation bandwidth="4642" width="1280" height="720">
+       <EssentialProperty schemeIdUri="http://dashif.org/guidelines/thumbnail_tile" value="5x5"/>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="tr" label="Türkçe" mimeType="text/vtt">
+     <Representation id="subtitle/tr" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/tr.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="tl" label="Tagalog" mimeType="text/vtt">
+     <Representation id="subtitle/tl" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/tl.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="sr" label="Српски/Srpski" mimeType="text/vtt">
+     <Representation id="subtitle/sr" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/sr.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="ro" label="Română" mimeType="text/vtt">
+     <Representation id="subtitle/ro" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/ro.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="pt" label="Português" mimeType="text/vtt">
+     <Representation id="subtitle/pt" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/pt.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="pl" label="Polski" mimeType="text/vtt">
+     <Representation id="subtitle/pl" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/pl.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="nl" label="Nederlands" mimeType="text/vtt">
+     <Representation id="subtitle/nl" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/nl.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="ja" label="日本語" mimeType="text/vtt">
+     <Representation id="subtitle/ja" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/ja.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="it" label="Italiano" mimeType="text/vtt">
+     <Representation id="subtitle/it" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/it.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="id" label="BahasaIndonesia" mimeType="text/vtt">
+     <Representation id="subtitle/id" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/id.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="hu" label="Magyar" mimeType="text/vtt">
+     <Representation id="subtitle/hu" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/hu.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="hr" label="Hrvatski" mimeType="text/vtt">
+     <Representation id="subtitle/hr" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/hr.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="hi" label="हिन्दी" mimeType="text/vtt">
+     <Representation id="subtitle/hi" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/hi.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="he" label="עברית" mimeType="text/vtt">
+     <Representation id="subtitle/he" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/he.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="fr" label="Français" mimeType="text/vtt">
+     <Representation id="subtitle/fr" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/fr.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="fi" label="Suomi" mimeType="text/vtt">
+     <Representation id="subtitle/fi" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/fi.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="es" label="Español" mimeType="text/vtt">
+     <Representation id="subtitle/es" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/es.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="en" label="English" mimeType="text/vtt">
+     <Representation id="subtitle/en" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/en.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="el" label="Ελληνικά" mimeType="text/vtt">
+     <Representation id="subtitle/el" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/el.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="de" label="Deutsch" mimeType="text/vtt">
+     <Representation id="subtitle/de" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/de.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="bs" label="Bosanski" mimeType="text/vtt">
+     <Representation id="subtitle/bs" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/bs.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+   <AdaptationSet contentType="text" lang="ar" label="العربية" mimeType="text/vtt">
+     <Representation id="subtitle/ar" bandwidth="0">
+       <BaseURL>https://api.viki.io/v4/videos/1188760v/auth_subtitles/ar.vtt?app=100005a&amp;stream_id=107532480</BaseURL>
+     </Representation>
+   </AdaptationSet>
+ </Period>
+</MPD>
+                                                   
